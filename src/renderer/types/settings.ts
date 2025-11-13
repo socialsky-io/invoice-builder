@@ -1,0 +1,34 @@
+import type { AmountFormat } from '../enums/amountFormat';
+import type { DateFormat } from '../enums/dateFormat';
+import type { Language } from '../enums/language';
+
+export interface Settings {
+  id: number;
+  language: Language;
+  amountFormat: AmountFormat;
+  dateFormat: DateFormat;
+  isDarkMode: boolean;
+  invoicePrefix?: string;
+  invoiceSuffix?: string;
+  shouldIncludeYear: boolean;
+  shouldIncludeMonth: boolean;
+  shouldIncludeBusinessName: boolean;
+  quatesON: boolean;
+  reportsON: boolean;
+  overviewCardsON: boolean;
+}
+
+export interface SettingsUpdate {
+  language?: Language;
+  amountFormat?: AmountFormat;
+  dateFormat?: DateFormat;
+  isDarkMode?: boolean;
+  invoicePrefix?: string;
+  invoiceSuffix?: string;
+  shouldIncludeYear?: boolean;
+  shouldIncludeMonth?: boolean;
+  shouldIncludeBusinessName?: boolean;
+  quatesON?: boolean;
+  reportsON?: boolean;
+  overviewCardsON?: boolean;
+}

@@ -1,0 +1,55 @@
+import { builtinModules } from 'module';
+import path from 'path';
+import { defineConfig } from 'vite';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
+import tsconfigPaths from 'vite-tsconfig-paths';
+
+export default defineConfig({
+  optimizeDeps: {
+    exclude: ['@electron-webauthn/native', 'electron-webauthn']
+  },
+  build: {
+    outDir: 'dist-electron/main',
+    target: 'node20',
+    lib: {
+      entry: 'src/main/main.ts',
+      formats: ['cjs'],
+      fileName: () => 'main.cjs'
+    },
+    rollupOptions: {
+      external: [
+        '@electron-webauthn/native',
+        'electron-webauthn',
+        'electron',
+        'sqlite3',
+        'fs',
+        'path',
+        'url',
+        'os',
+        'crypto',
+        ...builtinModules,
+        ...builtinModules.map(m => `node:${m}`)
+      ],
+      output: {
+        entryFileNames: 'main.cjs'
+      }
+    }
+  },
+  resolve: {
+    alias: {
+      '@main': path.resolve(__dirname, 'src/main')
+    }
+  },
+  publicDir: false,
+  plugins: [
+    tsconfigPaths({ projects: ['tsconfig.node.json'] }),
+    viteStaticCopy({
+      targets: [
+        {
+          src: 'src/main/assets/**/*',
+          dest: 'assets'
+        }
+      ]
+    })
+  ]
+});

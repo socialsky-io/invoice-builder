@@ -1,0 +1,103 @@
+{
+  "menuItems": {
+    "invoices": "Invoices",
+    "quates": "Quates",
+    "items": "Items",
+    "clients": "Clients",
+    "reports": "Reports",
+    "settings": "Settings",
+    "businesses": "Businesses"
+  },
+  "app": {
+    "title": "Invoice Builder",
+    "version": "Version",
+    "noItems": "Selected an item to view details"
+  },
+  "settingsMenuItems": {
+    "titles": {
+      "languageFormat": "Language & Format",
+      "customizeInvoice": "Customize invoice",
+      "darkMode": "Dark Mode",
+      "import": "Import",
+      "export": "Export",
+      "share": "Share App",
+      "support": "Support",
+      "privacyPolicy": "Privacy policy",
+      "about": "About",
+      "turnQuates": "Quates",
+      "turnReports": "Reports",
+      "turnCardOverviews": "Card overviews",
+      "tutorial": "Tutorial"
+    },
+    "descriptions": {
+      "languageFormat": "Language, Amount format, Date format.",
+      "customizeInvoice": "Invoice number prefix e.g.: INV, suffix.",
+      "darkMode": "Switch between light and dark themes.",
+      "import": "Import your data from other sources or backup files.",
+      "export": "Export your data for backup or to use in other applications.",
+      "share": "Share this app with your friends.",
+      "support": "Report bugs or suggest improvements via GitHub.",
+      "privacyPolicy": "Feel free to go through our privacy policy.",
+      "about": "Learn more about this app, its features.",
+      "turnQuates": "Enable or disable quote creation feature",
+      "turnReports": "Enable or disable reporting feature",
+      "turnCardOverviews": "Show summary cards with totals and key metrics on quates/invoices layouts",
+      "tutorial": "Checkout guide on how to use application"
+    }
+  },
+  "customizeInvoice": {
+    "invoicePrefix": "Invoice prefix",
+    "invoiceSuffix": "Invoice suffix",
+    "includeYear": "Include year",
+    "includeMonth": "Include month",
+    "lettersAndNumbers": "Only letters and numbers allowed",
+    "includeBusinessName": "Include business name"
+  },
+  "languageFormat": {
+    "language": "Language",
+    "amountFormat": "Amount format",
+    "dateFormat": "Date format"
+  },
+  "businesses": {
+    "invoice": "invoice",
+    "invoices": "invoices",
+    "quote": "quote",
+    "quotes": "quotes"
+  },
+  "businessesCRModal": {
+    "title": "Manage your business",
+    "name": "Name",
+    "shortName": "Short name",
+    "address": "Address",
+    "role": "Role",
+    "email": "Email",
+    "phone": "Phone",
+    "website": "Website",
+    "additional": "Additional",
+    "invalidEmail": "Invalid email format",
+    "invalidPhone": "Invalid phone number format",
+    "phoneHelper": "Enter phone number in international format",
+    "shortNameHelper": "Maximum 2 characters",
+    "paymentInfo": "Payment information"
+  },
+  "ariaLabel": {
+    "menu": "Main menu",
+    "back": "Return back",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add",
+    "uploadImage": "Upload image",
+    "crop": "Crop image",
+    "cropped": "Cropped image",
+    "search": "Search"
+  },
+  "error": {
+    "fileTooLarge": "File is too large. Maximum allowed size is {{maxSizeMB}}MB."
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "fieldRequired": "Field is required",
+    "search": "Search..."
+  }
+}

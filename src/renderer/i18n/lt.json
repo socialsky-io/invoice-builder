@@ -1,0 +1,103 @@
+{
+  "menuItems": {
+    "invoices": "Sąskaitos",
+    "quates": "Pasiūlymai",
+    "items": "Prekės",
+    "clients": "Klientai",
+    "reports": "Ataskaitos",
+    "settings": "Nustatymai",
+    "businesses": "Įmonės"
+  },
+  "app": {
+    "title": "Sąskaitų Kūrėjas",
+    "version": "Version",
+    "noItems": "Pasirinkite elementą, kad peržiūrėtumėte informaciją"
+  },
+  "settingsMenuItems": {
+    "titles": {
+      "languageFormat": "Kalba ir formatas",
+      "customizeInvoice": "Valdykite sąskaitą",
+      "darkMode": "Tamsus režimas",
+      "import": "Importuoti",
+      "export": "Eksportuoti",
+      "share": "Bendrinti programą",
+      "support": "Pagalba",
+      "privacyPolicy": "Privatumo politika",
+      "about": "Apie",
+      "turnQuates": "Pasiūlymai",
+      "turnReports": "Ataskaitos",
+      "turnCardOverviews": "Santraukos kortelės",
+      "tutorial": "Pamoka"
+    },
+    "descriptions": {
+      "languageFormat": "Kalba, sumos formatas, datos formatas.",
+      "customizeInvoice": "Sąskaitos numerio priešdėlis (pvz.: INV), priesagas.",
+      "darkMode": "Perjunkite tarp šviesios ir tamsios temų.",
+      "import": "Importuokite savo duomenis iš kitų šaltinių arba atsarginių kopijų.",
+      "export": "Eksportuokite savo duomenis atsarginei kopijai arba naudoti kitose programose.",
+      "share": "Bendrinkite šią programą su draugais.",
+      "support": "Praneškite apie klaidas arba siūlykite patobulinimus per GitHub.",
+      "privacyPolicy": "Susipažinkite su mūsų privatumo politika apie tai, kaip tvarkome jūsų duomenis.",
+      "about": "Sužinokite daugiau apie šią programą, jos funkcijas.",
+      "turnQuates": "Įjunkti arba išjungti pasiūlymų kūrimo funkciją",
+      "turnReports": "Įjunkti arba išjungti ataskaitų teikimo funkciją",
+      "turnCardOverviews": "Rodyti santraukos korteles su sumomis ir pagrindiniais rodikliais pasiūlymų/sąskaitų išdėstyme",
+      "tutorial": "Peržiūrėkite gidą, kaip naudotis programa"
+    }
+  },
+  "customizeInvoice": {
+    "invoicePrefix": "Sąskaitos prefiksas",
+    "invoiceSuffix": "Sąskaitos sufiksas",
+    "includeYear": "Įtraukti metus",
+    "includeMonth": "Įtraukti mėnesį",
+    "lettersAndNumbers": "Leidžiamos tik raidės ir skaičiai",
+    "includeBusinessName": "Įtraukti įmonės pavadinimą"
+  },
+  "languageFormat": {
+    "language": "Kalba",
+    "amountFormat": "Sumos formatas",
+    "dateFormat": "Datos formatas"
+  },
+  "businesses": {
+    "invoice": "sąskaita",
+    "invoices": "sąskaitos",
+    "quote": "pasiūlymas",
+    "quotes": "pasiūlymai"
+  },
+  "businessesCRModal": {
+    "title": "Valdykite savo įmonę",
+    "name": "Pavadinimas",
+    "shortName": "Trumpinys",
+    "address": "Adresas",
+    "role": "Vaidmuo",
+    "email": "El. paštas",
+    "phone": "Telefonas",
+    "website": "Svetainė",
+    "additional": "Papildoma informacija",
+    "invalidEmail": "Neteisingas el. pašto formatas",
+    "invalidPhone": "Neteisingas telefono numerio formatas",
+    "phoneHelper": "Įveskite telefono numerį tarptautiniu formatu",
+    "shortNameHelper": "Maksimaliai 2 simboliai",
+    "paymentInfo": "Mokėjimo informacija"
+  },
+  "ariaLabel": {
+    "menu": "Pagrindinis meniu",
+    "back": "Grįžti atgal",
+    "edit": "Redaguoti",
+    "delete": "Ištrinti",
+    "add": "Pridėti",
+    "uploadImage": "Įkelti paveikslėlį",
+    "crop": "Apkarpyti paveikslėlį",
+    "cropped": "Apkarpytas paveikslėlis",
+    "search": "Ieškoti"
+  },
+  "error": {
+    "fileTooLarge": "Failas yra per didelis. Maksimalus leidžiamas dydis yra {{maxSizeMB}}MB."
+  },
+  "common": {
+    "save": "Išsaugoti",
+    "cancel": "Atšaukti",
+    "fieldRequired": "Laukas yra privalomas",
+    "search": "Ieškoti..."
+  }
+}
