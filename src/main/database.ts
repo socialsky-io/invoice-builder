@@ -1,7 +1,8 @@
 import { app } from 'electron';
+import fs from 'fs';
 import path from 'path';
 import sqlite3 from 'sqlite3';
-import { getFirstRow } from './functions';
+import { getFirstRow, runAsync } from './functions';
 import { initIpcHandler } from './ipcHandler';
 
 let db: sqlite3.Database;
@@ -17,8 +18,10 @@ const initInitialData = async () => {
   }
 };
 
-const init = () => {
-  db.run(`
+const init = async () => {
+  await runAsync(
+    db,
+    `
     CREATE TABLE IF NOT EXISTS settings (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       language TEXT NOT NULL DEFAULT 'en',
@@ -32,10 +35,15 @@ const init = () => {
       shouldIncludeBusinessName INTEGER NOT NULL DEFAULT 1 CHECK (shouldIncludeBusinessName IN (0,1)),
       quatesON INTEGER NOT NULL DEFAULT 1 CHECK (quatesON IN (0,1)),
       reportsON INTEGER NOT NULL DEFAULT 1 CHECK (reportsON IN (0,1)),
-      overviewCardsON INTEGER NOT NULL DEFAULT 1 CHECK (overviewCardsON IN (0,1))
+      overviewCardsON INTEGER NOT NULL DEFAULT 1 CHECK (overviewCardsON IN (0,1)),
+      createdAt DATETIME NOT NULL DEFAULT (datetime('now','localtime')),
+      updatedAt DATETIME NOT NULL DEFAULT (datetime('now','localtime'))
     )
-  `);
-  db.run(`
+  `
+  );
+  await runAsync(
+    db,
+    `
     CREATE TABLE IF NOT EXISTS businesses (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
@@ -47,23 +55,32 @@ const init = () => {
       website TEXT,
       additional TEXT,
       paymentInformation TEXT,
-      logo BLOB
+      logo BLOB,
+      createdAt DATETIME NOT NULL DEFAULT (datetime('now','localtime')),
+      updatedAt DATETIME NOT NULL DEFAULT (datetime('now','localtime'))
     );
-  `);
-  db.run(`
+  `
+  );
+  await runAsync(
+    db,
+    `
     CREATE TABLE IF NOT EXISTS invoices (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       businessId INTEGER NOT NULL,
       FOREIGN KEY (businessId) REFERENCES businesses(id) ON DELETE CASCADE
     )
-  `);
-  db.run(`
+  `
+  );
+  await runAsync(
+    db,
+    `
     CREATE TABLE IF NOT EXISTS quates (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       businessId INTEGER NOT NULL,
       FOREIGN KEY (businessId) REFERENCES businesses(id) ON DELETE CASCADE
     )
-  `);
+  `
+  );
 };
 
 const initDatabase = async () => {
@@ -82,21 +99,24 @@ const initDatabase = async () => {
 
 const setupDB = (data: { dbname: string; appName?: string; onReady?: () => void }) => {
   const databaseFileName = data.dbname;
-  if (data.appName) {
+  const localAppData = process.env.LOCALAPPDATA;
+  if (data.appName && localAppData) {
     app.setName(data.appName);
-    app.setPath('userData', path.join(app.getPath('appData'), app.getName()));
+
+    const folderPath = path.join(localAppData, app.getName());
+    fs.mkdirSync(folderPath, { recursive: true });
+
+    dbPath = path.join(folderPath, databaseFileName);
+
+    initDatabase().then(async () => {
+      await init();
+      await initInitialData();
+      initIpcHandler(db, dbPath);
+      if (data.onReady) {
+        data.onReady();
+      }
+    });
   }
-
-  dbPath = path.join(app.getPath('userData'), databaseFileName);
-
-  initDatabase().then(() => {
-    init();
-    initInitialData();
-    initIpcHandler(db, dbPath);
-    if (data.onReady) {
-      data.onReady();
-    }
-  });
 };
 
 export { db, setupDB };

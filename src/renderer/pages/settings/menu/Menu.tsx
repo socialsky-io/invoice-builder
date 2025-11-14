@@ -12,14 +12,14 @@ import { useContext, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MenuList } from '../../../components/menuList/MenuList';
 import { ThemeContext } from '../../../components/theme/ThemeProviderWrapper';
-import { MenuItem } from '../../../enums/menuItem';
+import { MenuItemSettings } from '../../../enums/menuItemSettings';
 import { Themes } from '../../../enums/themes';
 import { useAppSelector } from '../../../state/configureStore';
 import { selectSettings } from '../../../state/pageSlice';
 
 interface Props {
-  onSelected?: (key: MenuItem | undefined) => void;
-  selectedMenu?: MenuItem | undefined;
+  onSelected?: (key: MenuItemSettings | undefined) => void;
+  selectedMenu?: MenuItemSettings | undefined;
   onModeChange?: (isDark: boolean) => void;
   toggleQuates?: (value: boolean) => void;
   toggleReports?: (value: boolean) => void;
@@ -44,16 +44,16 @@ export const Menu: FC<Props> = ({
       description: t('settingsMenuItems.descriptions.languageFormat'),
       icon: <Language />,
       isToggle: false,
-      isSelected: MenuItem.LanguageFormat === selectedMenu,
-      onClick: () => onSelected(MenuItem.LanguageFormat)
+      isSelected: MenuItemSettings.LanguageFormat === selectedMenu,
+      onClick: () => onSelected(MenuItemSettings.LanguageFormat)
     },
     {
       text: t('settingsMenuItems.titles.customizeInvoice'),
       description: t('settingsMenuItems.descriptions.customizeInvoice'),
       icon: <Description />,
       isToggle: false,
-      isSelected: MenuItem.Receipt === selectedMenu,
-      onClick: () => onSelected(MenuItem.Receipt)
+      isSelected: MenuItemSettings.Receipt === selectedMenu,
+      onClick: () => onSelected(MenuItemSettings.Receipt)
     },
     {
       text: t('settingsMenuItems.titles.darkMode'),

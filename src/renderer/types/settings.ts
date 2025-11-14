@@ -16,6 +16,8 @@ export interface Settings {
   quatesON: boolean;
   reportsON: boolean;
   overviewCardsON: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface SettingsUpdate {

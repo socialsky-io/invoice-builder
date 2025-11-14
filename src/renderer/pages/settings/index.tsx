@@ -1,9 +1,12 @@
 import { Grid, useMediaQuery, useTheme } from '@mui/material';
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Content } from '../../components/content/Content';
+import { NoItem } from '../../components/noItem/NoItem';
 import type { AmountFormat } from '../../enums/amountFormat';
 import type { DateFormat } from '../../enums/dateFormat';
 import type { Language } from '../../enums/language';
-import { MenuItem } from '../../enums/menuItem';
+import { MenuItemSettings } from '../../enums/menuItemSettings';
 import { useSettingsUpdate } from '../../hooks/settings/useSettingsUpdate';
 import i18n from '../../i18n';
 import { useAppDispatch, useAppSelector } from '../../state/configureStore';
@@ -16,15 +19,14 @@ import {
   setQuates,
   setReports
 } from '../../state/pageSlice';
-import { Content } from './content/Content';
 import { CustomizeInvoice } from './content/CustomizeInvoice';
 import { LanguageFormat } from './content/LanguageFormat';
-import { NoItem } from './content/NoItem';
 import { Menu } from './menu/Menu';
 
 export const SettingsPage = () => {
   const theme = useTheme();
-  const [currentMenuItem, setCurrentMenuItem] = useState<MenuItem | undefined>(undefined);
+  const { t } = useTranslation();
+  const [currentMenuItem, setCurrentMenuItem] = useState<MenuItemSettings | undefined>(undefined);
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
   const dispatch = useAppDispatch();
   const storeSettings = useAppSelector(selectSettings);
@@ -105,7 +107,7 @@ export const SettingsPage = () => {
     execute();
   }, [stableSettings, execute]);
 
-  const onSelected = useCallback((item: MenuItem | undefined) => {
+  const onSelected = useCallback((item: MenuItemSettings | undefined) => {
     setCurrentMenuItem(item);
   }, []);
 
@@ -115,52 +117,43 @@ export const SettingsPage = () => {
 
   let rightColumn: ReactNode;
   if (typeof currentMenuItem === 'undefined') {
-    rightColumn = <NoItem />;
+    rightColumn = <NoItem text={t('app.noItems')} />;
   } else {
     switch (currentMenuItem) {
-      case MenuItem.Receipt:
+      case MenuItemSettings.Receipt:
         rightColumn = (
           <CustomizeInvoice onCustomizedInvoice={onCustomizedInvoice} showBack={!isDesktop} onBack={onBack} />
         );
         break;
-      case MenuItem.LanguageFormat:
+      case MenuItemSettings.LanguageFormat:
         rightColumn = <LanguageFormat onLanguageFormat={onLanguageFormat} showBack={!isDesktop} onBack={onBack} />;
         break;
       default:
-        rightColumn = <NoItem />;
+        rightColumn = <NoItem text={t('app.noItems')} />;
         break;
     }
   }
+
+  const leftColumnMenu = (
+    <Menu
+      onSelected={onSelected}
+      selectedMenu={currentMenuItem}
+      onModeChange={onModeChange}
+      toggleQuates={toggleQuates}
+      toggleReports={toggleReports}
+      toggleCardOverviews={toggleCardOverviews}
+    />
+  );
 
   return (
     <Grid container component="div" spacing={2} justifyContent="center" alignItems="stretch" sx={{ height: '100%' }}>
       {isDesktop ? (
         <>
-          <Menu
-            onSelected={onSelected}
-            selectedMenu={currentMenuItem}
-            onModeChange={onModeChange}
-            toggleQuates={toggleQuates}
-            toggleReports={toggleReports}
-            toggleCardOverviews={toggleCardOverviews}
-          />
+          {leftColumnMenu}
           <Content node={rightColumn} />
         </>
       ) : (
-        <>
-          {typeof currentMenuItem === 'undefined' ? (
-            <Menu
-              onSelected={onSelected}
-              selectedMenu={currentMenuItem}
-              onModeChange={onModeChange}
-              toggleQuates={toggleQuates}
-              toggleReports={toggleReports}
-              toggleCardOverviews={toggleCardOverviews}
-            />
-          ) : (
-            <Content node={rightColumn} />
-          )}
-        </>
+        <>{typeof currentMenuItem === 'undefined' ? leftColumnMenu : <Content node={rightColumn} />}</>
       )}
     </Grid>
   );

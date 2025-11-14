@@ -3,8 +3,10 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import {
   Box,
+  Button,
   Divider,
   Fab,
+  Grid,
   IconButton,
   ListItemButton,
   ListItemIcon,
@@ -12,22 +14,27 @@ import {
   Paper,
   Tooltip,
   Typography,
+  useMediaQuery,
   useTheme
 } from '@mui/material';
-import { useCallback, useEffect, useMemo, useState, type FC } from 'react';
+import { useCallback, useEffect, useMemo, useState, type FC, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-
+import { Content } from '../../components/content/Content';
+import { FilterSortBar } from '../../components/filterSortBar/FilterSortBar';
+import { NoItem } from '../../components/noItem/NoItem';
+import { PageAppBar } from '../../components/pageAppBar/PageAppBar';
 import { SearchInput } from '../../components/searchInput/SearchInput';
+import { SortType } from '../../enums/sortType';
 import { Themes } from '../../enums/themes';
 import { useBusinessAdd } from '../../hooks/business/useBusinessAdd';
 import { useBusinessDelete } from '../../hooks/business/useBusinessDelete';
 import { useBusinessesRetrieve } from '../../hooks/business/useBusinessesRetrieve';
 import { useBusinessUpdate } from '../../hooks/business/useBusinessUpdate';
 import { useAppSelector } from '../../state/configureStore';
-import { toUint8Array } from '../../state/functions';
+import { filterAndSortArray, isCRBusinessFromData, toUint8Array } from '../../state/functions';
 import { selectSettings } from '../../state/pageSlice';
 import type { Business, BusinessAdd, BusinessUpdate } from '../../types/business';
-import { CRBusinessModal } from './CRBusinessModal';
+import { Form } from './Form';
 
 export const Businesses: FC = () => {
   const { t } = useTranslation();
@@ -40,12 +47,23 @@ export const Businesses: FC = () => {
   const [newBusiness, setNewBusiness] = useState<BusinessAdd | undefined>(undefined);
   const [selectedBusinessID, setSelectedBusinessID] = useState<number>(-1);
   const { businesses, execute: reloadBusinesses } = useBusinessesRetrieve({});
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
+
+  const sortOptions = [
+    { label: t('common.name'), value: 'name' },
+    { label: t('common.lastUpdate'), value: 'updatedAt' }
+  ];
+  const [activeSort, setActiveSort] = useState<SortType>(SortType.DEFAULT);
+  const [activeSortBy, setActiveSortBy] = useState(sortOptions[0]);
+
+  const onFilterSortChange = (data: { sortBy: { label: string; value: string }; sort: SortType }) => {
+    setActiveSort(data.sort);
+    setActiveSortBy(data.sortBy);
+  };
 
   const filteredBusinesses = useMemo(() => {
-    if (!searchValue) return businesses;
-    const lowerSearch = searchValue.toLowerCase();
-    return businesses.filter(b => b.name.toLowerCase().includes(lowerSearch));
-  }, [businesses, searchValue]);
+    return filterAndSortArray(businesses, searchValue, 'name', activeSortBy.value as keyof Business, activeSort);
+  }, [businesses, searchValue, activeSort, activeSortBy]);
 
   const { execute: deleteBusiness } = useBusinessDelete({
     id: selectedBusinessID,
@@ -80,14 +98,15 @@ export const Businesses: FC = () => {
 
   const handleCloseCRModal = useCallback(() => {
     setIsCRModalOpen(false);
+    setSelectedBusiness(undefined);
   }, []);
 
   const onEdit = (item: Business) => {
     setSelectedBusiness(item);
-    setIsCRModalOpen(true);
   };
 
   const onAdd = () => {
+    setSelectedBusiness(undefined);
     setIsCRModalOpen(true);
   };
 
@@ -98,36 +117,26 @@ export const Businesses: FC = () => {
     [searchValue]
   );
 
-  const handleSaveCRModal = async (data: {
-    id?: number;
-    logo?: Blob;
-    email?: string;
-    phone?: string;
-    name: string;
-    shortName: string;
-    role?: string;
-    address?: string;
-    website?: string;
-    additional?: string;
-    paymentInformation?: string;
-  }) => {
-    let convertedLogo: Uint8Array<ArrayBufferLike> | null | undefined = undefined;
-    if (typeof data.logo !== 'undefined') {
-      convertedLogo = await toUint8Array(data.logo);
+  const handleSaveCRModal = async (data: unknown) => {
+    if (isCRBusinessFromData(data)) {
+      let convertedLogo: Uint8Array<ArrayBufferLike> | null | undefined = undefined;
+      if (typeof data.logo !== 'undefined') {
+        convertedLogo = await toUint8Array(data.logo);
+      }
+      if (typeof data.id === 'undefined') {
+        setNewBusiness({
+          ...data,
+          logo: convertedLogo
+        });
+      } else if (data.id) {
+        setChangedBusiness({
+          ...data,
+          id: data.id,
+          logo: convertedLogo
+        });
+      }
+      handleCloseCRModal();
     }
-    if (typeof data.id === 'undefined') {
-      setNewBusiness({
-        ...data,
-        logo: convertedLogo
-      });
-    } else if (data.id) {
-      setChangedBusiness({
-        ...data,
-        id: data.id,
-        logo: convertedLogo
-      });
-    }
-    handleCloseCRModal();
   };
 
   useEffect(() => {
@@ -145,16 +154,8 @@ export const Businesses: FC = () => {
     updateBusiness();
   }, [changedBusiness, updateBusiness]);
 
-  return (
-    <>
-      {isCRModalOpen && (
-        <CRBusinessModal
-          isOpen={isCRModalOpen}
-          handleClose={handleCloseCRModal}
-          handleSave={handleSaveCRModal}
-          business={selectedBusiness}
-        />
-      )}
+  const leftColumn = (
+    <Grid size={{ xs: 12, md: 4 }} component="div" sx={{ position: 'relative' }}>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
         <Box display="flex" alignItems="center" gap={1}>
           <Typography
@@ -165,11 +166,18 @@ export const Businesses: FC = () => {
               color: theme.palette.secondary.main
             }}
           >
-            {t('settingsMenuItems.titles.manageBusinesses')}
+            {t('menuItems.businesses')}
           </Typography>
         </Box>
 
         <SearchInput value={searchValue} onChange={onSearchChanged} />
+
+        <FilterSortBar
+          sortByOptions={sortOptions}
+          activeSort={activeSort}
+          activeSortBy={activeSortBy}
+          onChange={onFilterSortChange}
+        />
 
         {filteredBusinesses.map(item => (
           <Paper
@@ -247,7 +255,7 @@ export const Businesses: FC = () => {
                   </Typography>
                   {storeSettings?.quatesON && (
                     <Typography variant="body2">
-                      {item.estimateCount} {item.estimateCount > 1 ? t('businesses.quotes') : t('businesses.quote')}
+                      {item.quatesCount} {item.quatesCount > 1 ? t('businesses.quotes') : t('businesses.quote')}
                     </Typography>
                   )}
                 </Box>
@@ -290,15 +298,67 @@ export const Businesses: FC = () => {
           aria-label={t('ariaLabel.add')}
           onClick={onAdd}
           sx={{
-            position: 'fixed',
-            bottom: 50,
-            right: 50,
+            position: 'absolute',
+            bottom: 20,
+            right: 10,
             zIndex: 1000
           }}
         >
           <AddIcon />
         </Fab>
       </Tooltip>
+    </Grid>
+  );
+
+  const noItemButton = (
+    <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={onAdd}>
+      {t('businesses.add')}
+    </Button>
+  );
+
+  const crBusiness = (
+    <PageAppBar
+      title={t('businessesCRModal.title')}
+      isOpen={isCRModalOpen}
+      isModal={typeof selectedBusiness?.id === 'undefined'}
+      handleClose={handleCloseCRModal}
+      handleSave={handleSaveCRModal}
+      renderForm={({ onChange }) => (
+        <Form
+          business={selectedBusiness}
+          handleChange={data => {
+            if (isCRBusinessFromData(data.business)) {
+              onChange({
+                changedData: data.business,
+                isFormValid: data.isFormValid
+              });
+            }
+          }}
+        />
+      )}
+      showBack={!isDesktop}
+    />
+  );
+  let rightColumn: ReactNode;
+  if (typeof selectedBusiness?.id === 'undefined') {
+    rightColumn = <NoItem text={t('businesses.noItem')} node={noItemButton} />;
+  } else {
+    rightColumn = crBusiness;
+  }
+
+  return (
+    <>
+      {isCRModalOpen && crBusiness}
+      <Grid container component="div" spacing={2} justifyContent="center" alignItems="stretch" sx={{ height: '100%' }}>
+        {isDesktop ? (
+          <>
+            {leftColumn}
+            <Content node={rightColumn} />
+          </>
+        ) : (
+          <>{typeof selectedBusiness === 'undefined' ? leftColumn : <Content node={rightColumn} />}</>
+        )}
+      </Grid>
     </>
   );
 };

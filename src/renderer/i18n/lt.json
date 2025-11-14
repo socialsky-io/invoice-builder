@@ -62,7 +62,8 @@
     "invoice": "sąskaita",
     "invoices": "sąskaitos",
     "quote": "pasiūlymas",
-    "quotes": "pasiūlymai"
+    "quotes": "pasiūlymai",
+    "noItem": "Pasirinkite įmonę, kad peržiūrėtumėte detales."
   },
   "businessesCRModal": {
     "title": "Valdykite savo įmonę",
@@ -89,7 +90,10 @@
     "uploadImage": "Įkelti paveikslėlį",
     "crop": "Apkarpyti paveikslėlį",
     "cropped": "Apkarpytas paveikslėlis",
-    "search": "Ieškoti"
+    "search": "Ieškoti",
+    "noSort": "Nerikiuoti",
+    "ascending": "Didėjimo tvarka",
+    "descending": "Mažėjimo tvarka"
   },
   "error": {
     "fileTooLarge": "Failas yra per didelis. Maksimalus leidžiamas dydis yra {{maxSizeMB}}MB."
@@ -98,6 +102,9 @@
     "save": "Išsaugoti",
     "cancel": "Atšaukti",
     "fieldRequired": "Laukas yra privalomas",
-    "search": "Ieškoti..."
+    "search": "Ieškoti...",
+    "sortBy": "Rūšiuoti pagal",
+    "name": "Pavadinimas",
+    "lastUpdate": "Paskutinį kartą atnaujinta"
   }
 }

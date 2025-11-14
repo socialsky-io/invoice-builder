@@ -65,7 +65,9 @@ const initIpcHandler = (db: Database, path: string) => {
     const params = fields.map(key => (data[key] as string | number | null) ?? null);
 
     if (isUpdate) {
-      await runDb(db, `UPDATE businesses SET ${fields.join('=?,')}=? WHERE id=?`, [...params, data.id ?? -1]);
+      const setClause = fields.map(f => `${f} = ?`).join(', ') + `, updatedAt = datetime('now','localtime')`;
+
+      await runDb(db, `UPDATE businesses SET ${setClause} WHERE id = ?`, [...params, data.id ?? -1]);
     } else {
       await runDb(
         db,
@@ -80,7 +82,16 @@ const initIpcHandler = (db: Database, path: string) => {
   ipcMain.handle('get-all-settings', async () => {
     const row = await getFirstRow(db, 'SELECT * FROM settings LIMIT 1');
     if (!row) return null;
-    return { ...row, isDarkMode: row.isDarkMode === 1 };
+    return {
+      ...row,
+      isDarkMode: row.isDarkMode === 1,
+      shouldIncludeYear: row.shouldIncludeYear === 1,
+      shouldIncludeMonth: row.shouldIncludeMonth === 1,
+      shouldIncludeBusinessName: row.shouldIncludeBusinessName === 1,
+      quatesON: row.quatesON === 1,
+      reportsON: row.reportsON === 1,
+      overviewCardsON: row.overviewCardsON === 1
+    };
   });
 
   ipcMain.handle('get-all-businesses', async () => {
@@ -88,7 +99,7 @@ const initIpcHandler = (db: Database, path: string) => {
       SELECT 
         b.*, 
         COUNT(DISTINCT i.id) AS invoiceCount,
-        COUNT(DISTINCT e.id) AS estimateCount
+        COUNT(DISTINCT e.id) AS quatesCount
       FROM businesses b
       LEFT JOIN invoices i ON i.businessId = b.id
       LEFT JOIN quates e ON e.businessId = b.id
@@ -131,6 +142,7 @@ const initIpcHandler = (db: Database, path: string) => {
       const { fields, params } = prepareUpdate(data);
       if (!fields.length) return { success: true };
 
+      fields.push(`updatedAt = datetime('now','localtime')`);
       await runDb(db, `UPDATE settings SET ${fields.join(', ')} WHERE id = (SELECT id FROM settings LIMIT 1)`, params);
       return { success: true };
     }

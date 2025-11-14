@@ -62,7 +62,9 @@
     "invoice": "invoice",
     "invoices": "invoices",
     "quote": "quote",
-    "quotes": "quotes"
+    "quotes": "quotes",
+    "noItem": "Selected a business to view details.",
+    "add": "Add business"
   },
   "businessesCRModal": {
     "title": "Manage your business",
@@ -89,7 +91,10 @@
     "uploadImage": "Upload image",
     "crop": "Crop image",
     "cropped": "Cropped image",
-    "search": "Search"
+    "search": "Search",
+    "noSort": "No sort",
+    "ascending": "Ascending",
+    "descending": "Descending"
   },
   "error": {
     "fileTooLarge": "File is too large. Maximum allowed size is {{maxSizeMB}}MB."
@@ -98,6 +103,9 @@
     "save": "Save",
     "cancel": "Cancel",
     "fieldRequired": "Field is required",
-    "search": "Search..."
+    "search": "Search...",
+    "sortBy": "Sort by",
+    "name": "Name",
+    "lastUpdate": "Last updated"
   }
 }

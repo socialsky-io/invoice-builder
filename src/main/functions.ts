@@ -2,6 +2,11 @@ import sqlite3 from 'sqlite3';
 
 export type SqliteValue = string | number | boolean | null;
 
+export const runAsync = (db: sqlite3.Database, sql: string) =>
+  new Promise<void>((resolve, reject) => {
+    db.run(sql, err => (err ? reject(err) : resolve()));
+  });
+
 const runDb = (db: sqlite3.Database, sql: string, params: SqliteValue[] = []): Promise<void> => {
   const convertedParams = params.map(p => (p === true ? 1 : p === false ? 0 : p));
 

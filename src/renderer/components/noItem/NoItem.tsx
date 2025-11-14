@@ -1,9 +1,13 @@
 import GridView from '@mui/icons-material/GridView';
 import { Box, Typography } from '@mui/material';
-import { useTranslation } from 'react-i18next';
+import type { FC } from 'react';
 
-export const NoItem = () => {
-  const { t } = useTranslation();
+interface Props {
+  text: string;
+  node?: React.ReactNode;
+}
+
+export const NoItem: FC<Props> = ({ text, node }) => {
   return (
     <Box
       sx={{
@@ -11,11 +15,13 @@ export const NoItem = () => {
         alignItems: 'center',
         justifyContent: 'center',
         height: '100%',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        gap: 2
       }}
     >
       <GridView color="action" fontSize="large" />
-      <Typography variant="h5">{t('app.noItems')}</Typography>
+      <Typography variant="h5">{text}</Typography>
+      {node}
     </Box>
   );
 };

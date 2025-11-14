@@ -11,7 +11,9 @@ export interface Business {
   paymentInformation?: string;
   logo?: Uint8Array | null;
   invoiceCount: number;
-  estimateCount: number;
+  quatesCount: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface BusinessAdd {
@@ -29,4 +31,18 @@ export interface BusinessAdd {
 
 export interface BusinessUpdate extends BusinessAdd {
   id: number;
+}
+
+export interface CRBusinessFromData {
+  id?: number;
+  logo?: Blob;
+  email?: string;
+  phone?: string;
+  name: string;
+  shortName: string;
+  role?: string;
+  address?: string;
+  website?: string;
+  additional?: string;
+  paymentInformation?: string;
 }
