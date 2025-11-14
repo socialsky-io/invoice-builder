@@ -88,7 +88,7 @@ const initIpcHandler = (db: Database, path: string) => {
       shouldIncludeYear: row.shouldIncludeYear === 1,
       shouldIncludeMonth: row.shouldIncludeMonth === 1,
       shouldIncludeBusinessName: row.shouldIncludeBusinessName === 1,
-      quatesON: row.quatesON === 1,
+      quotesON: row.quotesON === 1,
       reportsON: row.reportsON === 1,
       overviewCardsON: row.overviewCardsON === 1
     };
@@ -99,10 +99,10 @@ const initIpcHandler = (db: Database, path: string) => {
       SELECT 
         b.*, 
         COUNT(DISTINCT i.id) AS invoiceCount,
-        COUNT(DISTINCT e.id) AS quatesCount
+        COUNT(DISTINCT e.id) AS quotesCount
       FROM businesses b
       LEFT JOIN invoices i ON i.businessId = b.id
-      LEFT JOIN quates e ON e.businessId = b.id
+      LEFT JOIN quotes e ON e.businessId = b.id
       GROUP BY b.id
     `;
     const rows = await getAllRows(db, sql);
@@ -134,7 +134,7 @@ const initIpcHandler = (db: Database, path: string) => {
         shouldIncludeYear?: boolean;
         shouldIncludeMonth?: boolean;
         shouldIncludeBusinessName?: boolean;
-        quatesON?: boolean;
+        quotesON?: boolean;
         reportsON?: boolean;
         overviewCardsON?: boolean;
       }

@@ -51,12 +51,12 @@ export const Sidebar: FC = () => {
       isSelected: isSelected,
       onClick: onClickNavigate
     },
-    ...(storeSettings?.quatesON
+    ...(storeSettings?.quotesON
       ? [
           {
-            text: t('menuItems.quates'),
+            text: t('menuItems.quotes'),
             icon: <ReceiptIcon />,
-            path: '/quates',
+            path: '/quotes',
             isToggle: false,
             minHeight: 50,
             isSelected: isSelected,

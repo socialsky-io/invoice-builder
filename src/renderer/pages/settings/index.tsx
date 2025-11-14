@@ -16,7 +16,7 @@ import {
   setCustomInvoiseSettings,
   setLanguageDate,
   setMode,
-  setQuates,
+  setQuotes,
   setReports
 } from '../../state/pageSlice';
 import { CustomizeInvoice } from './content/CustomizeInvoice';
@@ -41,9 +41,9 @@ export const SettingsPage = () => {
     [dispatch]
   );
 
-  const toggleQuates = useCallback(
+  const toggleQuotes = useCallback(
     (value: boolean) => {
-      dispatch(setQuates(value));
+      dispatch(setQuotes(value));
     },
     [dispatch]
   );
@@ -139,7 +139,7 @@ export const SettingsPage = () => {
       onSelected={onSelected}
       selectedMenu={currentMenuItem}
       onModeChange={onModeChange}
-      toggleQuates={toggleQuates}
+      toggleQuotes={toggleQuotes}
       toggleReports={toggleReports}
       toggleCardOverviews={toggleCardOverviews}
     />

@@ -36,7 +36,7 @@ export const Clients: FC = () => {
             onSelected={onSelected}
             selectedMenu={currentMenuItem}
             onModeChange={onModeChange}
-            toggleQuates={toggleQuates}
+            quotesON={toggleQuaquotesONtes}
             toggleReports={toggleReports}
             toggleCardOverviews={toggleCardOverviews}
           />*/}
@@ -59,7 +59,7 @@ export const Clients: FC = () => {
             //   onSelected={onSelected}
             //   selectedMenu={currentMenuItem}
             //   onModeChange={onModeChange}
-            //   toggleQuates={toggleQuates}
+            //   quotesON={quotesON}
             //   toggleReports={toggleReports}
             //   toggleCardOverviews={toggleCardOverviews}
             // />

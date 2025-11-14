@@ -6,13 +6,13 @@ import { useTranslation } from 'react-i18next';
 import { SortType } from '../../enums/sortType';
 import type { CustomOption } from '../../types/customOption';
 
-interface Props<T extends string> {
+interface Props<T extends string | number | symbol> {
   activeSort: SortType;
   activeSortBy: CustomOption<T>;
   sortByOptions: CustomOption<T>[];
   onChange?: (value: { sortBy: CustomOption<T>; sort: SortType }) => void;
 }
-export const FilterSortBar = <T extends string>({
+export const FilterSortBar = <T extends string | number | symbol>({
   activeSort,
   activeSortBy,
   sortByOptions,
@@ -39,7 +39,7 @@ export const FilterSortBar = <T extends string>({
           <Typography>{t('common.sortBy')}:</Typography>
           <Select size="small" value={activeSortBy.value} onChange={onSortByChange}>
             {sortByOptions.map(item => (
-              <MenuItem key={String(item.value)} value={item.value}>
+              <MenuItem key={item.value.toString()} value={item.value.toString()}>
                 {item.label}
               </MenuItem>
             ))}

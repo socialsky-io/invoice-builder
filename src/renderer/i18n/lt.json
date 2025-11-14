@@ -1,7 +1,7 @@
 {
   "menuItems": {
     "invoices": "Sąskaitos",
-    "quates": "Pasiūlymai",
+    "quotes": "Pasiūlymai",
     "items": "Prekės",
     "clients": "Klientai",
     "reports": "Ataskaitos",
@@ -24,7 +24,7 @@
       "support": "Pagalba",
       "privacyPolicy": "Privatumo politika",
       "about": "Apie",
-      "turnQuates": "Pasiūlymai",
+      "turnQuotes": "Pasiūlymai",
       "turnReports": "Ataskaitos",
       "turnCardOverviews": "Santraukos kortelės",
       "tutorial": "Pamoka"
@@ -39,7 +39,7 @@
       "support": "Praneškite apie klaidas arba siūlykite patobulinimus per GitHub.",
       "privacyPolicy": "Susipažinkite su mūsų privatumo politika apie tai, kaip tvarkome jūsų duomenis.",
       "about": "Sužinokite daugiau apie šią programą, jos funkcijas.",
-      "turnQuates": "Įjunkti arba išjungti pasiūlymų kūrimo funkciją",
+      "turnQuotes": "Įjunkti arba išjungti pasiūlymų kūrimo funkciją",
       "turnReports": "Įjunkti arba išjungti ataskaitų teikimo funkciją",
       "turnCardOverviews": "Rodyti santraukos korteles su sumomis ir pagrindiniais rodikliais pasiūlymų/sąskaitų išdėstyme",
       "tutorial": "Peržiūrėkite gidą, kaip naudotis programa"
@@ -105,6 +105,10 @@
     "search": "Ieškoti...",
     "sortBy": "Rūšiuoti pagal",
     "name": "Pavadinimas",
-    "lastUpdate": "Paskutinį kartą atnaujinta"
+    "lastUpdate": "Paskutinį kartą atnaujinta",
+    "invoice": "Sąskaita",
+    "invoices": "Sąskaitos",
+    "quote": "Pasiūlymas",
+    "quotes": "Pasiūlymai"
   }
 }

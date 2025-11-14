@@ -21,14 +21,14 @@ interface Props {
   onSelected?: (key: MenuItemSettings | undefined) => void;
   selectedMenu?: MenuItemSettings | undefined;
   onModeChange?: (isDark: boolean) => void;
-  toggleQuates?: (value: boolean) => void;
+  toggleQuotes?: (value: boolean) => void;
   toggleReports?: (value: boolean) => void;
   toggleCardOverviews?: (value: boolean) => void;
 }
 export const Menu: FC<Props> = ({
   onSelected = () => {},
   selectedMenu,
-  toggleQuates = () => {},
+  toggleQuotes = () => {},
   toggleReports = () => {},
   toggleCardOverviews = () => {},
   onModeChange = () => {}
@@ -71,14 +71,14 @@ export const Menu: FC<Props> = ({
 
   const featureToggles = [
     {
-      text: t('settingsMenuItems.titles.turnQuates'),
-      description: t('settingsMenuItems.descriptions.turnQuates'),
+      text: t('settingsMenuItems.titles.turnQuotes'),
+      description: t('settingsMenuItems.descriptions.turnQuotes'),
       icon: <ReceiptIcon />,
       isToggle: true,
       isSelected: false,
-      checked: storeSettings?.quatesON ?? true,
+      checked: storeSettings?.quotesON ?? true,
       onChange: () => {
-        toggleQuates(!storeSettings?.quatesON);
+        toggleQuotes(!storeSettings?.quotesON);
       }
     },
     {

@@ -11,7 +11,7 @@ export interface Business {
   paymentInformation?: string;
   logo?: Uint8Array | null;
   invoiceCount: number;
-  quatesCount: number;
+  quotesCount: number;
   createdAt: string;
   updatedAt: string;
 }

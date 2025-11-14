@@ -49,11 +49,11 @@ export const pageSlice = createSlice({
         isDarkMode: action.payload
       };
     },
-    setQuates: (state, action: PayloadAction<boolean>) => {
+    setQuotes: (state, action: PayloadAction<boolean>) => {
       if (!state.settings) return;
       state.settings = {
         ...state.settings,
-        quatesON: action.payload
+        quotesON: action.payload
       };
     },
     setReports: (state, action: PayloadAction<boolean>) => {
@@ -123,7 +123,7 @@ export const {
   removeToast,
   setSettings,
   setMode,
-  setQuates,
+  setQuotes,
   setReports,
   setCardOverviews,
   setCustomInvoiseSettings,

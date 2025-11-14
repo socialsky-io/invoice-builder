@@ -1,7 +1,7 @@
 {
   "menuItems": {
     "invoices": "Invoices",
-    "quates": "Quates",
+    "quotes": "Quotes",
     "items": "Items",
     "clients": "Clients",
     "reports": "Reports",
@@ -24,7 +24,7 @@
       "support": "Support",
       "privacyPolicy": "Privacy policy",
       "about": "About",
-      "turnQuates": "Quates",
+      "turnQuotes": "Quotes",
       "turnReports": "Reports",
       "turnCardOverviews": "Card overviews",
       "tutorial": "Tutorial"
@@ -39,9 +39,9 @@
       "support": "Report bugs or suggest improvements via GitHub.",
       "privacyPolicy": "Feel free to go through our privacy policy.",
       "about": "Learn more about this app, its features.",
-      "turnQuates": "Enable or disable quote creation feature",
+      "turnQuotes": "Enable or disable quote creation feature",
       "turnReports": "Enable or disable reporting feature",
-      "turnCardOverviews": "Show summary cards with totals and key metrics on quates/invoices layouts",
+      "turnCardOverviews": "Show summary cards with totals and key metrics on quotes/invoices layouts",
       "tutorial": "Checkout guide on how to use application"
     }
   },
@@ -106,6 +106,10 @@
     "search": "Search...",
     "sortBy": "Sort by",
     "name": "Name",
-    "lastUpdate": "Last updated"
+    "lastUpdate": "Last updated",
+    "invoice": "Invoice",
+    "invoices": "Invoices",
+    "quote": "Quote",
+    "quotes": "Quotes"
   }
 }

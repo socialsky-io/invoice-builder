@@ -33,7 +33,7 @@ const init = async () => {
       shouldIncludeYear INTEGER NOT NULL DEFAULT 1 CHECK (shouldIncludeYear IN (0,1)),
       shouldIncludeMonth INTEGER NOT NULL DEFAULT 1 CHECK (shouldIncludeMonth IN (0,1)),
       shouldIncludeBusinessName INTEGER NOT NULL DEFAULT 1 CHECK (shouldIncludeBusinessName IN (0,1)),
-      quatesON INTEGER NOT NULL DEFAULT 1 CHECK (quatesON IN (0,1)),
+      quotesON INTEGER NOT NULL DEFAULT 1 CHECK (quotesON IN (0,1)),
       reportsON INTEGER NOT NULL DEFAULT 1 CHECK (reportsON IN (0,1)),
       overviewCardsON INTEGER NOT NULL DEFAULT 1 CHECK (overviewCardsON IN (0,1)),
       createdAt DATETIME NOT NULL DEFAULT (datetime('now','localtime')),
@@ -74,7 +74,7 @@ const init = async () => {
   await runAsync(
     db,
     `
-    CREATE TABLE IF NOT EXISTS quates (
+    CREATE TABLE IF NOT EXISTS quotes (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       businessId INTEGER NOT NULL,
       FOREIGN KEY (businessId) REFERENCES businesses(id) ON DELETE CASCADE

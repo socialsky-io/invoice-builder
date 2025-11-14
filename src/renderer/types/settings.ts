@@ -13,7 +13,7 @@ export interface Settings {
   shouldIncludeYear: boolean;
   shouldIncludeMonth: boolean;
   shouldIncludeBusinessName: boolean;
-  quatesON: boolean;
+  quotesON: boolean;
   reportsON: boolean;
   overviewCardsON: boolean;
   createdAt: string;
@@ -30,7 +30,7 @@ export interface SettingsUpdate {
   shouldIncludeYear?: boolean;
   shouldIncludeMonth?: boolean;
   shouldIncludeBusinessName?: boolean;
-  quatesON?: boolean;
+  quotesON?: boolean;
   reportsON?: boolean;
   overviewCardsON?: boolean;
 }

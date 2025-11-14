@@ -1,1 +1,4 @@
-export type CustomOption<T> = { label: string; value: T };
+export type CustomOption<T extends string | number | symbol> = {
+  label: string;
+  value: T;
+};

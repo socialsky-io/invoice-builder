@@ -31,7 +31,7 @@ export const fromUint8Array = (data?: Uint8Array | null, type = 'image/jpeg'): s
 import { SortType } from '../enums/sortType';
 import type { CRBusinessFromData } from '../types/business';
 
-export const filterAndSortArray = <T extends Record<string, any>>(
+export const filterAndSortArray = <T>(
   data: T[],
   searchValue: string,
   searchField: keyof T,
