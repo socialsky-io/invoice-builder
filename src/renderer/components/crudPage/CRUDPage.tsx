@@ -1,4 +1,5 @@
 import AddIcon from '@mui/icons-material/Add';
+import SearchOffIcon from '@mui/icons-material/SearchOff';
 import { Box, Button, Fab, Grid, Tooltip, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -184,8 +185,8 @@ export const CRUDPage = <T extends { id?: number }, TAdd, TUpdate extends { id?:
   }
 
   const leftColumn = (
-    <Grid size={{ xs: 12, md: 4 }} component="div" sx={{ position: 'relative' }}>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+    <Grid size={{ xs: 12, md: 4 }} component="div" sx={{ position: 'relative', height: '100%' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, height: '100%' }}>
         <Box display="flex" alignItems="center" gap={1}>
           <Typography
             variant="h5"
@@ -207,6 +208,13 @@ export const CRUDPage = <T extends { id?: number }, TAdd, TUpdate extends { id?:
           activeSortBy={sortBy}
           onChange={onFilterSortChange}
         />
+
+        {filteredItems.length <= 0 && (
+          <NoItem
+            text={searchValue !== '' ? t('common.noData') : t('common.noDataYet')}
+            icon={<SearchOffIcon color="action" fontSize="large" />}
+          />
+        )}
 
         {filteredItems.map(item => renderListItem(item, onEdit, onDelete))}
       </Box>

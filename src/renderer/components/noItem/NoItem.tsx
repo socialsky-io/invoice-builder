@@ -5,9 +5,10 @@ import type { FC } from 'react';
 interface Props {
   text: string;
   node?: React.ReactNode;
+  icon?: React.ReactNode;
 }
 
-export const NoItem: FC<Props> = ({ text, node }) => {
+export const NoItem: FC<Props> = ({ text, node, icon = <GridView color="action" fontSize="large" /> }) => {
   return (
     <Box
       sx={{
@@ -19,7 +20,7 @@ export const NoItem: FC<Props> = ({ text, node }) => {
         gap: 2
       }}
     >
-      <GridView color="action" fontSize="large" />
+      {icon}
       <Typography variant="h5">{text}</Typography>
       {node}
     </Box>

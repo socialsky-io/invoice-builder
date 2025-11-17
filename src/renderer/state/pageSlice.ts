@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import type { AmountFormat } from '../enums/amountFormat';
 import type { DateFormat } from '../enums/dateFormat';
 import type { Language } from '../enums/language';
+import type { Business } from '../types/business';
 import type { PageState } from '../types/pageState';
 import type { Settings } from '../types/settings';
 import type { ToastProps } from '../types/toastProps';
@@ -11,7 +12,8 @@ import type { RootState } from './configureStore';
 const initialState: PageState = {
   isLoading: false,
   toasts: [],
-  settings: undefined
+  settings: undefined,
+  businesses: []
 };
 
 export const pageSlice = createSlice({
@@ -41,6 +43,9 @@ export const pageSlice = createSlice({
     },
     setSettings: (state, action: PayloadAction<Settings>) => {
       state.settings = action.payload;
+    },
+    setBusinesses: (state, action: PayloadAction<Business[]>) => {
+      state.businesses = action.payload;
     },
     setMode: (state, action: PayloadAction<boolean>) => {
       if (!state.settings) return;
@@ -113,6 +118,7 @@ export const selectState = (state: RootState) => state.pageSlice;
 export const selectIsLoading = createSelector(selectState, state => state.isLoading);
 export const selectToasts = createSelector(selectState, state => state.toasts);
 export const selectSettings = createSelector(selectState, state => state.settings);
+export const selectBusinesses = createSelector(selectState, state => state.businesses);
 
 export const {
   enableLoading,
@@ -127,7 +133,8 @@ export const {
   setReports,
   setCardOverviews,
   setCustomInvoiseSettings,
-  setLanguageDate
+  setLanguageDate,
+  setBusinesses
 } = pageSlice.actions;
 
 export const pageReducer = pageSlice.reducer;

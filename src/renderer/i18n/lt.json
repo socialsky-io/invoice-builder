@@ -109,6 +109,8 @@
     "invoice": "Sąskaita",
     "invoices": "Sąskaitos",
     "quote": "Pasiūlymas",
-    "quotes": "Pasiūlymai"
+    "quotes": "Pasiūlymai",
+    "noData": "Duomenų pagal paieškos kriterijus nėra",
+    "noDataYet": "Duomenų dar nėra. Pradėkite juos pridėti..."
   }
 }
