@@ -10,6 +10,7 @@ import {
   Paper,
   Tooltip,
   Typography,
+  useMediaQuery,
   useTheme
 } from '@mui/material';
 import { type FC } from 'react';
@@ -28,93 +29,161 @@ export const List: FC<Props> = ({ item, onEdit, onDelete }) => {
   const theme = useTheme();
   const { t } = useTranslation();
   const storeSettings = useAppSelector(selectSettings);
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
     <Paper
       elevation={2}
       sx={{
         borderRadius: 1,
-        overflow: 'hidden',
         bgcolor: theme.palette.background.paper,
         color: theme.palette.text.primary,
-        transition: 'all 0.2s ease-in-out'
+        transition: 'all 0.2s ease-in-out',
+        minWidth: '250px'
       }}
     >
-      <ListItemButton onClick={() => onEdit(item)} sx={{ p: 2 }}>
-        <ListItemIcon sx={{ minWidth: 40 }}>
-          <Box
-            sx={{
-              width: 32,
-              height: 32,
-              borderRadius: '50%',
-              bgcolor:
-                theme.palette.mode === Themes.dark ? theme.palette.secondary.dark : theme.palette.secondary.light,
-              color: theme.palette.text.primary,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontWeight: 600,
-              fontSize: 14
+      <ListItemButton
+        onClick={() => onEdit(item)}
+        sx={{
+          pt: 2,
+          pb: 2,
+          pl: 2,
+          pr: 2,
+          width: '100%',
+          borderRadius: 1,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'start',
+          flexDirection: 'column'
+        }}
+      >
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'start',
+            alignItems: 'center',
+            width: '100%'
+          }}
+        >
+          <ListItemIcon sx={{ minWidth: 40 }}>
+            <Box
+              sx={{
+                width: 32,
+                height: 32,
+                borderRadius: '50%',
+                bgcolor:
+                  theme.palette.mode === Themes.dark ? theme.palette.secondary.dark : theme.palette.secondary.light,
+                color: theme.palette.text.primary,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 600,
+                fontSize: 14
+              }}
+            >
+              {item.shortName}
+            </Box>
+          </ListItemIcon>
+
+          <ListItemText
+            primary={
+              <>
+                <Typography
+                  component="div"
+                  variant="body1"
+                  sx={{ fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis' }}
+                >
+                  {item.name}
+                </Typography>
+              </>
+            }
+            disableTypography
+            secondary={
+              <>
+                {item.email && (
+                  <Typography
+                    component="div"
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis' }}
+                  >
+                    {item.email}
+                  </Typography>
+                )}
+                {item.phone && (
+                  <Typography
+                    component="div"
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis' }}
+                  >
+                    {item.phone}
+                  </Typography>
+                )}
+              </>
+            }
+            slotProps={{
+              primary: { sx: { fontWeight: 600 } }
             }}
-          >
-            {item.shortName}
+          />
+
+          <Box sx={{ flexGrow: 1 }} />
+
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, ml: 2 }}>
+            {!isMobile && (
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'end', whiteSpace: 'nowrap' }}>
+                <Typography variant="body2" sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {item.invoiceCount} {item.invoiceCount > 1 ? t('common.invoices') : t('common.invoice')}
+                </Typography>
+                {storeSettings?.quotesON && (
+                  <Typography variant="body2" sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {item.quotesCount} {item.quotesCount > 1 ? t('common.quotes') : t('common.quote')}
+                  </Typography>
+                )}
+              </Box>
+            )}
+
+            <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
+
+            <Box sx={{ display: 'flex', gap: 0.5 }}>
+              <Tooltip title={t('ariaLabel.edit')}>
+                <IconButton size="small" color="primary" onClick={() => onEdit(item)}>
+                  <EditIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title={t('ariaLabel.delete')}>
+                <IconButton
+                  size="small"
+                  color="error"
+                  onClick={e => {
+                    e.stopPropagation();
+                    onDelete(item.id);
+                  }}
+                >
+                  <DeleteIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </Box>
           </Box>
-        </ListItemIcon>
-
-        <ListItemText
-          primary={item.name}
-          disableTypography
-          secondary={
-            <>
-              {item.email && (
-                <Typography component="div" variant="body2" color="text.secondary">
-                  {item.email}
-                </Typography>
-              )}
-              {item.phone && (
-                <Typography component="div" variant="body2" color="text.secondary">
-                  {item.phone}
-                </Typography>
-              )}
-            </>
-          }
-          slotProps={{ primary: { sx: { fontWeight: 600 } } }}
-        />
-
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, ml: 2, height: '100%' }}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'end' }}>
-            <Typography variant="body2">
+        </Box>
+        {isMobile && (
+          <Box sx={{ display: 'flex', flexDirection: 'row', gap: 0.5, whiteSpace: 'nowrap' }}>
+            <Typography variant="body2" sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {item.invoiceCount} {item.invoiceCount > 1 ? t('common.invoices') : t('common.invoice')}
             </Typography>
             {storeSettings?.quotesON && (
-              <Typography variant="body2">
-                {item.quotesCount} {item.quotesCount > 1 ? t('common.quotes') : t('common.quote')}
-              </Typography>
+              <>
+                <Typography variant="body2" sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {t('common.and')}
+                </Typography>
+                <Typography variant="body2" sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {item.quotesCount} {item.quotesCount > 1 ? t('common.quotes') : t('common.quote')}
+                </Typography>
+              </>
             )}
           </Box>
-
-          <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
-
-          <Box sx={{ display: 'flex', gap: 0.5 }}>
-            <Tooltip title={t('ariaLabel.edit')}>
-              <IconButton size="small" color="primary" onClick={() => onEdit(item)}>
-                <EditIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title={t('ariaLabel.delete')}>
-              <IconButton
-                size="small"
-                color="error"
-                onClick={e => {
-                  e.stopPropagation();
-                  onDelete(item.id);
-                }}
-              >
-                <DeleteIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </Box>
-        </Box>
+        )}
       </ListItemButton>
     </Paper>
   );

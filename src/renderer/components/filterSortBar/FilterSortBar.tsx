@@ -71,19 +71,3 @@ export const FilterSortBar = <T extends string | number | symbol>({
     </>
   );
 };
-
-// <IconButton
-//   color={activeSort === SortType.ASC ? 'primary' : 'default'}
-//   title={t('common.ascending')}
-//   onClick={() => onSortChange(SortType.ASC)}
-// >
-//   <ArrowUpwardIcon />
-// </IconButton>
-
-// <IconButton
-//   color={activeSort === SortType.DESC ? 'primary' : 'default'}
-//   title={t('common.descending')}
-//   onClick={() => onSortChange(SortType.DESC)}
-// >
-//   <ArrowDownwardIcon />
-// </IconButton>

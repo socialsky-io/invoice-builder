@@ -36,8 +36,8 @@ const init = async () => {
       quotesON INTEGER NOT NULL DEFAULT 1 CHECK (quotesON IN (0,1)),
       reportsON INTEGER NOT NULL DEFAULT 1 CHECK (reportsON IN (0,1)),
       overviewCardsON INTEGER NOT NULL DEFAULT 1 CHECK (overviewCardsON IN (0,1)),
-      createdAt DATETIME NOT NULL DEFAULT (datetime('now','localtime')),
-      updatedAt DATETIME NOT NULL DEFAULT (datetime('now','localtime'))
+      createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
+      updatedAt DATETIME NOT NULL DEFAULT (datetime('now'))
     )
   `
   );
@@ -56,8 +56,8 @@ const init = async () => {
       additional TEXT,
       paymentInformation TEXT,
       logo BLOB,
-      createdAt DATETIME NOT NULL DEFAULT (datetime('now','localtime')),
-      updatedAt DATETIME NOT NULL DEFAULT (datetime('now','localtime'))
+      createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
+      updatedAt DATETIME NOT NULL DEFAULT (datetime('now'))
     );
   `
   );
@@ -67,6 +67,8 @@ const init = async () => {
     CREATE TABLE IF NOT EXISTS invoices (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       businessId INTEGER NOT NULL,
+      createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
+      updatedAt DATETIME NOT NULL DEFAULT (datetime('now')),
       FOREIGN KEY (businessId) REFERENCES businesses(id) ON DELETE CASCADE
     )
   `
@@ -77,6 +79,8 @@ const init = async () => {
     CREATE TABLE IF NOT EXISTS quotes (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       businessId INTEGER NOT NULL,
+      createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
+      updatedAt DATETIME NOT NULL DEFAULT (datetime('now')),
       FOREIGN KEY (businessId) REFERENCES businesses(id) ON DELETE CASCADE
     )
   `
@@ -89,7 +93,7 @@ const initDatabase = async () => {
   try {
     db = new sqlite3.Database(dbPath, err => {
       if (err) {
-        console.error('Failed to open database:', err.message);
+        throw new Error(`Failed to open database: ${err.message}`);
       } else {
         console.log('Database opened successfully.');
       }

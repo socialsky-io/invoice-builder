@@ -3,21 +3,26 @@ import SearchOffIcon from '@mui/icons-material/SearchOff';
 import { Box, Button, Fab, Grid, Tooltip, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
+import { FilterType } from '../../enums/filterType';
 import { SortType } from '../../enums/sortType';
 import { exportExcel, filterAndSortArray, importExcel } from '../../state/functions';
 import type { CustomOption } from '../../types/customOption';
 import type { Rows } from '../../types/excel';
+import type { Filter } from '../../types/filter';
 import { Content } from '../content/Content';
+import { BottomFilterSheet } from '../filters/Filters';
 import { FilterSortBar } from '../filterSortBar/FilterSortBar';
 import ImportExportButton from '../importExportButton/ImportExportButton';
 import { NoItem } from '../noItem/NoItem';
 import { PageAppBar } from '../pageAppBar/PageAppBar';
 import { SearchInput } from '../searchInput/SearchInput';
 
-interface Props<T extends { id?: number }, TAdd, TUpdate extends { id?: number }> {
+interface Props<T, TAdd, TUpdate> {
   title: string;
-  useRetrieve: () => { items: T[]; execute: () => void };
-  useAdd: (args: { item?: TAdd; immediate?: boolean; onDone?: () => void }) => { execute: () => void };
+  useRetrieve: (args: { filter?: FilterType }) => { items: T[]; execute: () => void };
+  useAdd: (args: { item?: TAdd; immediate?: boolean; onDone?: () => void }) => {
+    execute: () => void;
+  };
   useAddBatch: (args: { item?: TAdd[]; immediate?: boolean; onDone?: () => void }) => { execute: () => void };
   useUpdate: (args: { item?: TUpdate; immediate?: boolean; onDone?: () => void }) => { execute: () => void };
   useDelete: (args: { id: number; immediate?: boolean; onDone?: () => void }) => { execute: () => void };
@@ -36,11 +41,10 @@ interface Props<T extends { id?: number }, TAdd, TUpdate extends { id?: number }
   excelFileName: string;
   excelFormat: 'xlsx' | 'xls';
   excelTemplateData: Rows;
+  filters: Filter[];
 }
 
-export const CRUDPage = <T extends { id?: number }, TAdd, TUpdate extends { id?: number }>(
-  props: Props<T, TAdd, TUpdate>
-) => {
+export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
   const { t } = useTranslation();
   const {
     title,
@@ -60,11 +64,15 @@ export const CRUDPage = <T extends { id?: number }, TAdd, TUpdate extends { id?:
     leftTitle,
     validateAndNormalize,
     sortOptions,
-    form
+    form,
+    filters
   } = props;
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
-  const { items, execute: reload } = useRetrieve();
+  const [selectedFilter, setSelectedFilter] = useState<Filter | undefined>(filters.find(item => item.initial));
+  const { items, execute: reload } = useRetrieve({
+    filter: selectedFilter?.value
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<T | undefined>(undefined);
   const [searchValue, setSearchValue] = useState('');
@@ -125,7 +133,7 @@ export const CRUDPage = <T extends { id?: number }, TAdd, TUpdate extends { id?:
   }, [isDesktop]);
 
   const isUpdate = (item: TAdd | TUpdate): item is TUpdate => {
-    return (item as TUpdate).id !== undefined;
+    return typeof item === 'object' && item !== null && 'id' in item && typeof item.id !== 'undefined';
   };
 
   const onAdd = () => {
@@ -169,7 +177,7 @@ export const CRUDPage = <T extends { id?: number }, TAdd, TUpdate extends { id?:
   }, []);
 
   const onExportToExcel = useCallback(() => {
-    exportExcel(excelColumns, items, `${excelFileName}.${excelFormat}`);
+    exportExcel(excelColumns, items as Rows, `${excelFileName}.${excelFormat}`);
   }, [excelColumns, items, excelFileName, excelFormat]);
 
   const onImportExcel = useCallback(async (file: File) => {
@@ -180,6 +188,10 @@ export const CRUDPage = <T extends { id?: number }, TAdd, TUpdate extends { id?:
   const onDownloadTemplate = useCallback(async () => {
     exportExcel(excelColumns, excelTemplateData, `${excelFileName}_template.${excelFormat}`);
   }, [excelColumns, excelTemplateData, excelFileName, excelFormat]);
+
+  const onFilter = useCallback((filter: Filter) => {
+    setSelectedFilter(filter);
+  }, []);
 
   useEffect(() => {
     if (deleteID !== -1) deleteItem();
@@ -207,7 +219,7 @@ export const CRUDPage = <T extends { id?: number }, TAdd, TUpdate extends { id?:
     <PageAppBar
       title={title}
       isOpen={isModalOpen}
-      isModal={typeof selectedItem?.id === 'undefined'}
+      isModal={typeof selectedItem === 'undefined'}
       handleClose={handleCloseModal}
       handleSave={handleSave}
       renderForm={({ onChange }) =>
@@ -221,7 +233,7 @@ export const CRUDPage = <T extends { id?: number }, TAdd, TUpdate extends { id?:
   );
 
   let rightColumn: ReactNode;
-  if (typeof selectedItem?.id === 'undefined') {
+  if (typeof selectedItem === 'undefined') {
     rightColumn = <NoItem text={noItemText} node={noItemButton} />;
   } else {
     rightColumn = crBusiness;
@@ -229,7 +241,7 @@ export const CRUDPage = <T extends { id?: number }, TAdd, TUpdate extends { id?:
 
   const leftColumn = (
     <Grid size={{ xs: 12, md: 4 }} component="div" sx={{ position: 'relative', height: '100%' }}>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, height: '100%' }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, height: '100%', overflow: 'auto' }}>
         <Box display="flex" alignItems="center" gap={1}>
           <Typography
             variant="h5"
@@ -251,21 +263,31 @@ export const CRUDPage = <T extends { id?: number }, TAdd, TUpdate extends { id?:
 
         <SearchInput value={searchValue} onChange={onSearchChanged} />
 
-        <FilterSortBar<keyof T>
-          sortByOptions={sortOptions}
-          activeSort={sortType}
-          activeSortBy={sortBy}
-          onChange={onFilterSortChange}
-        />
+        <Box
+          sx={{ display: 'flex', flexDirection: 'row', gap: 3, alignItems: 'center', justifyContent: 'space-between' }}
+        >
+          <BottomFilterSheet filters={filters} selectedFilter={selectedFilter} onFilter={onFilter} />
+
+          <FilterSortBar<keyof T>
+            sortByOptions={sortOptions}
+            activeSort={sortType}
+            activeSortBy={sortBy}
+            onChange={onFilterSortChange}
+          />
+        </Box>
 
         {filteredItems.length <= 0 && (
           <NoItem
-            text={searchValue !== '' ? t('common.noData') : t('common.noDataYet')}
+            text={
+              searchValue !== '' || typeof selectedFilter !== 'undefined' ? t('common.noData') : t('common.noDataYet')
+            }
             icon={<SearchOffIcon color="action" fontSize="large" />}
           />
         )}
 
         {filteredItems.map(item => renderListItem(item, onEdit, onDelete))}
+
+        <Box sx={{ pb: 2 }} />
       </Box>
       <Tooltip title={t('ariaLabel.add')}>
         <Fab

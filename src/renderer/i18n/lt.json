@@ -93,7 +93,8 @@
     "search": "Ieškoti",
     "noSort": "Nerikiuoti",
     "ascending": "Didėjimo tvarka",
-    "descending": "Mažėjimo tvarka"
+    "descending": "Mažėjimo tvarka",
+    "filters": "Filtrai"
   },
   "error": {
     "fileTooLarge": "Failas yra per didelis. Maksimalus leidžiamas dydis yra {{maxSizeMB}}MB."
@@ -114,6 +115,8 @@
     "noDataYet": "Duomenų dar nėra. Pradėkite juos pridėti...",
     "import": "Importuoti",
     "export": "Eksportuoti",
-    "downloadTemplate": "Atsisiųsti šabloną"
+    "downloadTemplate": "Atsisiųsti šabloną",
+    "and": "ir",
+    "selectFilterType": "Pasirinkite filtro tipą"
   }
 }

@@ -94,7 +94,8 @@
     "search": "Search",
     "noSort": "No sort",
     "ascending": "Ascending",
-    "descending": "Descending"
+    "descending": "Descending",
+    "filters": "Filters"
   },
   "error": {
     "fileTooLarge": "File is too large. Maximum allowed size is {{maxSizeMB}}MB."
@@ -112,10 +113,12 @@
     "quote": "Quote",
     "quotes": "Quotes",
     "noData": "No data based on search criteria",
-    "noDataYet": "No data yea. Start adding...",
+    "noDataYet": "No data yet. Start adding...",
     "importExport": "Import / Export",
     "import": "Import",
     "export": "Export",
-    "downloadTemplate": "Download template"
+    "downloadTemplate": "Download template",
+    "and": "and",
+    "selectFilterType": "Select filter type"
   }
 }

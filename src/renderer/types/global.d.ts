@@ -1,3 +1,4 @@
+import type { FilterType } from '../enums/filterType';
 import type { Settings, SettingsUpdate } from '../types/settings';
 import type { Business, BusinessAdd, BusinessUpdate } from './business';
 
@@ -6,7 +7,7 @@ declare global {
     electronAPI: {
       ping: () => void;
       getAllSettings: () => Promise<Settings>;
-      getAllBusinesses: () => Promise<Business[]>;
+      getAllBusinesses: (filter?: FilterType) => Promise<Business[]>;
       updateSettings: (data: SettingsUpdate) => Promise<{ success: boolean; message?: string }>;
       updateBusiness: (data: BusinessUpdate) => Promise<{ success: boolean; message?: string }>;
       deleteBusiness: (id: number) => Promise<{ success: boolean; message?: string }>;

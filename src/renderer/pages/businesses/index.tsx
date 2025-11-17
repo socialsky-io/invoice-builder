@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { CRUDPage } from '../../components/crudPage/CRUDPage';
+import { FilterType } from '../../enums/filterType';
 import { useBusinessAdd } from '../../hooks/business/useBusinessAdd';
 import { useBusinessAddBatch } from '../../hooks/business/useBusinessAddBatch';
 import { useBusinessDelete } from '../../hooks/business/useBusinessDelete';
@@ -8,6 +9,7 @@ import { useBusinessUpdate } from '../../hooks/business/useBusinessUpdate';
 import { dataUrlToUint8Array, isCRBusinessFromData, toUint8Array } from '../../state/functions';
 import type { Business, BusinessAdd, BusinessUpdate } from '../../types/business';
 import type { Rows } from '../../types/excel';
+import type { Filter } from '../../types/filter';
 import { Form } from './Form';
 import { List } from './List';
 
@@ -52,16 +54,46 @@ export const Businesses = () => {
       additional: 'BI'
     }
   ];
+  const filters: Filter[] = [
+    { label: 'All Businesses', description: undefined, value: FilterType.all, initial: true },
+    {
+      label: 'Businesses who have invoices',
+      description: 'Businesses which has at least one invoice',
+      value: FilterType.atleastOneInvoice
+    },
+
+    {
+      label: 'Businesses who do not have invoices',
+      description: 'Businesses with no invoices',
+      value: FilterType.noInvoices
+    },
+    {
+      label: 'Inactive businesses (30)',
+      description: 'No invoices in the last 30',
+      value: FilterType.noInvoices30
+    },
+    {
+      label: 'Inactive businesses (60)',
+      description: 'No invoices in the last 60',
+      value: FilterType.noInvoices60
+    },
+    {
+      label: 'Inactive businesses (90)',
+      description: 'No invoices in the last 90',
+      value: FilterType.noInvoices90
+    }
+  ];
 
   return (
     <CRUDPage
       title={t('menuItems.businesses')}
+      filters={filters}
       excelColumns={excelColumns}
       excelFileName={excelFileName}
       excelFormat={'xlsx'}
       excelTemplateData={excelTemplateData}
-      useRetrieve={() => {
-        const { businesses, execute } = useBusinessesRetrieve({});
+      useRetrieve={({ filter }) => {
+        const { businesses, execute } = useBusinessesRetrieve({ filter: filter });
         return { items: businesses, execute };
       }}
       useAdd={({ item, immediate, onDone }) => useBusinessAdd({ business: item as BusinessAdd, immediate, onDone })}

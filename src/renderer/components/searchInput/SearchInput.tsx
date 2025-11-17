@@ -22,7 +22,8 @@ export const SearchInput: React.FC<SearchInputProps> = ({ value, onChange }) => 
         alignItems: 'center',
         p: '2px 4px',
         bgcolor: theme.palette.background.paper,
-        color: theme.palette.text.primary
+        color: theme.palette.text.primary,
+        minHeight: 50
       }}
     >
       <IconButton type="submit" sx={{ p: '10px' }} aria-label={t('ariaLabel.search')}>

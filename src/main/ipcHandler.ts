@@ -94,21 +94,52 @@ const initIpcHandler = (db: Database, path: string) => {
     };
   });
 
-  ipcMain.handle('get-all-businesses', async () => {
-    const sql = `
-      SELECT 
-        b.*, 
-        COUNT(DISTINCT i.id) AS invoiceCount,
-        COUNT(DISTINCT e.id) AS quotesCount
-      FROM businesses b
-      LEFT JOIN invoices i ON i.businessId = b.id
-      LEFT JOIN quotes e ON e.businessId = b.id
-      GROUP BY b.id
-    `;
-    const rows = await getAllRows(db, sql);
+  ipcMain.handle(
+    'get-all-businesses',
+    async (
+      _event,
+      data: 'All' | 'AtleastOneInvoice' | 'NoInvoices' | 'NoInvoices30' | 'NoInvoices60' | 'NoInvoices90'
+    ) => {
+      let whereClause = '';
+      switch (data) {
+        case 'NoInvoices30':
+          whereClause = `HAVING MAX(i.updatedAt) IS NULL OR MAX(i.updatedAt) < datetime('now', '-30 days')`;
+          break;
+        case 'NoInvoices60':
+          whereClause = `HAVING MAX(i.updatedAt) IS NULL OR MAX(i.updatedAt) < datetime('now', '-60 days')`;
+          break;
+        case 'NoInvoices90':
+          whereClause = `HAVING MAX(i.updatedAt) IS NULL OR MAX(i.updatedAt) < datetime('now', '-90 days')`;
+          break;
+        case 'NoInvoices':
+          whereClause = `HAVING COUNT(i.id) = 0`;
+          break;
+        case 'AtleastOneInvoice':
+          whereClause = `HAVING COUNT(i.id) > 0`;
+          break;
+        case 'All':
+        default:
+          whereClause = '';
+          break;
+      }
 
-    return rows;
-  });
+      const sql = `
+        SELECT 
+          b.*,
+          COUNT(DISTINCT i.id) AS invoiceCount,
+          COUNT(DISTINCT q.id) AS quotesCount
+        FROM businesses b
+        LEFT JOIN invoices i ON i.businessId = b.id
+        LEFT JOIN quotes q ON q.businessId = b.id
+        GROUP BY b.id
+        ${whereClause}
+      `;
+
+      const rows = await getAllRows(db, sql);
+
+      return rows;
+    }
+  );
 
   ipcMain.handle('delete-business', async (_event, id: number) => {
     await runDb(db, 'DELETE FROM businesses WHERE id = ?;', [id]);
