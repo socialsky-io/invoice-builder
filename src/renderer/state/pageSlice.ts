@@ -3,10 +3,10 @@ import { v4 as uuidv4 } from 'uuid';
 import type { AmountFormat } from '../enums/amountFormat';
 import type { DateFormat } from '../enums/dateFormat';
 import type { Language } from '../enums/language';
+import type { PageState } from '../types/pageState';
 import type { Settings } from '../types/settings';
 import type { ToastProps } from '../types/toastProps';
 import type { RootState } from './configureStore';
-import type { PageState } from './pageState';
 
 const initialState: PageState = {
   isLoading: false,

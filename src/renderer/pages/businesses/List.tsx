@@ -12,7 +12,7 @@ import {
   Typography,
   useTheme
 } from '@mui/material';
-import { type FC, memo } from 'react';
+import { type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Themes } from '../../enums/themes';
 import { useAppSelector } from '../../state/configureStore';
@@ -24,14 +24,13 @@ interface Props {
   onEdit: (item: Business) => void;
   onDelete: (id: number) => void;
 }
-export const List: FC<Props> = memo(({ item, onEdit, onDelete }) => {
+export const List: FC<Props> = ({ item, onEdit, onDelete }) => {
   const theme = useTheme();
   const { t } = useTranslation();
   const storeSettings = useAppSelector(selectSettings);
 
   return (
     <Paper
-      key={item.id}
       elevation={2}
       sx={{
         borderRadius: 1,
@@ -119,4 +118,4 @@ export const List: FC<Props> = memo(({ item, onEdit, onDelete }) => {
       </ListItemButton>
     </Paper>
   );
-});
+};

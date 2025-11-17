@@ -110,7 +110,7 @@ export const CRUDPage = <T extends { id?: number }, TAdd, TUpdate extends { id?:
   };
 
   const handleSave = async (data: unknown) => {
-    const normalized = validateAndNormalize(data);
+    const normalized = await validateAndNormalize(data);
     if (!normalized) return;
 
     if (isUpdate(normalized)) {

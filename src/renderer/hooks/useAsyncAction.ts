@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useAppDispatch } from '../state/configureStore';
 import { addToast, disableLoadingCursor, enableLoadingCursor } from '../state/pageSlice';
 import { useAsync } from './useAsync';
@@ -14,6 +14,11 @@ export const useAsyncAction = <T>(
   { showLoader = true, immediate = true, onDone }: UseAsyncActionOptions<T> = {}
 ) => {
   const dispatch = useAppDispatch();
+  const onDoneRef = useRef(onDone);
+
+  useEffect(() => {
+    onDoneRef.current = onDone;
+  }, [onDone]);
 
   const handleLoadingChange = useCallback(
     (isLoading: boolean) => {
@@ -39,9 +44,9 @@ export const useAsyncAction = <T>(
 
   useEffect(() => {
     if (!loading && data !== null) {
-      onDone?.(data);
+      onDoneRef.current?.(data);
     }
-  }, [loading, data, onDone]);
+  }, [loading, data]);
 
   return { data, loading, execute };
 };
