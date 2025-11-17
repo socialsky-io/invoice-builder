@@ -1,6 +1,6 @@
 import AddIcon from '@mui/icons-material/Add';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
-import { Box, Button, Fab, Grid, Tooltip, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { Box, Button, Fab, Grid, Pagination, Stack, Tooltip, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FilterType } from '../../enums/filterType';
@@ -42,6 +42,7 @@ interface Props<T, TAdd, TUpdate> {
   excelFormat: 'xlsx' | 'xls';
   excelTemplateData: Rows;
   filters: Filter[];
+  itemsPerPage?: number;
 }
 
 export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
@@ -65,6 +66,7 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
     validateAndNormalize,
     sortOptions,
     form,
+    itemsPerPage = 20,
     filters
   } = props;
   const theme = useTheme();
@@ -73,6 +75,7 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
   const { items, execute: reload } = useRetrieve({
     filter: selectedFilter?.value
   });
+  const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<T | undefined>(undefined);
   const [searchValue, setSearchValue] = useState('');
@@ -124,8 +127,24 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
   });
 
   const filteredItems = useMemo(() => {
-    return filterAndSortArray(items, searchValue, searchField, sortBy.value, sortType);
+    return filterAndSortArray({
+      data: items,
+      searchValue,
+      searchField,
+      sortField: sortBy.value,
+      sortType
+    });
   }, [items, searchValue, searchField, sortBy, sortType]);
+
+  const totalPages = useMemo(() => {
+    const pages = Math.ceil(filteredItems.length / itemsPerPage);
+    return pages > 0 ? pages : 1;
+  }, [filteredItems.length, itemsPerPage]);
+
+  const paginatedItems = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredItems.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredItems, currentPage, itemsPerPage]);
 
   const handleCloseModal = useCallback(() => {
     setIsModalOpen(false);
@@ -193,6 +212,10 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
     setSelectedFilter(filter);
   }, []);
 
+  const onPageChange = useCallback((_event: React.ChangeEvent<unknown>, value: number) => {
+    setCurrentPage(value);
+  }, []);
+
   useEffect(() => {
     if (deleteID !== -1) deleteItem();
   }, [deleteID]);
@@ -208,6 +231,19 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
   useEffect(() => {
     if (changedItem !== undefined) updateItem();
   }, [changedItem]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchValue, sortBy, sortType, selectedFilter]);
+
+  useEffect(() => {
+    setCurrentPage(prev => {
+      if (prev > totalPages) {
+        return totalPages;
+      }
+      return prev;
+    });
+  }, [totalPages]);
 
   const noItemButton = (
     <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={onAdd}>
@@ -285,7 +321,23 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
           />
         )}
 
-        {filteredItems.map(item => renderListItem(item, onEdit, onDelete))}
+        {paginatedItems.map(item => renderListItem(item, onEdit, onDelete))}
+
+        <Box sx={{ flexGrow: 1 }} />
+
+        {filteredItems.length > itemsPerPage && (
+          <Stack spacing={2} alignItems="center">
+            <Pagination
+              count={totalPages}
+              page={currentPage}
+              onChange={onPageChange}
+              color="primary"
+              shape="rounded"
+              variant="outlined"
+              size="small"
+            />
+          </Stack>
+        )}
 
         <Box sx={{ pb: 2 }} />
       </Box>

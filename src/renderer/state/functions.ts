@@ -34,13 +34,15 @@ export const fromUint8Array = (data?: Uint8Array | null, type = 'image/jpeg'): s
   return URL.createObjectURL(blob);
 };
 
-export const filterAndSortArray = <T>(
-  data: T[],
-  searchValue: string,
-  searchField: keyof T,
-  sortField?: keyof T,
-  sortType: SortType = SortType.DEFAULT
-): T[] => {
+export const filterAndSortArray = <T>(params: {
+  data: T[];
+  searchValue: string;
+  searchField: keyof T;
+  sortField?: keyof T;
+  sortType: SortType;
+}): T[] => {
+  let { data, searchValue, searchField, sortField, sortType = SortType.DEFAULT } = params;
+
   let result = data;
   if (searchValue) {
     const lowerSearch = searchValue.toLowerCase();
