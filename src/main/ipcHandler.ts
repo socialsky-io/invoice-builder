@@ -20,6 +20,19 @@ interface Business {
   paymentInformation?: string;
 }
 
+interface Client {
+  id?: number;
+  email?: string;
+  phone?: string;
+  name: string;
+  shortName: string;
+  address?: string;
+  additional?: string;
+  code?: string;
+}
+
+type EntityWithId = { id?: number };
+
 const prepareUpdate = (data: UpdateData, id?: number) => {
   const fields: string[] = [];
   const params: (string | number | null)[] = [];
@@ -44,40 +57,90 @@ const prepareUpdate = (data: UpdateData, id?: number) => {
   return { fields, params };
 };
 
-const initIpcHandler = (db: Database, path: string) => {
-  if (!db) throw new Error('Database not initialized');
-  if (!path) throw new Error('Database path not set');
+const getAllEntities =
+  <T extends Record<string, unknown>>(db: Database, table: string, keyFieldName: string) =>
+  async (filter: 'All' | 'AtleastOneInvoice' | 'NoInvoices' | 'NoInvoices30' | 'NoInvoices60' | 'NoInvoices90') => {
+    let whereClause = '';
+    switch (filter) {
+      case 'NoInvoices30':
+        whereClause = `HAVING MAX(i.updatedAt) IS NULL OR MAX(i.updatedAt) < datetime('now', '-30 days')`;
+        break;
+      case 'NoInvoices60':
+        whereClause = `HAVING MAX(i.updatedAt) IS NULL OR MAX(i.updatedAt) < datetime('now', '-60 days')`;
+        break;
+      case 'NoInvoices90':
+        whereClause = `HAVING MAX(i.updatedAt) IS NULL OR MAX(i.updatedAt) < datetime('now', '-90 days')`;
+        break;
+      case 'NoInvoices':
+        whereClause = `HAVING COUNT(i.id) = 0`;
+        break;
+      case 'AtleastOneInvoice':
+        whereClause = `HAVING COUNT(i.id) > 0`;
+        break;
+    }
 
-  const handleBusiness = async (data: Business, isUpdate = false) => {
-    const fields = [
-      'name',
-      'shortName',
-      'address',
-      'role',
-      'email',
-      'phone',
-      'website',
-      'additional',
-      'paymentInformation',
-      'logo'
-    ] as const satisfies readonly (keyof Business)[];
+    const sql = `
+    SELECT 
+      t.*,
+      COUNT(DISTINCT i.id) AS invoiceCount,
+      COUNT(DISTINCT q.id) AS quotesCount
+    FROM ${table} t
+    LEFT JOIN invoices i ON i.${keyFieldName} = t.id
+    LEFT JOIN quotes q ON q.${keyFieldName} = t.id
+    GROUP BY t.id
+    ${whereClause}
+  `;
 
-    const params = fields.map(key => (data[key] as string | number | null) ?? null);
+    return getAllRows<T & { invoiceCount: number; quotesCount: number }>(db, sql);
+  };
+
+const handleEntity =
+  <T extends EntityWithId>(db: Database, table: string, fields: readonly (keyof T)[]) =>
+  async (data: T, isUpdate = false) => {
+    const params = fields.map(key => (data[key] ?? null) as string | number | null);
 
     if (isUpdate) {
-      const setClause = fields.map(f => `${f} = ?`).join(', ') + `, updatedAt = datetime('now','localtime')`;
+      const setClause = fields.map(f => `${String(f)} = ?`).join(', ') + `, updatedAt = datetime('now','localtime')`;
 
-      await runDb(db, `UPDATE businesses SET ${setClause} WHERE id = ?`, [...params, data.id ?? -1]);
+      await runDb(db, `UPDATE ${table} SET ${setClause} WHERE id = ?`, [...params, data.id ?? -1]);
     } else {
       await runDb(
         db,
-        `INSERT INTO businesses (${fields.join(',')}) VALUES (${fields.map(() => '?').join(',')})`,
+        `INSERT INTO ${table} (${fields.map(f => String(f)).join(',')}) VALUES (${fields.map(() => '?').join(',')})`,
         params
       );
     }
 
     return { success: true };
   };
+
+const businessFields: (keyof Business)[] = [
+  'name',
+  'shortName',
+  'address',
+  'role',
+  'email',
+  'phone',
+  'website',
+  'additional',
+  'paymentInformation',
+  'logo'
+];
+
+const clientFields: (keyof Client)[] = ['name', 'shortName', 'address', 'email', 'phone', 'code', 'additional'];
+
+const initIpcHandler = (db: Database, path: string) => {
+  if (!db) throw new Error('Database not initialized');
+  if (!path) throw new Error('Database path not set');
+
+  const handleBusiness = handleEntity<Business>(db, 'businesses', businessFields);
+  const handleClient = handleEntity<Client>(db, 'clients', clientFields);
+  const getAllBusinesses = getAllEntities(db, 'businesses', 'businessId');
+  const getAllClients = getAllEntities(db, 'clients', 'cliendId');
+
+  ipcMain.handle('open-url', async (_event, url: string) => {
+    await shell.openExternal(url);
+  });
 
   ipcMain.handle('get-all-settings', async () => {
     const row = await getFirstRow(db, 'SELECT * FROM settings LIMIT 1');
@@ -93,75 +156,6 @@ const initIpcHandler = (db: Database, path: string) => {
       overviewCardsON: row.overviewCardsON === 1
     };
   });
-
-  ipcMain.handle(
-    'get-all-businesses',
-    async (
-      _event,
-      data: 'All' | 'AtleastOneInvoice' | 'NoInvoices' | 'NoInvoices30' | 'NoInvoices60' | 'NoInvoices90'
-    ) => {
-      let whereClause = '';
-      switch (data) {
-        case 'NoInvoices30':
-          whereClause = `HAVING MAX(i.updatedAt) IS NULL OR MAX(i.updatedAt) < datetime('now', '-30 days')`;
-          break;
-        case 'NoInvoices60':
-          whereClause = `HAVING MAX(i.updatedAt) IS NULL OR MAX(i.updatedAt) < datetime('now', '-60 days')`;
-          break;
-        case 'NoInvoices90':
-          whereClause = `HAVING MAX(i.updatedAt) IS NULL OR MAX(i.updatedAt) < datetime('now', '-90 days')`;
-          break;
-        case 'NoInvoices':
-          whereClause = `HAVING COUNT(i.id) = 0`;
-          break;
-        case 'AtleastOneInvoice':
-          whereClause = `HAVING COUNT(i.id) > 0`;
-          break;
-        case 'All':
-        default:
-          whereClause = '';
-          break;
-      }
-
-      const sql = `
-        SELECT 
-          b.*,
-          COUNT(DISTINCT i.id) AS invoiceCount,
-          COUNT(DISTINCT q.id) AS quotesCount
-        FROM businesses b
-        LEFT JOIN invoices i ON i.businessId = b.id
-        LEFT JOIN quotes q ON q.businessId = b.id
-        GROUP BY b.id
-        ${whereClause}
-      `;
-
-      const rows = await getAllRows(db, sql);
-
-      return rows;
-    }
-  );
-
-  ipcMain.handle('delete-business', async (_event, id: number) => {
-    await runDb(db, 'DELETE FROM businesses WHERE id = ?;', [id]);
-
-    return { success: true };
-  });
-
-  ipcMain.handle('batch-add-business', async (_event, data: Business[]) => {
-    let finalResult = { success: true };
-    for (const row of data) {
-      let result = await handleBusiness(row);
-      if (!result.success) {
-        finalResult = result;
-        break;
-      }
-    }
-    return finalResult;
-  });
-
-  ipcMain.handle('add-business', async (_event, data: Business) => await handleBusiness(data));
-
-  ipcMain.handle('update-business', async (_event, data: Business) => await handleBusiness(data, true));
 
   ipcMain.handle(
     'update-settings',
@@ -185,15 +179,41 @@ const initIpcHandler = (db: Database, path: string) => {
       const { fields, params } = prepareUpdate(data);
       if (!fields.length) return { success: true };
 
-      fields.push(`updatedAt = datetime('now','localtime')`);
+      fields.push(`updatedAt = datetime('now')`);
       await runDb(db, `UPDATE settings SET ${fields.join(', ')} WHERE id = (SELECT id FROM settings LIMIT 1)`, params);
       return { success: true };
     }
   );
 
-  ipcMain.handle('open-url', async (_event, url: string) => {
-    await shell.openExternal(url);
+  ipcMain.handle('add-client', async (_event, data: Client) => handleClient(data));
+  ipcMain.handle('update-client', async (_event, data: Client) => handleClient(data, true));
+  ipcMain.handle('delete-client', async (_event, id: number) => {
+    await runDb(db, 'DELETE FROM clients WHERE id = ?;', [id]);
+    return { success: true };
   });
+  ipcMain.handle('batch-add-client', async (_event, data: Client[]) => {
+    for (const row of data) {
+      const result = await handleClient(row);
+      if (!result.success) return result;
+    }
+    return { success: true };
+  });
+  ipcMain.handle('get-all-clients', async (_event, filter) => getAllClients(filter));
+
+  ipcMain.handle('add-business', async (_event, data: Business) => handleBusiness(data));
+  ipcMain.handle('update-business', async (_event, data: Business) => handleBusiness(data, true));
+  ipcMain.handle('delete-business', async (_event, id: number) => {
+    await runDb(db, 'DELETE FROM businesses WHERE id = ?;', [id]);
+    return { success: true };
+  });
+  ipcMain.handle('batch-add-business', async (_event, data: Business[]) => {
+    for (const row of data) {
+      const result = await handleBusiness(row);
+      if (!result.success) return result;
+    }
+    return { success: true };
+  });
+  ipcMain.handle('get-all-businesses', async (_event, filter) => getAllBusinesses(filter));
 };
 
 export { initIpcHandler };

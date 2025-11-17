@@ -3,11 +3,11 @@ import { useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UploadImage } from '../../components/uploadImage/UploadImage';
 import { fromUint8Array } from '../../state/functions';
-import type { Business, CRBusinessFromData } from '../../types/business';
+import type { Business, BusinessFromData } from '../../types/business';
 
 interface Props {
   business?: Business;
-  handleChange?: (data: { business: CRBusinessFromData; isFormValid: boolean }) => void;
+  handleChange?: (data: { business: BusinessFromData; isFormValid: boolean }) => void;
 }
 export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
   const { t } = useTranslation();
@@ -16,7 +16,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
   const [errorName, setErrorName] = useState(false);
   const [errorShortName, setErrorShortName] = useState(false);
 
-  const [form, setForm] = useState<CRBusinessFromData>({
+  const [form, setForm] = useState<BusinessFromData>({
     id: business?.id,
     logo: undefined,
     email: business?.email ?? '',
@@ -31,7 +31,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
   });
   const [logoUrl, setLogoUrl] = useState<string | undefined>(fromUint8Array(business?.logo) ?? undefined);
 
-  const updateField = (key: keyof CRBusinessFromData, value: string | Blob | undefined) => {
+  const updateField = (key: keyof BusinessFromData, value: string | Blob | undefined) => {
     setForm(prev => ({ ...prev, [key]: value }));
   };
 
@@ -197,8 +197,10 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
       </Grid>
       <Grid size={{ xs: 12, md: 4 }}>
         <TextField
+          multiline
           label={t('businessesCRModal.additional')}
           fullWidth
+          rows={5}
           value={form.additional}
           onChange={handleInputChange('additional')}
         />

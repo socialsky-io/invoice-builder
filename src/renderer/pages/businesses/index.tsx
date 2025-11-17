@@ -6,7 +6,7 @@ import { useBusinessAddBatch } from '../../hooks/business/useBusinessAddBatch';
 import { useBusinessDelete } from '../../hooks/business/useBusinessDelete';
 import { useBusinessesRetrieve } from '../../hooks/business/useBusinessesRetrieve';
 import { useBusinessUpdate } from '../../hooks/business/useBusinessUpdate';
-import { dataUrlToUint8Array, isCRBusinessFromData, toUint8Array } from '../../state/functions';
+import { dataUrlToUint8Array, isBusinessFromData, toUint8Array } from '../../state/functions';
 import type { Business, BusinessAdd, BusinessUpdate } from '../../types/business';
 import type { Rows } from '../../types/excel';
 import type { Filter } from '../../types/filter';
@@ -55,31 +55,30 @@ export const Businesses = () => {
     }
   ];
   const filters: Filter[] = [
-    { label: 'All Businesses', description: undefined, value: FilterType.all, initial: true },
+    { label: t('businesses.allText'), description: undefined, value: FilterType.all, initial: true },
     {
-      label: 'Businesses who have invoices',
-      description: 'Businesses which has at least one invoice',
+      label: t('businesses.atleastOneInvoiceText'),
+      description: t('businesses.atleastOneInvoiceDesc'),
       value: FilterType.atleastOneInvoice
     },
-
     {
-      label: 'Businesses who do not have invoices',
-      description: 'Businesses with no invoices',
+      label: t('businesses.noInvoicesText'),
+      description: t('businesses.noInvoicesDesc'),
       value: FilterType.noInvoices
     },
     {
-      label: 'Inactive businesses (30)',
-      description: 'No invoices in the last 30',
+      label: t('businesses.noInvoices30Text'),
+      description: t('businesses.noInvoices30Desc'),
       value: FilterType.noInvoices30
     },
     {
-      label: 'Inactive businesses (60)',
-      description: 'No invoices in the last 60',
+      label: t('businesses.noInvoices60Text'),
+      description: t('businesses.noInvoices60Desc'),
       value: FilterType.noInvoices60
     },
     {
-      label: 'Inactive businesses (90)',
-      description: 'No invoices in the last 90',
+      label: t('businesses.noInvoices90Text'),
+      description: t('businesses.noInvoices90Desc'),
       value: FilterType.noInvoices90
     }
   ];
@@ -113,7 +112,7 @@ export const Businesses = () => {
       noItemText={t('businesses.noItem')}
       leftTitle={t('menuItems.businesses')}
       validateAndNormalize={async data => {
-        if (!isCRBusinessFromData(data)) return;
+        if (!isBusinessFromData(data)) return;
 
         let logo = undefined;
         if (data.logo) logo = await toUint8Array(data.logo);
@@ -132,7 +131,7 @@ export const Businesses = () => {
         <Form
           business={item}
           handleChange={d => {
-            if (isCRBusinessFromData(d.business)) {
+            if (isBusinessFromData(d.business)) {
               onChange({
                 changedData: d.business,
                 isFormValid: d.isFormValid

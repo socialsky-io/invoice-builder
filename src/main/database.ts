@@ -64,12 +64,31 @@ const init = async () => {
   await runAsync(
     db,
     `
+    CREATE TABLE IF NOT EXISTS clients (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      shortName TEXT NOT NULL CHECK (length(shortName) = 2),
+      address TEXT,
+      email TEXT,
+      phone TEXT,
+      code TEXT,
+      additional TEXT,
+      createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
+      updatedAt DATETIME NOT NULL DEFAULT (datetime('now'))
+    );
+  `
+  );
+  await runAsync(
+    db,
+    `
     CREATE TABLE IF NOT EXISTS invoices (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       businessId INTEGER NOT NULL,
+      cliendId INTEGER NOT NULL,
       createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
       updatedAt DATETIME NOT NULL DEFAULT (datetime('now')),
-      FOREIGN KEY (businessId) REFERENCES businesses(id) ON DELETE CASCADE
+      FOREIGN KEY (businessId) REFERENCES businesses(id) ON DELETE CASCADE,
+      FOREIGN KEY (cliendId) REFERENCES clients(id) ON DELETE CASCADE
     )
   `
   );
@@ -79,9 +98,11 @@ const init = async () => {
     CREATE TABLE IF NOT EXISTS quotes (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       businessId INTEGER NOT NULL,
+      cliendId INTEGER NOT NULL,
       createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
       updatedAt DATETIME NOT NULL DEFAULT (datetime('now')),
-      FOREIGN KEY (businessId) REFERENCES businesses(id) ON DELETE CASCADE
+      FOREIGN KEY (businessId) REFERENCES businesses(id) ON DELETE CASCADE,
+      FOREIGN KEY (cliendId) REFERENCES clients(id) ON DELETE CASCADE
     )
   `
   );

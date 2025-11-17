@@ -1,48 +1,39 @@
-export interface Business {
+export interface Client {
   id: number;
   name: string;
   shortName: string;
   address?: string;
-  role?: string;
   email?: string;
   phone?: string;
-  website?: string;
+  code?: string;
   additional?: string;
-  paymentInformation?: string;
-  logo?: Uint8Array | null;
   invoiceCount: number;
   quotesCount: number;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface BusinessAdd {
+export interface ClientAdd {
   name: string;
   shortName: string;
   address?: string;
-  role?: string;
   email?: string;
   phone?: string;
-  website?: string;
+  code?: string;
   additional?: string;
-  paymentInformation?: string;
-  logo?: Uint8Array | null;
 }
 
-export interface BusinessUpdate extends BusinessAdd {
+export interface ClientUpdate extends ClientAdd {
   id: number;
 }
 
-export interface BusinessFromData {
+export interface ClientFromData {
   id?: number;
-  logo?: Blob;
   email?: string;
   phone?: string;
   name: string;
   shortName: string;
-  role?: string;
   address?: string;
-  website?: string;
+  code?: string;
   additional?: string;
-  paymentInformation?: string;
 }

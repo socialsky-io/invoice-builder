@@ -1,5 +1,4 @@
 import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
 import {
   Box,
   Divider,
@@ -147,11 +146,6 @@ export const List: FC<Props> = ({ item, onEdit, onDelete }) => {
             <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
 
             <Box sx={{ display: 'flex', gap: 0.5 }}>
-              <Tooltip title={t('ariaLabel.edit')}>
-                <IconButton size="small" color="primary" onClick={() => onEdit(item)}>
-                  <EditIcon fontSize="small" />
-                </IconButton>
-              </Tooltip>
               <Tooltip title={t('ariaLabel.delete')}>
                 <IconButton
                   size="small"

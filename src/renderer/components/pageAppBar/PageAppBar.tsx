@@ -1,4 +1,4 @@
-import { Box, Dialog, DialogContent } from '@mui/material';
+import { Box, Dialog, DialogContent, useMediaQuery, useTheme } from '@mui/material';
 import { useCallback, useState, type FC, type ReactNode } from 'react';
 import { ModalAppBar } from '../modalAppBar/ModalAppBar';
 import { PageHeader } from '../pageHeader/PageHeader';
@@ -21,8 +21,10 @@ export const PageAppBar: FC<Props> = ({
   handleSave = () => {},
   renderForm
 }) => {
+  const theme = useTheme();
   const [isFormValid, setIsFormValid] = useState(false);
   const [formData, setFormData] = useState<unknown | undefined>(undefined);
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleChange = useCallback((properties: { changedData: unknown; isFormValid: boolean }) => {
     setIsFormValid(properties.isFormValid);
@@ -56,7 +58,7 @@ export const PageAppBar: FC<Props> = ({
   return (
     <>
       {isModal && (
-        <Dialog fullScreen open={isOpen} onClose={handleClose}>
+        <Dialog fullScreen={isMobile} open={isOpen} onClose={handleClose}>
           {appBar}
           <DialogContent>{formContent}</DialogContent>
         </Dialog>

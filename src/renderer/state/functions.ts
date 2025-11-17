@@ -1,7 +1,7 @@
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 import { SortType } from '../enums/sortType';
-import type { CRBusinessFromData } from '../types/business';
+import type { BusinessFromData } from '../types/business';
 import type { Columns, Row, Rows, RowValue } from '../types/excel';
 
 export const validateOnlyNumbersLetters = (value: string) => {
@@ -71,7 +71,7 @@ export const filterAndSortArray = <T>(params: {
   return result;
 };
 
-export const isCRBusinessFromData = (data: unknown): data is CRBusinessFromData => {
+export const isBusinessFromData = (data: unknown): data is BusinessFromData => {
   if (typeof data !== 'object' || data === null) return false;
 
   const d = data as Record<string, unknown>;

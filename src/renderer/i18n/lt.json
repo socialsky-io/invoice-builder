@@ -63,7 +63,21 @@
     "invoices": "sąskaitos",
     "quote": "pasiūlymas",
     "quotes": "pasiūlymai",
-    "noItem": "Pasirinkite įmonę, kad peržiūrėtumėte detales."
+    "noItem": "Pasirinkite įmonę, kad peržiūrėtumėte detales.",
+    "add": "Pridėti įmonę",
+    "filter": {
+      "allText": "Visos įmonės",
+      "atleastOneInvoiceText": "Įmonės su bent viena sąskaita",
+      "atleastOneInvoiceDesc": "Įmonės, turinčios bent vieną sąskaitą",
+      "noInvoicesText": "Įmonės be sąskaitų",
+      "noInvoicesDesc": "Įmonės, neturinčios sąskaitų",
+      "noInvoices30Text": "Neaktyvios įmonės (30)",
+      "noInvoices30Desc": "Nėra sąskaitų per pastarąsias 30 dienų",
+      "noInvoices60Text": "Neaktyvios įmonės (60)",
+      "noInvoices60Desc": "Nėra sąskaitų per pastarąsias 60 dienų",
+      "noInvoices90Text": "Neaktyvios įmonės (90)",
+      "noInvoices90Desc": "Nėra sąskaitų per pastarąsias 90 dienų"
+    }
   },
   "businessesCRModal": {
     "title": "Valdykite savo įmonę",
@@ -84,7 +98,6 @@
   "ariaLabel": {
     "menu": "Pagrindinis meniu",
     "back": "Grįžti atgal",
-    "edit": "Redaguoti",
     "delete": "Ištrinti",
     "add": "Pridėti",
     "uploadImage": "Įkelti paveikslėlį",

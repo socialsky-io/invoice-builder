@@ -72,9 +72,6 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
   const [selectedFilter, setSelectedFilter] = useState<Filter | undefined>(filters.find(item => item.initial));
-  const { items, execute: reload } = useRetrieve({
-    filter: selectedFilter?.value
-  });
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<T | undefined>(undefined);
@@ -85,6 +82,10 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
   const [newItem, setNewItem] = useState<TAdd | undefined>(undefined);
   const [newItemsBatch, setNewItemsBatch] = useState<TAdd[] | undefined>(undefined);
   const [changedItem, setChangedItem] = useState<TUpdate | undefined>(undefined);
+
+  const { items, execute: reload } = useRetrieve({
+    filter: selectedFilter?.value
+  });
 
   const { execute: addItem } = useAdd({
     item: newItem,

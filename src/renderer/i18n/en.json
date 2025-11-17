@@ -64,7 +64,20 @@
     "quote": "quote",
     "quotes": "quotes",
     "noItem": "Selected a business to view details.",
-    "add": "Add business"
+    "add": "Add business",
+    "filter": {
+      "allText": "All Businesses",
+      "atleastOneInvoiceText": "Businesses who have invoices",
+      "atleastOneInvoiceDesc": "Businesses which has at least one invoice",
+      "noInvoicesText": "Businesses who do not have invoices",
+      "noInvoicesDesc": "Businesses with no invoices",
+      "noInvoices30Text": "Inactive businesses (30)",
+      "noInvoices30Desc": "No invoices in the last 30",
+      "noInvoices60Text": "Inactive businesses (60)",
+      "noInvoices60Desc": "No invoices in the last 60",
+      "noInvoices90Text": "Inactive businesses (90)",
+      "noInvoices90Desc": "No invoices in the last 90"
+    }
   },
   "businessesCRModal": {
     "title": "Manage your business",
@@ -85,7 +98,6 @@
   "ariaLabel": {
     "menu": "Main menu",
     "back": "Return back",
-    "edit": "Edit",
     "delete": "Delete",
     "add": "Add",
     "uploadImage": "Upload image",
