@@ -112,6 +112,10 @@
     "quote": "Quote",
     "quotes": "Quotes",
     "noData": "No data based on search criteria",
-    "noDataYet": "No data yea. Start adding..."
+    "noDataYet": "No data yea. Start adding...",
+    "importExport": "Import / Export",
+    "import": "Import",
+    "export": "Export",
+    "downloadTemplate": "Download template"
   }
 }

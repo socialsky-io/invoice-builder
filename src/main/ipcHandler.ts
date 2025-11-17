@@ -116,6 +116,18 @@ const initIpcHandler = (db: Database, path: string) => {
     return { success: true };
   });
 
+  ipcMain.handle('batch-add-business', async (_event, data: Business[]) => {
+    let finalResult = { success: true };
+    for (const row of data) {
+      let result = await handleBusiness(row);
+      if (!result.success) {
+        finalResult = result;
+        break;
+      }
+    }
+    return finalResult;
+  });
+
   ipcMain.handle('add-business', async (_event, data: Business) => await handleBusiness(data));
 
   ipcMain.handle('update-business', async (_event, data: Business) => await handleBusiness(data, true));

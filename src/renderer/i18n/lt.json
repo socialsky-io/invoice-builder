@@ -111,6 +111,9 @@
     "quote": "Pasiūlymas",
     "quotes": "Pasiūlymai",
     "noData": "Duomenų pagal paieškos kriterijus nėra",
-    "noDataYet": "Duomenų dar nėra. Pradėkite juos pridėti..."
+    "noDataYet": "Duomenų dar nėra. Pradėkite juos pridėti...",
+    "import": "Importuoti",
+    "export": "Eksportuoti",
+    "downloadTemplate": "Atsisiųsti šabloną"
   }
 }

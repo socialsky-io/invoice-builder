@@ -10,5 +10,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   updateBusiness: (data: BusinessUpdate) => ipcRenderer.invoke('update-business', data),
   deleteBusiness: (id: number) => ipcRenderer.invoke('delete-business', id),
   addBusiness: (data: BusinessAdd) => ipcRenderer.invoke('add-business', data),
+  addBatchBusiness: (data: BusinessAdd[]) => ipcRenderer.invoke('batch-add-business', data),
   openUrl: (url: string) => ipcRenderer.invoke('open-url', url)
 });

@@ -11,6 +11,7 @@ declare global {
       updateBusiness: (data: BusinessUpdate) => Promise<{ success: boolean; message?: string }>;
       deleteBusiness: (id: number) => Promise<{ success: boolean; message?: string }>;
       addBusiness: (data: BusinessAdd) => Promise<{ success: boolean; message?: string }>;
+      addBatchBusiness: (data: BusinessAdd[]) => Promise<{ success: boolean; message?: string }>;
       openUrl: (url: string) => Promise<void>;
     };
   }

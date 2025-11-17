@@ -4,10 +4,12 @@ import { Box, Button, Fab, Grid, Tooltip, Typography, useMediaQuery, useTheme } 
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { SortType } from '../../enums/sortType';
-import { filterAndSortArray } from '../../state/functions';
+import { exportExcel, filterAndSortArray, importExcel } from '../../state/functions';
 import type { CustomOption } from '../../types/customOption';
+import type { Rows } from '../../types/excel';
 import { Content } from '../content/Content';
 import { FilterSortBar } from '../filterSortBar/FilterSortBar';
+import ImportExportButton from '../importExportButton/ImportExportButton';
 import { NoItem } from '../noItem/NoItem';
 import { PageAppBar } from '../pageAppBar/PageAppBar';
 import { SearchInput } from '../searchInput/SearchInput';
@@ -16,6 +18,7 @@ interface Props<T extends { id?: number }, TAdd, TUpdate extends { id?: number }
   title: string;
   useRetrieve: () => { items: T[]; execute: () => void };
   useAdd: (args: { item?: TAdd; immediate?: boolean; onDone?: () => void }) => { execute: () => void };
+  useAddBatch: (args: { item?: TAdd[]; immediate?: boolean; onDone?: () => void }) => { execute: () => void };
   useUpdate: (args: { item?: TUpdate; immediate?: boolean; onDone?: () => void }) => { execute: () => void };
   useDelete: (args: { id: number; immediate?: boolean; onDone?: () => void }) => { execute: () => void };
   searchField: keyof T;
@@ -29,6 +32,10 @@ interface Props<T extends { id?: number }, TAdd, TUpdate extends { id?: number }
   noItemText: string;
   leftTitle: string;
   renderListItem: (item: T, onEdit: (item: T) => void, onDelete: (id: number) => void) => ReactNode;
+  excelColumns: string[];
+  excelFileName: string;
+  excelFormat: 'xlsx' | 'xls';
+  excelTemplateData: Rows;
 }
 
 export const CRUDPage = <T extends { id?: number }, TAdd, TUpdate extends { id?: number }>(
@@ -37,10 +44,15 @@ export const CRUDPage = <T extends { id?: number }, TAdd, TUpdate extends { id?:
   const { t } = useTranslation();
   const {
     title,
+    excelColumns,
+    excelFileName,
+    excelFormat,
+    excelTemplateData,
     searchField,
     noItemButtonText,
     useRetrieve,
     useAdd,
+    useAddBatch,
     useUpdate,
     useDelete,
     renderListItem,
@@ -60,6 +72,7 @@ export const CRUDPage = <T extends { id?: number }, TAdd, TUpdate extends { id?:
   const [sortType, setSortType] = useState<SortType>(SortType.DEFAULT);
   const [deleteID, setDeleteID] = useState<number>(-1);
   const [newItem, setNewItem] = useState<TAdd | undefined>(undefined);
+  const [newItemsBatch, setNewItemsBatch] = useState<TAdd[] | undefined>(undefined);
   const [changedItem, setChangedItem] = useState<TUpdate | undefined>(undefined);
 
   const { execute: addItem } = useAdd({
@@ -72,12 +85,22 @@ export const CRUDPage = <T extends { id?: number }, TAdd, TUpdate extends { id?:
     }
   });
 
+  const { execute: addItemsBatch } = useAddBatch({
+    item: newItemsBatch,
+    immediate: false,
+    onDone: () => {
+      setNewItemsBatch(undefined);
+      setSelectedItem(undefined);
+      reload();
+    }
+  });
+
   const { execute: updateItem } = useUpdate({
     item: changedItem,
     immediate: false,
     onDone: () => {
       setChangedItem(undefined);
-      setSelectedItem(undefined);
+      if (!isDesktop) setSelectedItem(undefined);
       reload();
     }
   });
@@ -98,8 +121,8 @@ export const CRUDPage = <T extends { id?: number }, TAdd, TUpdate extends { id?:
 
   const handleCloseModal = useCallback(() => {
     setIsModalOpen(false);
-    setSelectedItem(undefined);
-  }, []);
+    if (!isDesktop) setSelectedItem(undefined);
+  }, [isDesktop]);
 
   const isUpdate = (item: TAdd | TUpdate): item is TUpdate => {
     return (item as TUpdate).id !== undefined;
@@ -110,17 +133,20 @@ export const CRUDPage = <T extends { id?: number }, TAdd, TUpdate extends { id?:
     setIsModalOpen(true);
   };
 
-  const handleSave = async (data: unknown) => {
-    const normalized = await validateAndNormalize(data);
-    if (!normalized) return;
+  const handleSave = useCallback(
+    async (data: unknown) => {
+      const normalized = await validateAndNormalize(data);
+      if (!normalized) return;
 
-    if (isUpdate(normalized)) {
-      setChangedItem(normalized as TUpdate);
-    } else {
-      setNewItem(normalized as TAdd);
-    }
-    handleCloseModal();
-  };
+      if (isUpdate(normalized)) {
+        setChangedItem(normalized as TUpdate);
+      } else {
+        setNewItem(normalized as TAdd);
+      }
+      handleCloseModal();
+    },
+    [validateAndNormalize, handleCloseModal]
+  );
 
   const onSearchChanged = useCallback(
     (value: string) => {
@@ -129,22 +155,39 @@ export const CRUDPage = <T extends { id?: number }, TAdd, TUpdate extends { id?:
     [searchValue]
   );
 
-  const onFilterSortChange = (data: { sortBy: CustomOption<keyof T>; sort: SortType }) => {
+  const onFilterSortChange = useCallback((data: { sortBy: CustomOption<keyof T>; sort: SortType }) => {
     setSortType(data.sort);
     setSortBy(data.sortBy);
-  };
+  }, []);
 
-  const onEdit = (item: T) => {
+  const onEdit = useCallback((item: T) => {
     setSelectedItem(item);
-  };
+  }, []);
 
-  const onDelete = (id: number) => {
+  const onDelete = useCallback((id: number) => {
     setDeleteID(id);
-  };
+  }, []);
+
+  const onExportToExcel = useCallback(() => {
+    exportExcel(excelColumns, items, `${excelFileName}.${excelFormat}`);
+  }, [excelColumns, items, excelFileName, excelFormat]);
+
+  const onImportExcel = useCallback(async (file: File) => {
+    const result = await importExcel(file);
+    setNewItemsBatch(result.rows as TAdd[]);
+  }, []);
+
+  const onDownloadTemplate = useCallback(async () => {
+    exportExcel(excelColumns, excelTemplateData, `${excelFileName}_template.${excelFormat}`);
+  }, [excelColumns, excelTemplateData, excelFileName, excelFormat]);
 
   useEffect(() => {
     if (deleteID !== -1) deleteItem();
   }, [deleteID]);
+
+  useEffect(() => {
+    if (newItemsBatch !== undefined) addItemsBatch();
+  }, [newItemsBatch]);
 
   useEffect(() => {
     if (newItem !== undefined) addItem();
@@ -198,6 +241,12 @@ export const CRUDPage = <T extends { id?: number }, TAdd, TUpdate extends { id?:
           >
             {leftTitle}
           </Typography>
+          <Box sx={{ flexGrow: 1 }} />
+          <ImportExportButton
+            onExport={onExportToExcel}
+            onImport={onImportExcel}
+            onDownloadTemplate={onDownloadTemplate}
+          />
         </Box>
 
         <SearchInput value={searchValue} onChange={onSearchChanged} />

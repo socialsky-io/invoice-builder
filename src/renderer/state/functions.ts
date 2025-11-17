@@ -1,3 +1,9 @@
+import ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
+import { SortType } from '../enums/sortType';
+import type { CRBusinessFromData } from '../types/business';
+import type { Columns, Row, Rows, RowValue } from '../types/excel';
+
 export const validateOnlyNumbersLetters = (value: string) => {
   const isValid = /^[a-zA-Z0-9]*$/.test(value);
   return isValid;
@@ -27,9 +33,6 @@ export const fromUint8Array = (data?: Uint8Array | null, type = 'image/jpeg'): s
   const blob = new Blob([buffer], { type });
   return URL.createObjectURL(blob);
 };
-
-import { SortType } from '../enums/sortType';
-import type { CRBusinessFromData } from '../types/business';
 
 export const filterAndSortArray = <T>(
   data: T[],
@@ -85,4 +88,94 @@ export const isCRBusinessFromData = (data: unknown): data is CRBusinessFromData 
   if (d.paymentInformation !== undefined && typeof d.paymentInformation !== 'string') return false;
 
   return true;
+};
+
+export const dataUrlToUint8Array = (dataUrl: string): Uint8Array => {
+  const base64Index = dataUrl.indexOf(',') + 1;
+  const base64 = dataUrl.slice(base64Index);
+  const binaryString = atob(base64);
+  const len = binaryString.length;
+  const bytes = new Uint8Array(len);
+  for (let i = 0; i < len; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+  return bytes;
+};
+
+export const isDataUrl = (value: unknown): value is string => {
+  return typeof value === 'string' && /^data:[\w/+.-]+;base64,[A-Za-z0-9+/=]+$/.test(value);
+};
+
+export const uint8ArrayToDataUrl = (data: Uint8Array, mimeType = 'image/jpeg'): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const buffer = new Uint8Array(data).buffer;
+    const blob = new Blob([buffer], { type: mimeType });
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      if (typeof reader.result === 'string') resolve(reader.result);
+      else reject(new Error('Failed to convert'));
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+};
+
+export const exportExcel = async (columns: Columns, rows: Rows, fileName = 'export.xlsx') => {
+  const workbook = new ExcelJS.Workbook();
+  const sheet = workbook.addWorksheet('Sheet1');
+
+  sheet.addRow(columns);
+
+  for (const row of rows) {
+    const processedRow: RowValue[] = [];
+
+    for (const col of columns) {
+      const value = row[col];
+
+      if (value instanceof Uint8Array) {
+        processedRow.push(await uint8ArrayToDataUrl(value));
+      } else {
+        processedRow.push(value);
+      }
+    }
+
+    sheet.addRow(processedRow);
+  }
+
+  const buffer = await workbook.xlsx.writeBuffer();
+  saveAs(new Blob([buffer]), fileName);
+};
+
+export const importExcel = async (file: File): Promise<{ columns: Columns; rows: Rows }> => {
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.load(await file.arrayBuffer());
+
+  const sheet = workbook.worksheets[0];
+  if (!sheet) throw new Error('No worksheet found');
+
+  const headerRow = sheet.getRow(1);
+  if (!headerRow || !headerRow.hasValues) {
+    throw new Error('Header row is empty or missing');
+  }
+
+  const headerValuesArray = Array.isArray(headerRow.values) ? headerRow.values : Object.values(headerRow.values);
+  const columns: Columns = headerValuesArray.slice(1).map(v => String(v ?? ''));
+
+  const rows: Rows = [];
+
+  sheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
+    if (rowNumber === 1) return;
+    const rowData: Row = {} as Row;
+    columns.forEach((col, i) => {
+      const cellValue = row.getCell(i + 1).value as RowValue;
+      if (isDataUrl(cellValue)) {
+        rowData[col] = dataUrlToUint8Array(cellValue);
+      } else {
+        rowData[col] = cellValue;
+      }
+    });
+    rows.push(rowData);
+  });
+
+  return { columns, rows };
 };

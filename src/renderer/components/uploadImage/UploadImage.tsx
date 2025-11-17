@@ -1,6 +1,6 @@
 import AddIcon from '@mui/icons-material/Add';
 import { Box, IconButton, Tooltip, useTheme } from '@mui/material';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import 'react-image-crop/dist/ReactCrop.css';
 import { useAppDispatch } from '../../state/configureStore';
@@ -42,6 +42,10 @@ export const UploadImage: React.FC<UploadSquareProps> = ({ onUpload, size = 120,
     setImageSrc(url);
     setCropDialogOpen(true);
   };
+
+  useEffect(() => {
+    setCroppedImageUrl(logoUrl);
+  }, [logoUrl]);
 
   return (
     <>
