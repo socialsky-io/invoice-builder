@@ -6,10 +6,10 @@ import type { RequestHook } from '../../types/requestHook';
 import { uint8ArrayToDataUrl } from '../../utils/functions';
 import { useAsyncAction } from '../useAsyncAction';
 
-export const useBusinessesRetrieve = ({ showLoader = true, onDone, filter }: RequestHook) => {
+export const useBusinessesRetrieve = ({ showLoader = true, filter }: RequestHook) => {
   const dispatch = useAppDispatch();
   const asyncFn = useCallback(() => window.electronAPI.getAllBusinesses(filter), [filter]);
-  const { data: businesses, execute } = useAsyncAction<Business[]>(asyncFn, { showLoader, onDone });
+  const { data: businesses, execute } = useAsyncAction<Business[]>(asyncFn, { showLoader });
 
   const prepareBusinesses = async (businesses: Business[]) => {
     const serialized = await Promise.all(

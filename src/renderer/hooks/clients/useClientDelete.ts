@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import type { RequestHook } from '../../types/requestHook';
+import type { Response } from '../../types/response';
 import { useAsyncAction } from '../useAsyncAction';
 
 interface UseClientDeleteParams extends RequestHook {
@@ -8,7 +9,7 @@ interface UseClientDeleteParams extends RequestHook {
 
 export const useClientDelete = ({ id, immediate = true, showLoader = true, onDone }: UseClientDeleteParams) => {
   const asyncFn = useCallback(() => window.electronAPI.deleteClient(id), [id]);
-  const { data, loading, execute } = useAsyncAction<{ success: boolean; message?: string }>(asyncFn, {
+  const { data, loading, execute } = useAsyncAction<Response>(asyncFn, {
     immediate,
     showLoader,
     onDone

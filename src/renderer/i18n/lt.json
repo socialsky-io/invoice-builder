@@ -161,7 +161,12 @@
     "filters": "Filtrai"
   },
   "error": {
-    "fileTooLarge": "Failas yra per didelis. Maksimalus leidžiamas dydis yra {{maxSizeMB}}MB."
+    "fileTooLarge": "Failas yra per didelis. Maksimalus leidžiamas dydis yra {{maxSizeMB}}MB.",
+    "failedNormalizeImportedRows": "Nepavyko apdoroti šių eilučių: {{rowNumber}}. Patikrinkite duomenų formatą.",
+    "unsupportedImage": "Nepalaikomas paveikslėlio tipas",
+    "noWorksheetFound": "Darbalapis nerastas",
+    "headerRowEmpty": "Antraštės eilutė tuščia arba jos trūksta",
+    "importFailed": "Importavimas nepavyko"
   },
   "common": {
     "save": "Išsaugoti",

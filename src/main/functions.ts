@@ -1,6 +1,5 @@
 import sqlite3 from 'sqlite3';
-
-export type SqliteValue = string | number | boolean | null;
+import type { SqliteValue } from './types/sqliteValue';
 
 export const runAsync = (db: sqlite3.Database, sql: string) =>
   new Promise<void>((resolve, reject) => {

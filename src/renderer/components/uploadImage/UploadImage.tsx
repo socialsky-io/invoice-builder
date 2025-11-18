@@ -16,8 +16,8 @@ interface UploadSquareProps {
 export const UploadImage: React.FC<UploadSquareProps> = ({ onUpload, size = 120, maxSizeMB = 5, logoUrl }) => {
   const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
-  const dispatch = useAppDispatch();
   const theme = useTheme();
+  const dispatch = useAppDispatch();
 
   const [imageSrc, setImageSrc] = useState<string | undefined>(undefined);
   const [cropDialogOpen, setCropDialogOpen] = useState(false);
@@ -33,9 +33,8 @@ export const UploadImage: React.FC<UploadSquareProps> = ({ onUpload, size = 120,
 
     const maxSizeBytes = maxSizeMB * 1024 * 1024;
     if (file.size > maxSizeBytes) {
-      dispatch(addToast({ message: t('error.fileTooLarge', { maxSizeMB: maxSizeMB }), severity: 'error' }));
       event.target.value = '';
-      return;
+      dispatch(addToast({ message: t('error.fileTooLarge', { maxSizeMB: maxSizeMB }), severity: 'error' }));
     }
 
     const url = URL.createObjectURL(file);

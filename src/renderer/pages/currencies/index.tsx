@@ -23,13 +23,13 @@ export const CurrenciesPage: FC = () => {
       code: 'USD',
       symbol: '$',
       text: 'United States Dollar',
-      format: '$123'
+      format: '{symbol}{amount}'
     },
     {
       code: 'EUR',
       symbol: '€',
       text: 'Euro',
-      format: '€123'
+      format: '{symbol}{amount}'
     }
   ];
   const filters: Filter[] = [
@@ -69,8 +69,8 @@ export const CurrenciesPage: FC = () => {
       excelFileName={excelFileName}
       excelFormat={'xlsx'}
       excelTemplateData={excelTemplateData}
-      useRetrieve={({ filter }) => {
-        const { currencies, execute } = useCurrenciesRetrieve({ filter: filter });
+      useRetrieve={({ filter, onDone }) => {
+        const { currencies, execute } = useCurrenciesRetrieve({ filter: filter, onDone });
         return { items: currencies, execute };
       }}
       useAdd={({ item, immediate, onDone }) => useCurrencyAdd({ currency: item as CurrencyAdd, immediate, onDone })}
@@ -90,6 +90,7 @@ export const CurrenciesPage: FC = () => {
       noItemText={t('currencies.noItem')}
       leftTitle={t('menuItems.currencies')}
       validateAndNormalize={data => {
+        if (!isCurrencyFromData(data)) return;
         return data;
       }}
       renderListItem={(item, onEdit, onDelete) => (

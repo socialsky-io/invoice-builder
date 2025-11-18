@@ -3,14 +3,21 @@ import { SpinnerOverlay } from '../components/spinner/spinner';
 import { ToastContainer } from '../components/toast/toastContainer';
 import { useSettingsRetrieve } from '../hooks/settings/useSettingsRetrieve';
 import { useAppDispatch, useAppSelector } from '../state/configureStore';
-import { removeToast, selectIsLoading, selectToasts, setSettings } from '../state/pageSlice';
+import { addToast, removeToast, selectIsLoading, selectToasts, setSettings } from '../state/pageSlice';
+import type { Response } from '../types/response';
 import { AppLayout } from './AppLayout';
 
 export const App: FC = () => {
   const isLoading = useAppSelector(selectIsLoading);
   const toasts = useAppSelector(selectToasts);
   const dispatch = useAppDispatch();
-  const { settings } = useSettingsRetrieve({});
+  const { settings } = useSettingsRetrieve({
+    onDone: (data: Response) => {
+      if (!data.success && data.message) {
+        dispatch(addToast({ message: data.message, severity: 'error' }));
+      }
+    }
+  });
 
   const handleClose = useCallback(
     (id: string) => {

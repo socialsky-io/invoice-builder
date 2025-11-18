@@ -4,9 +4,11 @@ import FileUploadIcon from '@mui/icons-material/FileUpload';
 import { Button, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 import React, { useRef, useState, type MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useAppDispatch } from '../../state/configureStore';
+import { addToast } from '../../state/pageSlice';
 
 interface Props {
-  onImport?: (file: File) => void;
+  onImport?: (file: File) => Promise<void> | void;
   onExport?: () => void;
   onDownloadTemplate?: () => void;
 }
@@ -15,6 +17,7 @@ const ImportExportButton: React.FC<Props> = ({ onImport, onExport, onDownloadTem
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -36,10 +39,15 @@ const ImportExportButton: React.FC<Props> = ({ onImport, onExport, onDownloadTem
     fileInputRef.current?.click();
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && onImport) {
-      onImport(file);
+      try {
+        await onImport(file);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : t('error.importFailed');
+        dispatch(addToast({ message: message, severity: 'error' }));
+      }
     }
     event.target.value = '';
   };

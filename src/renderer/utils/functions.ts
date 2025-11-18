@@ -1,5 +1,7 @@
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
+import type { TFunction } from 'i18next';
+import { CurrencyFormat } from '../enums/currencyFormat';
 import { SortType } from '../enums/sortType';
 import type { BusinessFromData } from '../types/business';
 import type { ClientFromData } from '../types/client';
@@ -11,7 +13,10 @@ export const validateOnlyNumbersLetters = (value: string) => {
   return isValid;
 };
 
-export const toUint8Array = async (input: Blob | File | ArrayBuffer | Uint8Array | null) => {
+export const toUint8Array = async (
+  t: TFunction<'translation', undefined>,
+  input: Blob | File | ArrayBuffer | Uint8Array | null
+) => {
   if (!input) return null;
 
   if (input instanceof Uint8Array) return input;
@@ -21,7 +26,7 @@ export const toUint8Array = async (input: Blob | File | ArrayBuffer | Uint8Array
     return new Uint8Array(arrayBuffer);
   }
 
-  throw new Error('Unsupported image type');
+  throw new Error(t('error.unsupportedImage'));
 };
 
 export const fromUint8Array = (data?: Uint8Array | null, type = 'image/jpeg'): string | null => {
@@ -112,14 +117,21 @@ export const isClientFromData = (data: unknown): data is ClientFromData => {
   return true;
 };
 
+const currencyFormatValues = new Set<CurrencyFormat>(Object.values(CurrencyFormat));
+
+const isValidCurrencyFormat = (value: unknown): value is CurrencyFormat => {
+  return typeof value === 'string' && currencyFormatValues.has(value as CurrencyFormat);
+};
+
 export const isCurrencyFromData = (data: unknown): data is CurrencyFromData => {
   if (typeof data !== 'object' || data === null) return false;
 
   const d = data as Record<string, unknown>;
 
+  if (typeof d.code !== 'string') return false;
   if (typeof d.symbol !== 'string') return false;
   if (typeof d.text !== 'string') return false;
-  if (typeof d.format !== 'string') return false;
+  if (!isValidCurrencyFormat(d.format)) return false;
 
   if (d.id !== undefined && typeof d.id !== 'number') return false;
 
@@ -182,16 +194,19 @@ export const exportExcel = async (columns: Columns, rows: Rows, fileName = 'expo
   saveAs(new Blob([buffer]), fileName);
 };
 
-export const importExcel = async (file: File): Promise<{ columns: Columns; rows: Rows }> => {
+export const importExcel = async (
+  t: TFunction<'translation', undefined>,
+  file: File
+): Promise<{ columns: Columns; rows: Rows }> => {
   const workbook = new ExcelJS.Workbook();
   await workbook.xlsx.load(await file.arrayBuffer());
 
   const sheet = workbook.worksheets[0];
-  if (!sheet) throw new Error('No worksheet found');
+  if (!sheet) throw new Error(t('error.noWorksheetFound'));
 
   const headerRow = sheet.getRow(1);
   if (!headerRow || !headerRow.hasValues) {
-    throw new Error('Header row is empty or missing');
+    throw new Error(t('error.headerRowEmpty'));
   }
 
   const headerValuesArray = Array.isArray(headerRow.values) ? headerRow.values : Object.values(headerRow.values);

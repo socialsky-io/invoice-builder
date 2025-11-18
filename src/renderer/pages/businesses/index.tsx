@@ -91,8 +91,8 @@ export const BusinessesPage = () => {
       excelFileName={excelFileName}
       excelFormat={'xlsx'}
       excelTemplateData={excelTemplateData}
-      useRetrieve={({ filter }) => {
-        const { businesses, execute } = useBusinessesRetrieve({ filter: filter });
+      useRetrieve={({ filter, onDone }) => {
+        const { businesses, execute } = useBusinessesRetrieve({ filter: filter, onDone });
         return { items: businesses, execute };
       }}
       useAdd={({ item, immediate, onDone }) => useBusinessAdd({ business: item as BusinessAdd, immediate, onDone })}
@@ -115,7 +115,7 @@ export const BusinessesPage = () => {
         if (!isBusinessFromData(data)) return;
 
         let logo = undefined;
-        if (data.logo) logo = await toUint8Array(data.logo);
+        if (data.logo) logo = await toUint8Array(t, data.logo);
 
         return { ...data, logo };
       }}

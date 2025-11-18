@@ -161,7 +161,12 @@
     "filters": "Filters"
   },
   "error": {
-    "fileTooLarge": "File is too large. Maximum allowed size is {{maxSizeMB}}MB."
+    "fileTooLarge": "File is too large. Maximum allowed size is {{maxSizeMB}}MB.",
+    "failedNormalizeImportedRows": "Failed to process the following rows: {{rowNumber}}. Please check the data format.",
+    "unsupportedImage": "Unsupported image type",
+    "noWorksheetFound": "No worksheet found",
+    "headerRowEmpty": "Header row is empty or missing",
+    "importFailed": "Import failed"
   },
   "common": {
     "save": "Save",

@@ -11,6 +11,7 @@ import { useSettingsUpdate } from '../../hooks/settings/useSettingsUpdate';
 import i18n from '../../i18n';
 import { useAppDispatch, useAppSelector } from '../../state/configureStore';
 import {
+  addToast,
   selectSettings,
   setCardOverviews,
   setCustomInvoiseSettings,
@@ -19,6 +20,7 @@ import {
   setQuotes,
   setReports
 } from '../../state/pageSlice';
+import type { Response } from '../../types/response';
 import { CustomizeInvoice } from './content/CustomizeInvoice';
 import { LanguageFormat } from './content/LanguageFormat';
 import { Menu } from './menu/Menu';
@@ -32,7 +34,15 @@ export const SettingsPage = () => {
   const storeSettings = useAppSelector(selectSettings);
   const hasInitialized = useRef(false);
   const stableSettings = useMemo(() => storeSettings ?? {}, [storeSettings]);
-  const { execute } = useSettingsUpdate({ newSettings: stableSettings ?? {}, immediate: false });
+  const { execute } = useSettingsUpdate({
+    newSettings: stableSettings ?? {},
+    immediate: false,
+    onDone: (data: Response) => {
+      if (!data.success && data.message) {
+        dispatch(addToast({ message: data.message, severity: 'error' }));
+      }
+    }
+  });
 
   const onModeChange = useCallback(
     (isDark: boolean) => {

@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import type { RequestHook } from '../../types/requestHook';
+import type { Response } from '../../types/response';
 import type { SettingsUpdate } from '../../types/settings';
 import { useAsyncAction } from '../useAsyncAction';
 
@@ -13,11 +14,11 @@ export const useSettingsUpdate = ({
   showLoader = true,
   onDone
 }: UseSettingsUpdateParams) => {
-  const asyncFn = useCallback(async (): Promise<{ success: boolean; message?: string }> => {
+  const asyncFn = useCallback(async (): Promise<Response> => {
     return window.electronAPI.updateSettings(newSettings);
   }, [newSettings]);
 
-  const { data, loading, execute } = useAsyncAction<{ success: boolean; message?: string }>(asyncFn, {
+  const { data, loading, execute } = useAsyncAction<Response>(asyncFn, {
     immediate,
     showLoader,
     onDone

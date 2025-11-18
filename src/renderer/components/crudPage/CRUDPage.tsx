@@ -5,9 +5,12 @@ import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react
 import { useTranslation } from 'react-i18next';
 import { FilterType } from '../../enums/filterType';
 import { SortType } from '../../enums/sortType';
+import { useAppDispatch } from '../../state/configureStore';
+import { addToast } from '../../state/pageSlice';
 import type { CustomOption } from '../../types/customOption';
 import type { Rows } from '../../types/excel';
 import type { Filter } from '../../types/filter';
+import type { Response } from '../../types/response';
 import { exportExcel, filterAndSortArray, importExcel } from '../../utils/functions';
 import { Content } from '../content/Content';
 import { BottomFilterSheet } from '../filters/Filters';
@@ -19,13 +22,20 @@ import { SearchInput } from '../searchInput/SearchInput';
 
 interface Props<T, TAdd, TUpdate> {
   title: string;
-  useRetrieve: (args: { filter?: FilterType }) => { items: T[]; execute: () => void };
-  useAdd: (args: { item?: TAdd; immediate?: boolean; onDone?: () => void }) => {
+  useRetrieve: (args: { filter?: FilterType; onDone?: (data: Response) => void }) => {
+    items: T[];
     execute: () => void;
   };
-  useAddBatch: (args: { item?: TAdd[]; immediate?: boolean; onDone?: () => void }) => { execute: () => void };
-  useUpdate: (args: { item?: TUpdate; immediate?: boolean; onDone?: () => void }) => { execute: () => void };
-  useDelete: (args: { id: number; immediate?: boolean; onDone?: () => void }) => { execute: () => void };
+  useAdd: (args: { item?: TAdd; immediate?: boolean; onDone?: (data: Response) => void }) => {
+    execute: () => void;
+  };
+  useAddBatch: (args: { item?: TAdd[]; immediate?: boolean; onDone?: (data: Response) => void }) => {
+    execute: () => void;
+  };
+  useUpdate: (args: { item?: TUpdate; immediate?: boolean; onDone?: (data: Response) => void }) => {
+    execute: () => void;
+  };
+  useDelete: (args: { id: number; immediate?: boolean; onDone?: (data: Response) => void }) => { execute: () => void };
   searchField: keyof T;
   validateAndNormalize: (data: unknown) => TAdd | TUpdate | undefined;
   form: (args: {
@@ -46,6 +56,7 @@ interface Props<T, TAdd, TUpdate> {
 }
 
 export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
+  const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const {
     title,
@@ -84,46 +95,67 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
   const [changedItem, setChangedItem] = useState<TUpdate | undefined>(undefined);
 
   const { items, execute: reload } = useRetrieve({
-    filter: selectedFilter?.value
+    filter: selectedFilter?.value,
+    onDone: (data: Response) => {
+      if (!data.success && data.message) {
+        dispatch(addToast({ message: data.message, severity: 'error' }));
+      }
+    }
   });
 
   const { execute: addItem } = useAdd({
     item: newItem,
     immediate: false,
-    onDone: () => {
+    onDone: (data: Response) => {
       setNewItem(undefined);
       setSelectedItem(undefined);
       reload();
+
+      if (!data.success && data.message) {
+        dispatch(addToast({ message: data.message, severity: 'error' }));
+      }
     }
   });
 
   const { execute: addItemsBatch } = useAddBatch({
     item: newItemsBatch,
     immediate: false,
-    onDone: () => {
+    onDone: (data: Response) => {
       setNewItemsBatch(undefined);
       setSelectedItem(undefined);
       reload();
+
+      if (!data.success && data.message) {
+        dispatch(addToast({ message: data.message, severity: 'error' }));
+      }
     }
   });
 
   const { execute: updateItem } = useUpdate({
     item: changedItem,
     immediate: false,
-    onDone: () => {
+    onDone: (data: Response) => {
       setChangedItem(undefined);
       if (!isDesktop) setSelectedItem(undefined);
       reload();
+
+      if (!data.success && data.message) {
+        dispatch(addToast({ message: data.message, severity: 'error' }));
+      }
     }
   });
 
   const { execute: deleteItem } = useDelete({
     id: deleteID,
     immediate: false,
-    onDone: () => {
+    onDone: (data: Response) => {
       setDeleteID(-1);
       setSelectedItem(undefined);
       reload();
+
+      if (!data.success && data.message) {
+        dispatch(addToast({ message: data.message, severity: 'error' }));
+      }
     }
   });
 
@@ -200,10 +232,38 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
     exportExcel(excelColumns, items as Rows, `${excelFileName}.${excelFormat}`);
   }, [excelColumns, items, excelFileName, excelFormat]);
 
-  const onImportExcel = useCallback(async (file: File) => {
-    const result = await importExcel(file);
-    setNewItemsBatch(result.rows as TAdd[]);
-  }, []);
+  const onImportExcel = useCallback(
+    async (file: File) => {
+      const result = await importExcel(t, file);
+      const normalizedRows: TAdd[] = [];
+      const invalidRowNumbers: number[] = [];
+
+      for (const [index, row] of result.rows.entries()) {
+        try {
+          const normalized = await validateAndNormalize(row);
+          if (normalized && !isUpdate(normalized)) {
+            normalizedRows.push(normalized as TAdd);
+          } else {
+            invalidRowNumbers.push(index + 2);
+          }
+        } catch {
+          invalidRowNumbers.push(index + 2);
+        }
+      }
+
+      if (invalidRowNumbers.length > 0) {
+        dispatch(
+          addToast({
+            message: t('error.failedNormalizeImportedRows', { rowNumber: invalidRowNumbers.join(', ') }),
+            severity: 'error'
+          })
+        );
+      }
+
+      setNewItemsBatch(normalizedRows);
+    },
+    [t, validateAndNormalize]
+  );
 
   const onDownloadTemplate = useCallback(async () => {
     exportExcel(excelColumns, excelTemplateData, `${excelFileName}_template.${excelFormat}`);

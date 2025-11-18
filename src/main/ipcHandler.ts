@@ -1,64 +1,32 @@
 import { ipcMain, shell } from 'electron';
 import type { Database } from 'sqlite3';
-import { getAllRows, getFirstRow, runDb, type SqliteValue } from './functions';
+import { getAllRows, getFirstRow, runDb } from './functions';
+import type { Business } from './types/business';
+import type { Category } from './types/category';
+import type { Client } from './types/client';
+import type { Currency } from './types/currency';
+import type { EntityWithId } from './types/entityWithId';
+import type { Item } from './types/item';
+import type { Unit } from './types/unit';
+import type { UpdateData } from './types/updateData';
 
-interface UpdateData {
-  [key: string]: SqliteValue;
-}
-
-interface Business {
-  id?: number;
-  logo?: Uint8Array;
-  email?: string;
-  phone?: string;
-  name: string;
-  shortName: string;
-  role?: string;
-  address?: string;
-  website?: string;
-  additional?: string;
-  paymentInformation?: string;
-}
-
-interface Client {
-  id?: number;
-  email?: string;
-  phone?: string;
-  name: string;
-  shortName: string;
-  address?: string;
-  additional?: string;
-  code?: string;
-}
-
-interface Item {
-  id?: number;
-  name: string;
-  amount_cents?: number;
-  unitId?: number;
-  categoryId?: number;
-  description?: string;
-}
-
-interface Currency {
-  id?: number;
+interface SqliteError extends Error {
   code: string;
-  symbol: string;
-  text: string;
-  format: string;
 }
 
-interface Unit {
-  id?: number;
-  name: string;
-}
+const isSqliteError = (error: unknown): error is SqliteError => {
+  return error instanceof Error && 'code' in error && typeof (error as any).code === 'string';
+};
 
-interface Category {
-  id?: number;
-  name: string;
-}
-
-type EntityWithId = { id?: number };
+const mapSqliteError = (error: unknown): string => {
+  if (isSqliteError(error)) {
+    if (error.code === 'SQLITE_CONSTRAINT') {
+      return 'Record violates a database constraint.';
+    }
+    return error.message;
+  }
+  return 'Unknown database error';
+};
 
 const prepareUpdate = (data: UpdateData, id?: number) => {
   const fields: string[] = [];
@@ -131,19 +99,23 @@ const handleEntity =
   async (data: T, isUpdate = false) => {
     const params = fields.map(key => (data[key] ?? null) as string | number | null);
 
-    if (isUpdate) {
-      const setClause = fields.map(f => `${String(f)} = ?`).join(', ') + `, updatedAt = datetime('now','localtime')`;
+    try {
+      if (isUpdate) {
+        const setClause = fields.map(f => `${String(f)} = ?`).join(', ') + `, updatedAt = datetime('now','localtime')`;
 
-      await runDb(db, `UPDATE ${table} SET ${setClause} WHERE id = ?`, [...params, data.id ?? -1]);
-    } else {
-      await runDb(
-        db,
-        `INSERT INTO ${table} (${fields.map(f => String(f)).join(',')}) VALUES (${fields.map(() => '?').join(',')})`,
-        params
-      );
+        await runDb(db, `UPDATE ${table} SET ${setClause} WHERE id = ?`, [...params, data.id ?? -1]);
+      } else {
+        await runDb(
+          db,
+          `INSERT INTO ${table} (${fields.map(f => String(f)).join(',')}) VALUES (${fields.map(() => '?').join(',')})`,
+          params
+        );
+      }
+
+      return { success: true };
+    } catch (error) {
+      return { success: false, message: mapSqliteError(error) };
     }
-
-    return { success: true };
   };
 
 const businessFields: (keyof Business)[] = [
@@ -216,20 +188,32 @@ const initIpcHandler = (db: Database, path: string) => {
         overviewCardsON?: boolean;
       }
     ) => {
-      const { fields, params } = prepareUpdate(data);
-      if (!fields.length) return { success: true };
+      try {
+        const { fields, params } = prepareUpdate(data);
+        if (!fields.length) return { success: true };
 
-      fields.push(`updatedAt = datetime('now')`);
-      await runDb(db, `UPDATE settings SET ${fields.join(', ')} WHERE id = (SELECT id FROM settings LIMIT 1)`, params);
-      return { success: true };
+        fields.push(`updatedAt = datetime('now')`);
+        await runDb(
+          db,
+          `UPDATE settings SET ${fields.join(', ')} WHERE id = (SELECT id FROM settings LIMIT 1)`,
+          params
+        );
+        return { success: true };
+      } catch (error) {
+        return { success: false, message: mapSqliteError(error) };
+      }
     }
   );
 
   ipcMain.handle('add-client', async (_event, data: Client) => handleClient(data));
   ipcMain.handle('update-client', async (_event, data: Client) => handleClient(data, true));
   ipcMain.handle('delete-client', async (_event, id: number) => {
-    await runDb(db, 'DELETE FROM clients WHERE id = ?;', [id]);
-    return { success: true };
+    try {
+      await runDb(db, 'DELETE FROM clients WHERE id = ?;', [id]);
+      return { success: true };
+    } catch (error) {
+      return { success: false, message: mapSqliteError(error) };
+    }
   });
   ipcMain.handle('batch-add-client', async (_event, data: Client[]) => {
     for (const row of data) {
@@ -243,8 +227,12 @@ const initIpcHandler = (db: Database, path: string) => {
   ipcMain.handle('add-business', async (_event, data: Business) => handleBusiness(data));
   ipcMain.handle('update-business', async (_event, data: Business) => handleBusiness(data, true));
   ipcMain.handle('delete-business', async (_event, id: number) => {
-    await runDb(db, 'DELETE FROM businesses WHERE id = ?;', [id]);
-    return { success: true };
+    try {
+      await runDb(db, 'DELETE FROM businesses WHERE id = ?;', [id]);
+      return { success: true };
+    } catch (error) {
+      return { success: false, message: mapSqliteError(error) };
+    }
   });
   ipcMain.handle('batch-add-business', async (_event, data: Business[]) => {
     for (const row of data) {
@@ -258,8 +246,12 @@ const initIpcHandler = (db: Database, path: string) => {
   ipcMain.handle('add-item', async (_event, data: Item) => handleItems(data));
   ipcMain.handle('update-item', async (_event, data: Item) => handleItems(data, true));
   ipcMain.handle('delete-item', async (_event, id: number) => {
-    await runDb(db, 'DELETE FROM items WHERE id = ?;', [id]);
-    return { success: true };
+    try {
+      await runDb(db, 'DELETE FROM items WHERE id = ?;', [id]);
+      return { success: true };
+    } catch (error) {
+      return { success: false, message: mapSqliteError(error) };
+    }
   });
   ipcMain.handle('batch-add-item', async (_event, data: Item[]) => {
     for (const row of data) {
@@ -289,8 +281,12 @@ const initIpcHandler = (db: Database, path: string) => {
   ipcMain.handle('add-unit', async (_event, data: Unit) => handleUnits(data));
   ipcMain.handle('update-unit', async (_event, data: Unit) => handleUnits(data, true));
   ipcMain.handle('delete-unit', async (_event, id: number) => {
-    await runDb(db, 'DELETE FROM units WHERE id = ?;', [id]);
-    return { success: true };
+    try {
+      await runDb(db, 'DELETE FROM units WHERE id = ?;', [id]);
+      return { success: true };
+    } catch (error) {
+      return { success: false, message: mapSqliteError(error) };
+    }
   });
   ipcMain.handle('batch-add-unit', async (_event, data: Unit[]) => {
     for (const row of data) {
@@ -323,8 +319,12 @@ const initIpcHandler = (db: Database, path: string) => {
   ipcMain.handle('add-category', async (_event, data: Category) => handleCategories(data));
   ipcMain.handle('update-category', async (_event, data: Category) => handleCategories(data, true));
   ipcMain.handle('delete-category', async (_event, id: number) => {
-    await runDb(db, 'DELETE FROM categories WHERE id = ?;', [id]);
-    return { success: true };
+    try {
+      await runDb(db, 'DELETE FROM categories WHERE id = ?;', [id]);
+      return { success: true };
+    } catch (error) {
+      return { success: false, message: mapSqliteError(error) };
+    }
   });
   ipcMain.handle('batch-add-category', async (_event, data: Category[]) => {
     for (const row of data) {
@@ -357,8 +357,12 @@ const initIpcHandler = (db: Database, path: string) => {
   ipcMain.handle('add-currency', async (_event, data: Currency) => handleCurrencies(data));
   ipcMain.handle('update-currency', async (_event, data: Currency) => handleCurrencies(data, true));
   ipcMain.handle('delete-currency', async (_event, id: number) => {
-    await runDb(db, 'DELETE FROM currencies WHERE id = ?;', [id]);
-    return { success: true };
+    try {
+      await runDb(db, 'DELETE FROM currencies WHERE id = ?;', [id]);
+      return { success: true };
+    } catch (error) {
+      return { success: false, message: mapSqliteError(error) };
+    }
   });
   ipcMain.handle('batch-add-currency', async (_event, data: Currency[]) => {
     for (const row of data) {

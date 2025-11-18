@@ -74,8 +74,8 @@ export const ClientsPage: FC = () => {
       excelFileName={excelFileName}
       excelFormat={'xlsx'}
       excelTemplateData={excelTemplateData}
-      useRetrieve={({ filter }) => {
-        const { clients, execute } = useClientsRetrieve({ filter: filter });
+      useRetrieve={({ filter, onDone }) => {
+        const { clients, execute } = useClientsRetrieve({ filter: filter, onDone });
         return { items: clients, execute };
       }}
       useAdd={({ item, immediate, onDone }) => useClientAdd({ client: item as ClientAdd, immediate, onDone })}

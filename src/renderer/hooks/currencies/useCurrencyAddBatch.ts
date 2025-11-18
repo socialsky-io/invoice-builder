@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import type { CurrencyAdd } from '../../types/currency';
 import type { RequestHook } from '../../types/requestHook';
+import type { Response } from '../../types/response';
 import { useAsyncAction } from '../useAsyncAction';
 
 interface UseCurrencyAddParams extends RequestHook {
@@ -18,7 +19,7 @@ export const useCurrencyAddBatch = ({
     return window.electronAPI.addBatchCurrency(currencies);
   }, [currencies]);
 
-  const { data, loading, execute } = useAsyncAction<{ success: boolean; message?: string }>(asyncFn, {
+  const { data, loading, execute } = useAsyncAction<Response>(asyncFn, {
     immediate,
     showLoader,
     onDone

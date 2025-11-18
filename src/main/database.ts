@@ -13,9 +13,10 @@ const initInitialData = async () => {
 
   if (row) return null;
 
-  if (!row) {
-    db.run(`INSERT OR IGNORE INTO settings DEFAULT VALUES`);
-    db.run(`
+  await runAsync(db, `INSERT OR IGNORE INTO settings DEFAULT VALUES`);
+  await runAsync(
+    db,
+    `
       INSERT OR IGNORE INTO currencies (code, symbol, text, format)
       VALUES
         ('USD', '$', 'United States Dollar', '{symbol}{amount}'),
@@ -28,8 +29,11 @@ const initInitialData = async () => {
         ('CHF', 'CHF', 'Swiss Franc', '{symbol} {amount}'),
         ('CNY', '¥', 'Chinese Yuan', '{symbol}{amount}'),
         ('INR', '₹', 'Indian Rupee', '{symbol}{amount}');
-    `);
-    db.run(`
+    `
+  );
+  await runAsync(
+    db,
+    `
       INSERT OR IGNORE INTO units (name)
       VALUES
         ('pcs'),
@@ -45,14 +49,17 @@ const initInitialData = async () => {
         ('hrs'),
         ('mins'),
         ('secs');
-    `);
-    db.run(`
+    `
+  );
+  await runAsync(
+    db,
+    `
       INSERT OR IGNORE INTO catageries (name)
       VALUES
         ('Goods'),
         ('Services');
-    `);
-  }
+    `
+  );
 };
 
 const init = async () => {
@@ -229,20 +236,21 @@ const init = async () => {
 };
 
 const initDatabase = async () => {
-  if (!dbPath) return;
+  if (!dbPath) throw new Error('Database path not set');
 
-  try {
+  await new Promise<void>((resolve, reject) => {
     db = new sqlite3.Database(dbPath, err => {
       if (err) {
-        throw new Error(`Failed to open database: ${err.message}`);
-      } else {
-        console.log('Database opened successfully.');
+        reject(new Error(`Failed to open database: ${err.message}`));
+        return;
       }
+      console.log('Database opened successfully.');
+      resolve();
     });
-  } catch {}
+  });
 };
 
-const setupDB = (data: { dbname: string; appName?: string; onReady?: () => void }) => {
+const setupDB = async (data: { dbname: string; appName?: string; onReady?: () => void }) => {
   const databaseFileName = data.dbname;
   const localAppData = process.env.LOCALAPPDATA;
   if (data.appName && localAppData) {
@@ -253,14 +261,13 @@ const setupDB = (data: { dbname: string; appName?: string; onReady?: () => void 
 
     dbPath = path.join(folderPath, databaseFileName);
 
-    initDatabase().then(async () => {
-      await init();
-      await initInitialData();
-      initIpcHandler(db, dbPath);
-      if (data.onReady) {
-        data.onReady();
-      }
-    });
+    await initDatabase();
+    await init();
+    await initInitialData();
+    initIpcHandler(db, dbPath);
+    if (data.onReady) {
+      data.onReady();
+    }
   }
 };
 

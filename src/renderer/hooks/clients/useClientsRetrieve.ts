@@ -5,10 +5,10 @@ import type { Business } from '../../types/business';
 import type { RequestHook } from '../../types/requestHook';
 import { useAsyncAction } from '../useAsyncAction';
 
-export const useClientsRetrieve = ({ showLoader = true, onDone, filter }: RequestHook) => {
+export const useClientsRetrieve = ({ showLoader = true, filter }: RequestHook) => {
   const dispatch = useAppDispatch();
   const asyncFn = useCallback(() => window.electronAPI.getAllClients(filter), [filter]);
-  const { data: clients, execute } = useAsyncAction<Business[]>(asyncFn, { showLoader, onDone });
+  const { data: clients, execute } = useAsyncAction<Business[]>(asyncFn, { showLoader });
 
   useEffect(() => {
     if (!clients) return;

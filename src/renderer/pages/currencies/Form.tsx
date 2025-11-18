@@ -29,6 +29,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, currency }) => {
   });
 
   const isFormatDisabled = form.code.trim() === '' || form.symbol.trim() === '';
+  const hasSelectedFormat = form.format.trim() !== '';
 
   const validateField = (field: keyof typeof errors, value: string) => {
     if (
@@ -111,9 +112,10 @@ export const Form: FC<Props> = ({ handleChange = () => {}, currency }) => {
           disabled={isFormatDisabled}
           options={optionsCurrencyFormat}
           getOptionLabel={option => getFormattedLabel({ label: option.label, symbol: form.symbol, code: form.code })}
-          disableClearable={true}
-          value={optionsCurrencyFormat.find(opt => opt.value === form.format)}
+          disableClearable={hasSelectedFormat}
+          value={optionsCurrencyFormat.find(opt => opt.value === form.format) ?? null}
           onChange={(_e, newValue) => {
+            if (!newValue) return;
             update('format', newValue.value);
             validateField('format', newValue.value);
           }}
