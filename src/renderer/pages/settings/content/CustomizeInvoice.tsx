@@ -3,8 +3,8 @@ import { useEffect, useRef, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PageHeader } from '../../../components/pageHeader/PageHeader';
 import { useAppSelector } from '../../../state/configureStore';
-import { validateOnlyNumbersLetters } from '../../../state/functions';
 import { selectSettings } from '../../../state/pageSlice';
+import { validateOnlyNumbersLetters } from '../../../utils/functions';
 
 interface Props {
   showBack: boolean;

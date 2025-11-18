@@ -6,10 +6,10 @@ import { useBusinessAddBatch } from '../../hooks/business/useBusinessAddBatch';
 import { useBusinessDelete } from '../../hooks/business/useBusinessDelete';
 import { useBusinessesRetrieve } from '../../hooks/business/useBusinessesRetrieve';
 import { useBusinessUpdate } from '../../hooks/business/useBusinessUpdate';
-import { dataUrlToUint8Array, isBusinessFromData, toUint8Array } from '../../state/functions';
 import type { Business, BusinessAdd, BusinessUpdate } from '../../types/business';
 import type { Rows } from '../../types/excel';
 import type { Filter } from '../../types/filter';
+import { dataUrlToUint8Array, isBusinessFromData, toUint8Array } from '../../utils/functions';
 import { Form } from './Form';
 import { List } from './List';
 

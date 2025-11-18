@@ -3,8 +3,8 @@ import { useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UploadImage } from '../../components/uploadImage/UploadImage';
 import { useForm } from '../../hooks/useForm';
-import { fromUint8Array } from '../../state/functions';
 import type { Business, BusinessFromData } from '../../types/business';
+import { fromUint8Array } from '../../utils/functions';
 import { validators } from '../../utils/validators';
 
 interface Props {

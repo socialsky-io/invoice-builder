@@ -1,9 +1,9 @@
 import { useCallback, useEffect } from 'react';
 import { useAppDispatch } from '../../state/configureStore';
-import { uint8ArrayToDataUrl } from '../../state/functions';
 import { setBusinesses } from '../../state/pageSlice';
 import type { Business } from '../../types/business';
 import type { RequestHook } from '../../types/requestHook';
+import { uint8ArrayToDataUrl } from '../../utils/functions';
 import { useAsyncAction } from '../useAsyncAction';
 
 export const useBusinessesRetrieve = ({ showLoader = true, onDone, filter }: RequestHook) => {

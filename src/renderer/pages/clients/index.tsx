@@ -7,10 +7,10 @@ import { useClientAddBatch } from '../../hooks/clients/useClientAddBatch';
 import { useClientDelete } from '../../hooks/clients/useClientDelete';
 import { useClientsRetrieve } from '../../hooks/clients/useClientsRetrieve';
 import { useClientUpdate } from '../../hooks/clients/useClientUpdate';
-import { isClientFromData } from '../../state/functions';
 import type { Client, ClientAdd, ClientUpdate } from '../../types/client';
 import type { Rows } from '../../types/excel';
 import type { Filter } from '../../types/filter';
+import { isClientFromData } from '../../utils/functions';
 import { Form } from './Form';
 import { List } from './List';
 
