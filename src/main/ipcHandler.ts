@@ -31,6 +31,33 @@ interface Client {
   code?: string;
 }
 
+interface Item {
+  id?: number;
+  name: string;
+  amount_cents?: number;
+  unitId?: number;
+  categoryId?: number;
+  description?: string;
+}
+
+interface Currency {
+  id?: number;
+  code: string;
+  symbol: string;
+  text: string;
+  format: string;
+}
+
+interface Unit {
+  id?: number;
+  name: string;
+}
+
+interface Category {
+  id?: number;
+  name: string;
+}
+
 type EntityWithId = { id?: number };
 
 const prepareUpdate = (data: UpdateData, id?: number) => {
@@ -57,27 +84,32 @@ const prepareUpdate = (data: UpdateData, id?: number) => {
   return { fields, params };
 };
 
+const getHavingClause = (
+  filter: 'All' | 'AtleastOneInvoice' | 'NoInvoices' | 'NoInvoices30' | 'NoInvoices60' | 'NoInvoices90',
+  invoiceColumn = 'i.updatedAt',
+  invoiceIdColumn = 'i.id'
+) => {
+  switch (filter) {
+    case 'NoInvoices30':
+      return `HAVING MAX(${invoiceColumn}) IS NULL OR MAX(${invoiceColumn}) < datetime('now', '-30 days')`;
+    case 'NoInvoices60':
+      return `HAVING MAX(${invoiceColumn}) IS NULL OR MAX(${invoiceColumn}) < datetime('now', '-60 days')`;
+    case 'NoInvoices90':
+      return `HAVING MAX(${invoiceColumn}) IS NULL OR MAX(${invoiceColumn}) < datetime('now', '-90 days')`;
+    case 'NoInvoices':
+      return `HAVING COUNT(${invoiceIdColumn}) = 0`;
+    case 'AtleastOneInvoice':
+      return `HAVING COUNT(${invoiceIdColumn}) > 0`;
+    case 'All':
+    default:
+      return '';
+  }
+};
+
 const getAllEntities =
   <T extends Record<string, unknown>>(db: Database, table: string, keyFieldName: string) =>
   async (filter: 'All' | 'AtleastOneInvoice' | 'NoInvoices' | 'NoInvoices30' | 'NoInvoices60' | 'NoInvoices90') => {
-    let whereClause = '';
-    switch (filter) {
-      case 'NoInvoices30':
-        whereClause = `HAVING MAX(i.updatedAt) IS NULL OR MAX(i.updatedAt) < datetime('now', '-30 days')`;
-        break;
-      case 'NoInvoices60':
-        whereClause = `HAVING MAX(i.updatedAt) IS NULL OR MAX(i.updatedAt) < datetime('now', '-60 days')`;
-        break;
-      case 'NoInvoices90':
-        whereClause = `HAVING MAX(i.updatedAt) IS NULL OR MAX(i.updatedAt) < datetime('now', '-90 days')`;
-        break;
-      case 'NoInvoices':
-        whereClause = `HAVING COUNT(i.id) = 0`;
-        break;
-      case 'AtleastOneInvoice':
-        whereClause = `HAVING COUNT(i.id) > 0`;
-        break;
-    }
+    const havingClause = getHavingClause(filter, 'i.updatedAt', 'i.id');
 
     const sql = `
     SELECT 
@@ -88,7 +120,7 @@ const getAllEntities =
     LEFT JOIN invoices i ON i.${keyFieldName} = t.id
     LEFT JOIN quotes q ON q.${keyFieldName} = t.id
     GROUP BY t.id
-    ${whereClause}
+    ${havingClause}
   `;
 
     return getAllRows<T & { invoiceCount: number; quotesCount: number }>(db, sql);
@@ -126,8 +158,11 @@ const businessFields: (keyof Business)[] = [
   'paymentInformation',
   'logo'
 ];
-
 const clientFields: (keyof Client)[] = ['name', 'shortName', 'address', 'email', 'phone', 'code', 'additional'];
+const itemFields: (keyof Item)[] = ['name', 'amount_cents', 'unitId', 'categoryId', 'description'];
+const currencyFields: (keyof Currency)[] = ['code', 'symbol', 'text', 'format'];
+const unitFields: (keyof Unit)[] = ['name'];
+const categoryFields: (keyof Category)[] = ['name'];
 
 const initIpcHandler = (db: Database, path: string) => {
   if (!db) throw new Error('Database not initialized');
@@ -135,8 +170,13 @@ const initIpcHandler = (db: Database, path: string) => {
 
   const handleBusiness = handleEntity<Business>(db, 'businesses', businessFields);
   const handleClient = handleEntity<Client>(db, 'clients', clientFields);
+  const handleItems = handleEntity<Item>(db, 'items', itemFields);
+  const handleUnits = handleEntity<Unit>(db, 'units', unitFields);
+  const handleCategories = handleEntity<Category>(db, 'categories', categoryFields);
+  const handleCurrencies = handleEntity<Currency>(db, 'currencies', currencyFields);
   const getAllBusinesses = getAllEntities(db, 'businesses', 'businessId');
   const getAllClients = getAllEntities(db, 'clients', 'cliendId');
+  const getAllCurrencies = getAllEntities(db, 'currencies', 'currencyId');
 
   ipcMain.handle('open-url', async (_event, url: string) => {
     await shell.openExternal(url);
@@ -214,6 +254,120 @@ const initIpcHandler = (db: Database, path: string) => {
     return { success: true };
   });
   ipcMain.handle('get-all-businesses', async (_event, filter) => getAllBusinesses(filter));
+
+  ipcMain.handle('add-item', async (_event, data: Item) => handleItems(data));
+  ipcMain.handle('update-item', async (_event, data: Item) => handleItems(data, true));
+  ipcMain.handle('delete-item', async (_event, id: number) => {
+    await runDb(db, 'DELETE FROM items WHERE id = ?;', [id]);
+    return { success: true };
+  });
+  ipcMain.handle('batch-add-item', async (_event, data: Item[]) => {
+    for (const row of data) {
+      const result = await handleItems(row);
+      if (!result.success) return result;
+    }
+    return { success: true };
+  });
+  ipcMain.handle('get-all-items', async (_event, filter) => {
+    const havingClause = getHavingClause(filter, 'ii.updatedAt', 'ii.invoiceId');
+
+    const sql = `
+      SELECT 
+        it.*,
+        COUNT(DISTINCT ii.invoiceId) AS invoiceCount,
+        COUNT(DISTINCT qi.quoteId) AS quotesCount
+      FROM items it
+      LEFT JOIN invoice_items ii ON ii.itemId = it.id
+      LEFT JOIN quote_items qi ON qi.itemId = it.id
+      GROUP BY it.id
+      ${havingClause}
+    `;
+
+    return getAllRows(db, sql);
+  });
+
+  ipcMain.handle('add-unit', async (_event, data: Unit) => handleUnits(data));
+  ipcMain.handle('update-unit', async (_event, data: Unit) => handleUnits(data, true));
+  ipcMain.handle('delete-unit', async (_event, id: number) => {
+    await runDb(db, 'DELETE FROM units WHERE id = ?;', [id]);
+    return { success: true };
+  });
+  ipcMain.handle('batch-add-unit', async (_event, data: Unit[]) => {
+    for (const row of data) {
+      const result = await handleUnits(row);
+      if (!result.success) return result;
+    }
+    return { success: true };
+  });
+  ipcMain.handle('get-all-units', async (_event, filter) => {
+    const havingClause = getHavingClause(filter, 'i.updatedAt', 'i.id');
+
+    const sql = `
+      SELECT
+        u.*,
+        COUNT(DISTINCT ii.invoiceId) AS invoiceCount,
+        COUNT(DISTINCT qi.quoteId) AS quotesCount
+      FROM units u
+      LEFT JOIN items it ON it.unitId = u.id
+      LEFT JOIN invoice_items ii ON ii.itemId = it.id
+      LEFT JOIN quote_items qi ON qi.itemId = it.id
+      LEFT JOIN invoices i ON i.id = ii.invoiceId
+      LEFT JOIN quotes q ON q.id = qi.quoteId
+      GROUP BY u.id
+      ${havingClause}
+    `;
+
+    return getAllRows(db, sql);
+  });
+
+  ipcMain.handle('add-category', async (_event, data: Category) => handleCategories(data));
+  ipcMain.handle('update-category', async (_event, data: Category) => handleCategories(data, true));
+  ipcMain.handle('delete-category', async (_event, id: number) => {
+    await runDb(db, 'DELETE FROM categories WHERE id = ?;', [id]);
+    return { success: true };
+  });
+  ipcMain.handle('batch-add-category', async (_event, data: Category[]) => {
+    for (const row of data) {
+      const result = await handleCategories(row);
+      if (!result.success) return result;
+    }
+    return { success: true };
+  });
+  ipcMain.handle('get-all-categories', async (_event, filter) => {
+    const havingClause = getHavingClause(filter, 'i.updatedAt', 'i.id');
+
+    const sql = `
+      SELECT
+        c.*,
+        COUNT(DISTINCT ii.invoiceId) AS invoiceCount,
+        COUNT(DISTINCT qi.quoteId) AS quotesCount
+      FROM catageries c
+      LEFT JOIN items it ON it.categoryId = c.id
+      LEFT JOIN invoice_items ii ON ii.itemId = it.id
+      LEFT JOIN quote_items qi ON qi.itemId = it.id
+      LEFT JOIN invoices i ON i.id = ii.invoiceId
+      LEFT JOIN quotes q ON q.id = qi.quoteId
+      GROUP BY c.id
+      ${havingClause}
+    `;
+
+    return getAllRows(db, sql);
+  });
+
+  ipcMain.handle('add-currency', async (_event, data: Currency) => handleCurrencies(data));
+  ipcMain.handle('update-currency', async (_event, data: Currency) => handleCurrencies(data, true));
+  ipcMain.handle('delete-currency', async (_event, id: number) => {
+    await runDb(db, 'DELETE FROM currencies WHERE id = ?;', [id]);
+    return { success: true };
+  });
+  ipcMain.handle('batch-add-currency', async (_event, data: Currency[]) => {
+    for (const row of data) {
+      const result = await handleCurrencies(row);
+      if (!result.success) return result;
+    }
+    return { success: true };
+  });
+  ipcMain.handle('get-all-currencies', async (_event, filter) => getAllCurrencies(filter));
 };
 
 export { initIpcHandler };

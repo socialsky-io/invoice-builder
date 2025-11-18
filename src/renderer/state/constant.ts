@@ -1,4 +1,5 @@
 import { AmountFormat } from '../enums/amountFormat';
+import { CurrencyFormat } from '../enums/currencyFormat';
 import { DateFormat } from '../enums/dateFormat';
 import { Language } from '../enums/language';
 
@@ -36,3 +37,17 @@ export const DATE_FORMAT_ITEMS = {
 } as const;
 
 export const DATE_FORMAT_ITEMS_ARRAY = Object.values(DATE_FORMAT_ITEMS);
+
+export const CURRENCY_FORMAT_ITEMS = {
+  [CurrencyFormat.symbolAmount]: { label: '{symbol}123', value: CurrencyFormat.symbolAmount },
+  [CurrencyFormat.symbolSpaceAmount]: { label: '{symbol} 123', value: CurrencyFormat.symbolSpaceAmount },
+  [CurrencyFormat.amountSymbol]: { label: '123{symbol}', value: CurrencyFormat.amountSymbol },
+  [CurrencyFormat.amountSpaceSymbol]: { label: '123 {symbol}', value: CurrencyFormat.amountSpaceSymbol },
+  [CurrencyFormat.codeAmount]: { label: '{code}123', value: CurrencyFormat.codeAmount },
+  [CurrencyFormat.codeSpaceAmount]: { label: '{code} 123', value: CurrencyFormat.codeSpaceAmount },
+  [CurrencyFormat.amountCode]: { label: '123{code}', value: CurrencyFormat.amountCode },
+  [CurrencyFormat.amountSpaceCode]: { label: '123 {code}', value: CurrencyFormat.amountSpaceCode },
+  [CurrencyFormat.amountOnly]: { label: '123', value: CurrencyFormat.amountOnly }
+} as const;
+
+export const CURRENCY_FORMAT_ITEMS_ARRAY = Object.values(CURRENCY_FORMAT_ITEMS);

@@ -35,7 +35,7 @@ export const LanguageFormat: FC<Props> = ({ showBack, onLanguageFormat = () => {
   const [dateFormat, setDateFormat] = useState<DateFormat>(storeSettings?.dateFormat ?? DateFormat.MMddyyyy);
 
   const handleAutocompleteChange =
-    <T,>(setter: (val: T) => void, key: 'language' | 'amountFormat' | 'dateFormat') =>
+    <T extends string | number | symbol>(setter: (val: T) => void, key: 'language' | 'amountFormat' | 'dateFormat') =>
     (_event: React.SyntheticEvent, newValue: CustomOption<T> | null) => {
       if (!newValue) return;
 
@@ -60,7 +60,7 @@ export const LanguageFormat: FC<Props> = ({ showBack, onLanguageFormat = () => {
             getOptionLabel={option => option.label}
             disableClearable={true}
             value={optionsLanguage.find(opt => opt.value === language)}
-            onChange={handleAutocompleteChange(setLanguage, 'language')}
+            onChange={handleAutocompleteChange<Language>(setLanguage, 'language')}
             renderInput={params => <TextField {...params} label={t('languageFormat.language')} required />}
             freeSolo={false}
           />
@@ -72,7 +72,7 @@ export const LanguageFormat: FC<Props> = ({ showBack, onLanguageFormat = () => {
             getOptionLabel={option => option.label}
             disableClearable={true}
             value={optionsAmountFormat.find(opt => opt.value === amountFormat)}
-            onChange={handleAutocompleteChange(setAmountFormat, 'amountFormat')}
+            onChange={handleAutocompleteChange<AmountFormat>(setAmountFormat, 'amountFormat')}
             renderInput={params => <TextField {...params} label={t('languageFormat.amountFormat')} required />}
             freeSolo={false}
           />
@@ -84,7 +84,7 @@ export const LanguageFormat: FC<Props> = ({ showBack, onLanguageFormat = () => {
             getOptionLabel={option => option.label}
             disableClearable={true}
             value={optionsDateFormat.find(opt => opt.value === dateFormat)}
-            onChange={handleAutocompleteChange(setDateFormat, 'dateFormat')}
+            onChange={handleAutocompleteChange<DateFormat>(setDateFormat, 'dateFormat')}
             renderInput={params => <TextField {...params} label={t('languageFormat.dateFormat')} required />}
             freeSolo={false}
           />

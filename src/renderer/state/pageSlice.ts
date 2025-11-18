@@ -4,10 +4,14 @@ import type { AmountFormat } from '../enums/amountFormat';
 import type { DateFormat } from '../enums/dateFormat';
 import type { Language } from '../enums/language';
 import type { BusinessModified } from '../types/business';
+import type { Category } from '../types/category';
 import type { Client } from '../types/client';
+import type { Currency } from '../types/currency';
+import type { Item } from '../types/item';
 import type { PageState } from '../types/pageState';
 import type { Settings } from '../types/settings';
 import type { ToastProps } from '../types/toastProps';
+import type { Unit } from '../types/unit';
 import type { RootState } from './configureStore';
 
 const initialState: PageState = {
@@ -15,7 +19,11 @@ const initialState: PageState = {
   toasts: [],
   settings: undefined,
   businesses: [],
-  clients: []
+  clients: [],
+  items: [],
+  currencies: [],
+  units: [],
+  category: []
 };
 
 export const pageSlice = createSlice({
@@ -51,6 +59,18 @@ export const pageSlice = createSlice({
     },
     setClients: (state, action: PayloadAction<Client[]>) => {
       state.clients = action.payload;
+    },
+    setItems: (state, action: PayloadAction<Item[]>) => {
+      state.items = action.payload;
+    },
+    setCurrencies: (state, action: PayloadAction<Currency[]>) => {
+      state.currencies = action.payload;
+    },
+    setUnits: (state, action: PayloadAction<Unit[]>) => {
+      state.units = action.payload;
+    },
+    setCategories: (state, action: PayloadAction<Category[]>) => {
+      state.category = action.payload;
     },
     setMode: (state, action: PayloadAction<boolean>) => {
       if (!state.settings) return;
@@ -125,6 +145,10 @@ export const selectToasts = createSelector(selectState, state => state.toasts);
 export const selectSettings = createSelector(selectState, state => state.settings);
 export const selectBusinesses = createSelector(selectState, state => state.businesses);
 export const selectClients = createSelector(selectState, state => state.clients);
+export const selectCategories = createSelector(selectState, state => state.category);
+export const selectCurrencies = createSelector(selectState, state => state.currencies);
+export const selectUnits = createSelector(selectState, state => state.units);
+export const selectItems = createSelector(selectState, state => state.items);
 
 export const {
   enableLoading,
@@ -141,7 +165,11 @@ export const {
   setClients,
   setCustomInvoiseSettings,
   setLanguageDate,
-  setBusinesses
+  setBusinesses,
+  setItems,
+  setCategories,
+  setCurrencies,
+  setUnits
 } = pageSlice.actions;
 
 export const pageReducer = pageSlice.reducer;

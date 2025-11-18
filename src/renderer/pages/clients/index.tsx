@@ -14,7 +14,7 @@ import { isClientFromData } from '../../utils/functions';
 import { Form } from './Form';
 import { List } from './List';
 
-export const Clients: FC = () => {
+export const ClientsPage: FC = () => {
   const { t } = useTranslation();
   const excelColumns = ['name', 'shortName', 'address', 'email', 'phone', 'code', 'additional'];
   const excelFileName = 'clients';

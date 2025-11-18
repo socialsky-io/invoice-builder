@@ -3,6 +3,7 @@ import { saveAs } from 'file-saver';
 import { SortType } from '../enums/sortType';
 import type { BusinessFromData } from '../types/business';
 import type { ClientFromData } from '../types/client';
+import type { CurrencyFromData } from '../types/currency';
 import type { Columns, Row, Rows, RowValue } from '../types/excel';
 
 export const validateOnlyNumbersLetters = (value: string) => {
@@ -111,6 +112,20 @@ export const isClientFromData = (data: unknown): data is ClientFromData => {
   return true;
 };
 
+export const isCurrencyFromData = (data: unknown): data is CurrencyFromData => {
+  if (typeof data !== 'object' || data === null) return false;
+
+  const d = data as Record<string, unknown>;
+
+  if (typeof d.symbol !== 'string') return false;
+  if (typeof d.text !== 'string') return false;
+  if (typeof d.format !== 'string') return false;
+
+  if (d.id !== undefined && typeof d.id !== 'number') return false;
+
+  return true;
+};
+
 export const dataUrlToUint8Array = (dataUrl: string): Uint8Array => {
   const base64Index = dataUrl.indexOf(',') + 1;
   const base64 = dataUrl.slice(base64Index);
@@ -199,4 +214,8 @@ export const importExcel = async (file: File): Promise<{ columns: Columns; rows:
   });
 
   return { columns, rows };
+};
+
+export const getFormattedLabel = (data: { label: string; symbol: string; code: string }) => {
+  return data.label.replace('{symbol}', data.symbol || '').replace('{code}', data.code || '');
 };

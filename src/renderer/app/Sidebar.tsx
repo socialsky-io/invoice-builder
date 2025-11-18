@@ -1,6 +1,9 @@
 import { Business, ChevronLeft, ChevronRight, Description, Inventory, People, Settings } from '@mui/icons-material';
 import AssessmentIcon from '@mui/icons-material/Assessment';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import CategoryIcon from '@mui/icons-material/Category';
 import ReceiptIcon from '@mui/icons-material/Receipt';
+import ScaleIcon from '@mui/icons-material/Scale';
 import { Box, Divider, Drawer, IconButton, Tooltip, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -74,9 +77,45 @@ export const Sidebar: FC = () => {
       onClick: onClickNavigate
     },
     {
+      text: t('menuItems.currencies'),
+      icon: <AttachMoneyIcon />,
+      path: '/currencies',
+      isToggle: false,
+      minHeight: 50,
+      isSelected: isSelected,
+      onClick: onClickNavigate
+    },
+    {
+      text: t('menuItems.units'),
+      icon: <ScaleIcon />,
+      path: '/units',
+      isToggle: false,
+      minHeight: 50,
+      isSelected: isSelected,
+      onClick: onClickNavigate
+    },
+    {
+      text: t('menuItems.categories'),
+      icon: <CategoryIcon />,
+      path: '/categories',
+      isToggle: false,
+      minHeight: 50,
+      isSelected: isSelected,
+      onClick: onClickNavigate
+    },
+    {
       text: t('menuItems.clients'),
       icon: <People />,
       path: '/clients',
+      isToggle: false,
+      minHeight: 50,
+      isSelected: isSelected,
+      onClick: onClickNavigate
+    },
+    {
+      text: t('menuItems.businesses'),
+      icon: <Business />,
+      path: '/businesses',
       isToggle: false,
       minHeight: 50,
       isSelected: isSelected,
@@ -95,15 +134,6 @@ export const Sidebar: FC = () => {
           }
         ]
       : []),
-    {
-      text: t('menuItems.businesses'),
-      icon: <Business />,
-      path: '/businesses',
-      isToggle: false,
-      minHeight: 50,
-      isSelected: isSelected,
-      onClick: onClickNavigate
-    },
     {
       text: t('menuItems.settings'),
       icon: <Settings />,

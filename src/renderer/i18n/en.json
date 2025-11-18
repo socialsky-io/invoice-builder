@@ -6,7 +6,10 @@
     "clients": "Clients",
     "reports": "Reports",
     "settings": "Settings",
-    "businesses": "Businesses"
+    "businesses": "Businesses",
+    "currencies": "Currencies",
+    "units": "Units",
+    "categories": "Categories"
   },
   "app": {
     "title": "Invoice Builder",
@@ -59,10 +62,6 @@
     "dateFormat": "Date format"
   },
   "businesses": {
-    "invoice": "invoice",
-    "invoices": "invoices",
-    "quote": "quote",
-    "quotes": "quotes",
     "noItem": "Selected a business to view details.",
     "add": "Add business",
     "filter": {
@@ -71,12 +70,12 @@
       "atleastOneInvoiceDesc": "Businesses which has at least one invoice",
       "noInvoicesText": "Businesses who do not have invoices",
       "noInvoicesDesc": "Businesses with no invoices",
-      "noInvoices30Text": "Inactive businesses (30)",
-      "noInvoices30Desc": "No invoices in the last 30",
-      "noInvoices60Text": "Inactive businesses (60)",
-      "noInvoices60Desc": "No invoices in the last 60",
-      "noInvoices90Text": "Inactive businesses (90)",
-      "noInvoices90Desc": "No invoices in the last 90"
+      "noInvoices30Text": "Inactive businesses (30 days)",
+      "noInvoices30Desc": "No invoices in the last 30 days",
+      "noInvoices60Text": "Inactive businesses (60 days)",
+      "noInvoices60Desc": "No invoices in the last 60 days",
+      "noInvoices90Text": "Inactive businesses (90 days)",
+      "noInvoices90Desc": "No invoices in the last 90 days"
     }
   },
   "businessesModal": {
@@ -116,13 +115,36 @@
       "atleastOneInvoiceDesc": "Clients which has at least one invoice",
       "noInvoicesText": "Clients who do not have invoices",
       "noInvoicesDesc": "Clients with no invoices",
-      "noInvoices30Text": "Inactive clients (30)",
-      "noInvoices30Desc": "No invoices in the last 30",
-      "noInvoices60Text": "Inactive clients (60)",
-      "noInvoices60Desc": "No invoices in the last 60",
-      "noInvoices90Text": "Inactive clients (90)",
-      "noInvoices90Desc": "No invoices in the last 90"
+      "noInvoices30Text": "Inactive clients (30 days)",
+      "noInvoices30Desc": "No invoices in the last 30 days",
+      "noInvoices60Text": "Inactive clients (60 days)",
+      "noInvoices60Desc": "No invoices in the last 60 days",
+      "noInvoices90Text": "Inactive clients (90 days)",
+      "noInvoices90Desc": "No invoices in the last 90 days"
     }
+  },
+  "currencies": {
+    "noItem": "Selected a currency to view details.",
+    "add": "Add currency",
+    "filter": {
+      "allText": "All currencies",
+      "atleastOneInvoiceText": "Currencies who have invoices",
+      "atleastOneInvoiceDesc": "Currencies which has at least one invoice",
+      "noInvoicesText": "Currencies who do not have invoices",
+      "noInvoicesDesc": "Currencies with no invoices",
+      "noInvoices30Text": "Inactive currencies (30 days)",
+      "noInvoices30Desc": "No invoices in the last 30 days",
+      "noInvoices60Text": "Inactive currencies (60 days)",
+      "noInvoices60Desc": "No invoices in the last 60 days",
+      "noInvoices90Text": "Inactive currencies (90 days)",
+      "noInvoices90Desc": "No invoices in the last 90 days"
+    }
+  },
+  "currenciesModal": {
+    "code": "Symbol text",
+    "symbol": "Symbol",
+    "text": "Text",
+    "format": "Format"
   },
   "ariaLabel": {
     "menu": "Main menu",

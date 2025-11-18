@@ -21,10 +21,11 @@ interface GenericListProps<T extends { id: number }> {
   item: T;
   onEdit: (item: T) => void;
   onDelete: (id: number) => void;
-  getShortName: (item: T) => string;
+  getShortName?: (item: T) => string;
   getName: (item: T) => string;
   getEmail?: (item: T) => string | undefined;
   getPhone?: (item: T) => string | undefined;
+  getAdditional?: (item: T) => string | undefined;
   getInvoiceCount: (item: T) => number;
   getQuotesCount?: (item: T) => number;
 }
@@ -37,19 +38,21 @@ export const GenericList = <T extends { id: number }>({
   getEmail,
   getPhone,
   getInvoiceCount,
-  getQuotesCount
+  getQuotesCount,
+  getAdditional
 }: GenericListProps<T>) => {
   const theme = useTheme();
   const { t } = useTranslation();
   const storeSettings = useAppSelector(selectSettings);
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const shortName = getShortName(item);
+  const shortName = getShortName?.(item);
   const name = getName(item);
   const email = getEmail?.(item);
   const phone = getPhone?.(item);
   const invoiceCount = getInvoiceCount(item);
   const quotesCount = getQuotesCount?.(item);
+  const additional = getAdditional?.(item);
 
   return (
     <Paper
@@ -86,25 +89,27 @@ export const GenericList = <T extends { id: number }>({
             width: '100%'
           }}
         >
-          <ListItemIcon sx={{ minWidth: 40 }}>
-            <Box
-              sx={{
-                width: 32,
-                height: 32,
-                borderRadius: '50%',
-                bgcolor:
-                  theme.palette.mode === Themes.dark ? theme.palette.secondary.dark : theme.palette.secondary.light,
-                color: theme.palette.text.primary,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontWeight: 600,
-                fontSize: 14
-              }}
-            >
-              {shortName}
-            </Box>
-          </ListItemIcon>
+          {shortName && (
+            <ListItemIcon sx={{ minWidth: 40 }}>
+              <Box
+                sx={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: '50%',
+                  bgcolor:
+                    theme.palette.mode === Themes.dark ? theme.palette.secondary.dark : theme.palette.secondary.light,
+                  color: theme.palette.text.primary,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: 600,
+                  fontSize: 14
+                }}
+              >
+                {shortName}
+              </Box>
+            </ListItemIcon>
+          )}
 
           <ListItemText
             primary={
@@ -119,6 +124,16 @@ export const GenericList = <T extends { id: number }>({
             disableTypography
             secondary={
               <>
+                {additional && (
+                  <Typography
+                    component="div"
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis' }}
+                  >
+                    {additional}
+                  </Typography>
+                )}
                 {email && (
                   <Typography
                     component="div"

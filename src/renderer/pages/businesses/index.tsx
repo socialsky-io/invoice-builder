@@ -13,7 +13,7 @@ import { dataUrlToUint8Array, isBusinessFromData, toUint8Array } from '../../uti
 import { Form } from './Form';
 import { List } from './List';
 
-export const Businesses = () => {
+export const BusinessesPage = () => {
   const { t } = useTranslation();
   const excelColumns = [
     'name',
