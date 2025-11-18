@@ -177,7 +177,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
           onChange={e => update('website', e.target.value)}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 4 }}>
+      <Grid size={{ xs: 12, md: 8 }}>
         <TextField
           multiline
           label={t('businessesModal.additional')}

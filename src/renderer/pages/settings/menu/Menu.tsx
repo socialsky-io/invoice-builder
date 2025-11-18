@@ -147,7 +147,7 @@ export const Menu: FC<Props> = ({
       isSelected: false,
       isToggle: false,
       onClick: () => {
-        window.electronAPI.openUrl('https://github.com/piratuks/invoice-builder/PRIVACY-POLICY.md');
+        window.electronAPI.openUrl('https://github.com/piratuks/invoice-builder/blob/main/PRIVACY-POLICY.md');
       }
     },
     {
@@ -157,7 +157,7 @@ export const Menu: FC<Props> = ({
       isSelected: false,
       isToggle: false,
       onClick: () => {
-        window.electronAPI.openUrl('https://github.com/piratuks/invoice-builder/TUTORIAL.md');
+        window.electronAPI.openUrl('https://github.com/piratuks/invoice-builder/blob/main/TUTORIAL.md');
       }
     },
     {
@@ -167,7 +167,7 @@ export const Menu: FC<Props> = ({
       isToggle: false,
       isSelected: false,
       onClick: () => {
-        window.electronAPI.openUrl('https://github.com/piratuks/invoice-builder/TERMS-OF-USE.md');
+        window.electronAPI.openUrl('https://github.com/piratuks/invoice-builder/blob/main/TERMS-OF-USE.md');
       }
     }
   ];

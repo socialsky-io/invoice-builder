@@ -151,7 +151,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, client }) => {
           }}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 4 }}>
+      <Grid size={{ xs: 12, md: 12 }}>
         <TextField
           multiline
           label={t('clientsModal.additional')}
