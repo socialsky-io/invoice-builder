@@ -16,6 +16,24 @@ export interface Business {
   updatedAt: string;
 }
 
+export interface BusinessModified {
+  id: number;
+  name: string;
+  shortName: string;
+  address?: string;
+  role?: string;
+  email?: string;
+  phone?: string;
+  website?: string;
+  additional?: string;
+  paymentInformation?: string;
+  logo?: string | null;
+  invoiceCount: number;
+  quotesCount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface BusinessAdd {
   name: string;
   shortName: string;

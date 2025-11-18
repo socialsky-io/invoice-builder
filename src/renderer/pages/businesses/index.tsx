@@ -55,30 +55,30 @@ export const Businesses = () => {
     }
   ];
   const filters: Filter[] = [
-    { label: t('businesses.allText'), description: undefined, value: FilterType.all, initial: true },
+    { label: t('businesses.filter.allText'), description: undefined, value: FilterType.all, initial: true },
     {
-      label: t('businesses.atleastOneInvoiceText'),
-      description: t('businesses.atleastOneInvoiceDesc'),
+      label: t('businesses.filter.atleastOneInvoiceText'),
+      description: t('businesses.filter.atleastOneInvoiceDesc'),
       value: FilterType.atleastOneInvoice
     },
     {
-      label: t('businesses.noInvoicesText'),
-      description: t('businesses.noInvoicesDesc'),
+      label: t('businesses.filter.noInvoicesText'),
+      description: t('businesses.filter.noInvoicesDesc'),
       value: FilterType.noInvoices
     },
     {
-      label: t('businesses.noInvoices30Text'),
-      description: t('businesses.noInvoices30Desc'),
+      label: t('businesses.filter.noInvoices30Text'),
+      description: t('businesses.filter.noInvoices30Desc'),
       value: FilterType.noInvoices30
     },
     {
-      label: t('businesses.noInvoices60Text'),
-      description: t('businesses.noInvoices60Desc'),
+      label: t('businesses.filter.noInvoices60Text'),
+      description: t('businesses.filter.noInvoices60Desc'),
       value: FilterType.noInvoices60
     },
     {
-      label: t('businesses.noInvoices90Text'),
-      description: t('businesses.noInvoices90Desc'),
+      label: t('businesses.filter.noInvoices90Text'),
+      description: t('businesses.filter.noInvoices90Desc'),
       value: FilterType.noInvoices90
     }
   ];

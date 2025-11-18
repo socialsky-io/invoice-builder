@@ -79,8 +79,7 @@
       "noInvoices90Desc": "Nėra sąskaitų per pastarąsias 90 dienų"
     }
   },
-  "businessesCRModal": {
-    "title": "Valdykite savo įmonę",
+  "businessesModal": {
     "name": "Pavadinimas",
     "shortName": "Trumpinys",
     "address": "Adresas",
@@ -94,6 +93,36 @@
     "phoneHelper": "Įveskite telefono numerį tarptautiniu formatu",
     "shortNameHelper": "Maksimaliai 2 simboliai",
     "paymentInfo": "Mokėjimo informacija"
+  },
+  "clientsModal": {
+    "name": "Pavadinimas",
+    "shortName": "Trumpinys",
+    "address": "Adresas",
+    "code": "Įmonės kodas",
+    "email": "El. paštas",
+    "phone": "Telefonas",
+    "additional": "Papildoma informacija",
+    "invalidEmail": "Neteisingas el. pašto formatas",
+    "invalidPhone": "Neteisingas telefono numerio formatas",
+    "phoneHelper": "Įveskite telefono numerį tarptautiniu formatu",
+    "shortNameHelper": "Maksimaliai 2 simboliai"
+  },
+  "clients": {
+    "noItem": "Pasirinkite klientą, kad pamatytumėte detales.",
+    "add": "Pridėti klientą",
+    "filter": {
+      "allText": "Visi klientai",
+      "atleastOneInvoiceText": "Klientai, turintys sąskaitas",
+      "atleastOneInvoiceDesc": "Klientai, turintys bent vieną sąskaitą",
+      "noInvoicesText": "Klientai be sąskaitų",
+      "noInvoicesDesc": "Klientai, neturintys sąskaitų",
+      "noInvoices30Text": "Neaktyvūs klientai (30)",
+      "noInvoices30Desc": "Nėra sąskaitų per pastarąsias 30 dienų",
+      "noInvoices60Text": "Neaktyvūs klientai (60)",
+      "noInvoices60Desc": "Nėra sąskaitų per pastarąsias 60 dienų",
+      "noInvoices90Text": "Neaktyvūs klientai (90)",
+      "noInvoices90Desc": "Nėra sąskaitų per pastarąsias 90 dienų"
+    }
   },
   "ariaLabel": {
     "menu": "Pagrindinis meniu",

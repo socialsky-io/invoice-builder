@@ -1,30 +1,25 @@
 import { Grid, TextField } from '@mui/material';
 import { useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { UploadImage } from '../../components/uploadImage/UploadImage';
 import { useForm } from '../../hooks/useForm';
-import { fromUint8Array } from '../../state/functions';
-import type { Business, BusinessFromData } from '../../types/business';
+import type { Client, ClientFromData } from '../../types/client';
 import { validators } from '../../utils/validators';
 
 interface Props {
-  business?: Business;
-  handleChange?: (data: { business: BusinessFromData; isFormValid: boolean }) => void;
+  client?: Client;
+  handleChange?: (data: { client: ClientFromData; isFormValid: boolean }) => void;
 }
-export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
+export const Form: FC<Props> = ({ handleChange = () => {}, client }) => {
   const { t } = useTranslation();
-  const { form, setForm, update } = useForm<BusinessFromData>({
-    id: business?.id,
-    logo: undefined,
-    email: business?.email ?? '',
-    phone: business?.phone ?? '',
-    name: business?.name ?? '',
-    shortName: business?.shortName ?? '',
-    role: business?.role ?? '',
-    address: business?.address ?? '',
-    website: business?.website ?? '',
-    additional: business?.additional ?? '',
-    paymentInformation: business?.paymentInformation ?? ''
+  const { form, setForm, update } = useForm<ClientFromData>({
+    id: client?.id,
+    email: client?.email ?? '',
+    phone: client?.phone ?? '',
+    name: client?.name ?? '',
+    shortName: client?.shortName ?? '',
+    code: client?.code ?? '',
+    address: client?.address ?? '',
+    additional: client?.additional ?? ''
   });
   const [errors, setErrors] = useState({
     email: false,
@@ -32,11 +27,6 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
     name: false,
     shortName: false
   });
-  const [logoUrl, setLogoUrl] = useState<string | undefined>(fromUint8Array(business?.logo) ?? undefined);
-
-  const onUpload = (file: Blob) => {
-    setForm(prev => ({ ...prev, logo: file }));
-  };
 
   const validateField = (field: keyof typeof errors, value: string) => {
     if (!validators.required(value) && (field === 'name' || field === 'shortName')) {
@@ -52,21 +42,16 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
 
   useEffect(() => {
     setForm({
-      id: business?.id,
-      logo: undefined,
-      email: business?.email ?? '',
-      phone: business?.phone ?? '',
-      name: business?.name ?? '',
-      shortName: business?.shortName ?? '',
-      role: business?.role ?? '',
-      address: business?.address ?? '',
-      website: business?.website ?? '',
-      additional: business?.additional ?? '',
-      paymentInformation: business?.paymentInformation ?? ''
+      id: client?.id,
+      email: client?.email ?? '',
+      phone: client?.phone ?? '',
+      name: client?.name ?? '',
+      shortName: client?.shortName ?? '',
+      code: client?.code ?? '',
+      address: client?.address ?? '',
+      additional: client?.additional ?? ''
     });
-
-    setLogoUrl(fromUint8Array(business?.logo) ?? undefined);
-  }, [business]);
+  }, [client]);
 
   useEffect(() => {
     const valid =
@@ -78,19 +63,16 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
       !errors.shortName;
 
     handleChange({
-      business: form,
+      client: form,
       isFormValid: valid
     });
   }, [form, errors]);
 
   return (
     <Grid container spacing={2}>
-      <Grid size={{ xs: 12, md: 12 }} sx={{ display: 'flex', justifyContent: 'center' }}>
-        <UploadImage onUpload={onUpload} logoUrl={logoUrl} />
-      </Grid>
       <Grid size={{ xs: 12, md: 4 }}>
         <TextField
-          label={t('businessesModal.name')}
+          label={t('clientsModal.name')}
           fullWidth
           required
           value={form.name}
@@ -104,12 +86,12 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
       </Grid>
       <Grid size={{ xs: 12, md: 4 }}>
         <TextField
-          label={t('businessesModal.shortName')}
+          label={t('clientsModal.shortName')}
           fullWidth
           required
           value={form.shortName}
           error={errors.shortName}
-          helperText={errors.shortName ? t('common.fieldRequired') : t('businessesModal.shortNameHelper')}
+          helperText={errors.shortName ? t('common.fieldRequired') : t('clientsModal.shortNameHelper')}
           onChange={e => {
             update('shortName', e.target.value);
             validateField('shortName', e.target.value);
@@ -123,7 +105,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
       </Grid>
       <Grid size={{ xs: 12, md: 4 }}>
         <TextField
-          label={t('businessesModal.address')}
+          label={t('clientsModal.address')}
           fullWidth
           value={form.address}
           onChange={e => update('address', e.target.value)}
@@ -131,16 +113,16 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
       </Grid>
       <Grid size={{ xs: 12, md: 4 }}>
         <TextField
-          label={t('businessesModal.role')}
+          label={t('clientsModal.code')}
           fullWidth
-          value={form.role}
-          onChange={e => update('role', e.target.value)}
+          value={form.code}
+          onChange={e => update('code', e.target.value)}
         />
       </Grid>
       <Grid size={{ xs: 12, md: 4 }}>
         <TextField
           type="email"
-          label={t('businessesModal.email')}
+          label={t('clientsModal.email')}
           fullWidth
           value={form.email}
           onChange={e => {
@@ -148,12 +130,12 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
             validateField('email', e.target.value);
           }}
           error={errors.email}
-          helperText={errors.email ? t('businessesModal.invalidEmail') : ''}
+          helperText={errors.email ? t('clientsModal.invalidEmail') : ''}
         />
       </Grid>
       <Grid size={{ xs: 12, md: 4 }}>
         <TextField
-          label={t('businessesModal.phone')}
+          label={t('clientsModal.phone')}
           fullWidth
           value={form.phone}
           onChange={e => {
@@ -161,7 +143,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
             validateField('phone', e.target.value);
           }}
           error={errors.phone}
-          helperText={errors.phone ? t('businessesModal.invalidPhone') : t('businessesModal.phoneHelper')}
+          helperText={errors.phone ? t('clientsModal.invalidPhone') : t('clientsModal.phoneHelper')}
           slotProps={{
             htmlInput: {
               maxLength: 16
@@ -171,30 +153,12 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
       </Grid>
       <Grid size={{ xs: 12, md: 4 }}>
         <TextField
-          label={t('businessesModal.website')}
-          fullWidth
-          value={form.website}
-          onChange={e => update('website', e.target.value)}
-        />
-      </Grid>
-      <Grid size={{ xs: 12, md: 4 }}>
-        <TextField
           multiline
-          label={t('businessesModal.additional')}
+          label={t('clientsModal.additional')}
           fullWidth
           rows={5}
           value={form.additional}
           onChange={e => update('additional', e.target.value)}
-        />
-      </Grid>
-      <Grid size={{ xs: 12, md: 12 }}>
-        <TextField
-          multiline
-          rows={5}
-          label={t('businessesModal.paymentInfo')}
-          fullWidth
-          value={form.paymentInformation}
-          onChange={e => update('paymentInformation', e.target.value)}
         />
       </Grid>
     </Grid>

@@ -1,10 +1,10 @@
 import { type FC } from 'react';
 import { GenericList } from '../../components/genericList/GenericList';
-import type { Business } from '../../types/business';
+import type { Client } from '../../types/client';
 
 interface Props {
-  item: Business;
-  onEdit: (item: Business) => void;
+  item: Client;
+  onEdit: (item: Client) => void;
   onDelete: (id: number) => void;
 }
 export const List: FC<Props> = ({ item, onEdit, onDelete }) => {

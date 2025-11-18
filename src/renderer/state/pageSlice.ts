@@ -3,7 +3,8 @@ import { v4 as uuidv4 } from 'uuid';
 import type { AmountFormat } from '../enums/amountFormat';
 import type { DateFormat } from '../enums/dateFormat';
 import type { Language } from '../enums/language';
-import type { Business } from '../types/business';
+import type { BusinessModified } from '../types/business';
+import type { Client } from '../types/client';
 import type { PageState } from '../types/pageState';
 import type { Settings } from '../types/settings';
 import type { ToastProps } from '../types/toastProps';
@@ -13,7 +14,8 @@ const initialState: PageState = {
   isLoading: false,
   toasts: [],
   settings: undefined,
-  businesses: []
+  businesses: [],
+  clients: []
 };
 
 export const pageSlice = createSlice({
@@ -44,8 +46,11 @@ export const pageSlice = createSlice({
     setSettings: (state, action: PayloadAction<Settings>) => {
       state.settings = action.payload;
     },
-    setBusinesses: (state, action: PayloadAction<Business[]>) => {
+    setBusinesses: (state, action: PayloadAction<BusinessModified[]>) => {
       state.businesses = action.payload;
+    },
+    setClients: (state, action: PayloadAction<Client[]>) => {
+      state.clients = action.payload;
     },
     setMode: (state, action: PayloadAction<boolean>) => {
       if (!state.settings) return;
@@ -119,6 +124,7 @@ export const selectIsLoading = createSelector(selectState, state => state.isLoad
 export const selectToasts = createSelector(selectState, state => state.toasts);
 export const selectSettings = createSelector(selectState, state => state.settings);
 export const selectBusinesses = createSelector(selectState, state => state.businesses);
+export const selectClients = createSelector(selectState, state => state.clients);
 
 export const {
   enableLoading,
@@ -132,6 +138,7 @@ export const {
   setQuotes,
   setReports,
   setCardOverviews,
+  setClients,
   setCustomInvoiseSettings,
   setLanguageDate,
   setBusinesses

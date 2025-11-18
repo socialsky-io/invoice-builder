@@ -2,6 +2,7 @@ import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 import { SortType } from '../enums/sortType';
 import type { BusinessFromData } from '../types/business';
+import type { ClientFromData } from '../types/client';
 import type { Columns, Row, Rows, RowValue } from '../types/excel';
 
 export const validateOnlyNumbersLetters = (value: string) => {
@@ -88,6 +89,24 @@ export const isBusinessFromData = (data: unknown): data is BusinessFromData => {
   if (d.website !== undefined && typeof d.website !== 'string') return false;
   if (d.additional !== undefined && typeof d.additional !== 'string') return false;
   if (d.paymentInformation !== undefined && typeof d.paymentInformation !== 'string') return false;
+
+  return true;
+};
+
+export const isClientFromData = (data: unknown): data is ClientFromData => {
+  if (typeof data !== 'object' || data === null) return false;
+
+  const d = data as Record<string, unknown>;
+
+  if (typeof d.name !== 'string') return false;
+  if (typeof d.shortName !== 'string') return false;
+
+  if (d.id !== undefined && typeof d.id !== 'number') return false;
+  if (d.email !== undefined && typeof d.email !== 'string') return false;
+  if (d.phone !== undefined && typeof d.phone !== 'string') return false;
+  if (d.address !== undefined && typeof d.address !== 'string') return false;
+  if (d.code !== undefined && typeof d.code !== 'string') return false;
+  if (d.additional !== undefined && typeof d.additional !== 'string') return false;
 
   return true;
 };
