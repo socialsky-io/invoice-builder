@@ -9,7 +9,7 @@ import { useBusinessUpdate } from '../../hooks/business/useBusinessUpdate';
 import type { Business, BusinessAdd, BusinessUpdate } from '../../types/business';
 import type { Rows } from '../../types/excel';
 import type { Filter } from '../../types/filter';
-import { isBusinessFromData, toUint8Array } from '../../utils/functions';
+import { isBusinessFromData } from '../../utils/functions';
 import { Form } from './Form';
 import { List } from './List';
 
@@ -36,7 +36,7 @@ export const BusinessesPage = () => {
       address: '123 Main St',
       role: 'Manager',
       email: 'acme@example.com',
-      phone: '555-1234',
+      phone: '+14155552671',
       website: 'https://acme.com',
       additional: 'AC',
       paymentInformation:
@@ -51,7 +51,7 @@ export const BusinessesPage = () => {
       shortName: 'BI',
       address: '456 Second Ave',
       email: 'beta@example.com',
-      phone: '555-5678',
+      phone: '+14155552671',
       website: 'https://beta.com',
       additional: 'BI'
     }
@@ -86,7 +86,7 @@ export const BusinessesPage = () => {
   ];
 
   return (
-    <CRUDPage
+    <CRUDPage<Business, BusinessAdd, BusinessUpdate>
       title={t('menuItems.businesses')}
       filters={filters}
       excelColumns={excelColumns}
@@ -97,13 +97,9 @@ export const BusinessesPage = () => {
         const { businesses, execute } = useBusinessesRetrieve({ filter: filter, onDone });
         return { items: businesses, execute };
       }}
-      useAdd={({ item, immediate, onDone }) => useBusinessAdd({ business: item as BusinessAdd, immediate, onDone })}
-      useAddBatch={({ item, immediate, onDone }) =>
-        useBusinessAddBatch({ businesses: item as BusinessAdd[], immediate, onDone })
-      }
-      useUpdate={({ item, immediate, onDone }) =>
-        useBusinessUpdate({ business: item as BusinessUpdate, immediate, onDone })
-      }
+      useAdd={({ item, immediate, onDone }) => useBusinessAdd({ business: item, immediate, onDone })}
+      useAddBatch={({ item, immediate, onDone }) => useBusinessAddBatch({ businesses: item, immediate, onDone })}
+      useUpdate={({ item, immediate, onDone }) => useBusinessUpdate({ business: item, immediate, onDone })}
       useDelete={useBusinessDelete}
       searchField={'name'}
       sortOptions={[
@@ -115,11 +111,7 @@ export const BusinessesPage = () => {
       leftTitle={t('menuItems.businesses')}
       validateAndNormalize={async data => {
         if (!isBusinessFromData(data)) return;
-
-        let logo = undefined;
-        if (data.logo && data.logo instanceof Blob) logo = await toUint8Array(t, data.logo);
-
-        return { ...data, logo };
+        return data;
       }}
       renderListItem={(item, onEdit, onDelete) => (
         <List

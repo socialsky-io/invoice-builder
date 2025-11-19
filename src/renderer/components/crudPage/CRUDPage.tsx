@@ -22,22 +22,24 @@ import { SearchInput } from '../searchInput/SearchInput';
 
 interface Props<T, TAdd, TUpdate> {
   title: string;
-  useRetrieve: (args: { filter?: FilterType; onDone?: (data: Response) => void }) => {
+  useRetrieve: (args: { filter?: FilterType; onDone?: (data: Response<T[]>) => void }) => {
     items: T[];
     execute: () => void;
   };
-  useAdd: (args: { item?: TAdd; immediate?: boolean; onDone?: (data: Response) => void }) => {
+  useAdd: (args: { item?: TAdd; immediate?: boolean; onDone?: (data: Response<TAdd>) => void }) => {
     execute: () => void;
   };
-  useAddBatch: (args: { item?: TAdd[]; immediate?: boolean; onDone?: (data: Response) => void }) => {
+  useAddBatch: (args: { item?: TAdd[]; immediate?: boolean; onDone?: (data: Response<TAdd[]>) => void }) => {
     execute: () => void;
   };
-  useUpdate: (args: { item?: TUpdate; immediate?: boolean; onDone?: (data: Response) => void }) => {
+  useUpdate: (args: { item?: TUpdate; immediate?: boolean; onDone?: (data: Response<TUpdate>) => void }) => {
     execute: () => void;
   };
-  useDelete: (args: { id: number; immediate?: boolean; onDone?: (data: Response) => void }) => { execute: () => void };
+  useDelete: (args: { id: number; immediate?: boolean; onDone?: (data: Response<unknown>) => void }) => {
+    execute: () => void;
+  };
   searchField: keyof T;
-  validateAndNormalize: (data: unknown) => TAdd | TUpdate | undefined;
+  validateAndNormalize: (data: unknown) => Promise<TAdd | TUpdate | undefined>;
   form: (args: {
     item?: T;
     onChange: (data: { changedData: TAdd | TUpdate; isFormValid: boolean }) => void;
@@ -96,7 +98,7 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
 
   const { items, execute: reload } = useRetrieve({
     filter: selectedFilter?.value,
-    onDone: (data: Response) => {
+    onDone: (data: Response<T[]>) => {
       if (!data.success) {
         if (data.message) dispatch(addToast({ message: data.message, severity: 'error' }));
         else if (data.key) dispatch(addToast({ message: t(data.key), severity: 'error' }));
@@ -107,7 +109,7 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
   const { execute: addItem } = useAdd({
     item: newItem,
     immediate: false,
-    onDone: (data: Response) => {
+    onDone: (data: Response<TAdd>) => {
       setNewItem(undefined);
       setSelectedItem(undefined);
       reload();
@@ -122,7 +124,7 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
   const { execute: addItemsBatch } = useAddBatch({
     item: newItemsBatch,
     immediate: false,
-    onDone: (data: Response) => {
+    onDone: (data: Response<TAdd[]>) => {
       setNewItemsBatch(undefined);
       setSelectedItem(undefined);
       reload();
@@ -137,7 +139,7 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
   const { execute: updateItem } = useUpdate({
     item: changedItem,
     immediate: false,
-    onDone: (data: Response) => {
+    onDone: (data: Response<TUpdate>) => {
       setChangedItem(undefined);
       if (!isDesktop) setSelectedItem(undefined);
       reload();
@@ -152,7 +154,7 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
   const { execute: deleteItem } = useDelete({
     id: deleteID,
     immediate: false,
-    onDone: (data: Response) => {
+    onDone: (data: Response<unknown>) => {
       setDeleteID(-1);
       setSelectedItem(undefined);
       reload();

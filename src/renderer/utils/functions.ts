@@ -87,29 +87,36 @@ export const isBusinessFromData = (data: unknown): data is BusinessFromData => {
   if (typeof d.name !== 'string') return false;
   if (typeof d.shortName !== 'string') return false;
 
-  if (d.id !== undefined && typeof d.id !== 'number') return false;
+  if (d.id !== undefined && d.id !== null && d.id !== '' && typeof d.id !== 'number') return false;
 
   if (d.logo !== undefined && d.logo !== '' && d.logo != null) {
     // const isString = typeof d.logo === 'string';
-    const isBlob = d.logo instanceof Blob;
+    const isBlob = d.logo instanceof Uint8Array;
 
     // if (!isString && !isBlob) return false;
     if (!isBlob) return false;
   }
 
-  if (d.email !== undefined) {
+  if (d.email !== undefined && d.email !== null && d.email !== '') {
     if (typeof d.email !== 'string') return false;
-    if (d.email !== '' && !validators.email(d.email)) return false;
+    if (!validators.email(d.email)) return false;
   }
-  if (d.phone !== undefined) {
+  if (d.phone !== undefined && d.phone !== null && d.phone !== '') {
     if (typeof d.phone !== 'string') return false;
-    if (d.phone !== '' && !validators.phone(d.phone)) return false;
+    if (!validators.phone(d.phone)) return false;
   }
-  if (d.role !== undefined && typeof d.role !== 'string') return false;
-  if (d.address !== undefined && typeof d.address !== 'string') return false;
-  if (d.website !== undefined && typeof d.website !== 'string') return false;
-  if (d.additional !== undefined && typeof d.additional !== 'string') return false;
-  if (d.paymentInformation !== undefined && typeof d.paymentInformation !== 'string') return false;
+  if (d.role !== undefined && d.role !== null && d.role !== '' && typeof d.role !== 'string') return false;
+  if (d.address !== undefined && d.address !== null && d.address !== '' && typeof d.address !== 'string') return false;
+  if (d.website !== undefined && d.website !== null && d.website !== '' && typeof d.website !== 'string') return false;
+  if (d.additional !== undefined && d.additional !== null && d.additional !== '' && typeof d.additional !== 'string')
+    return false;
+  if (
+    d.paymentInformation !== undefined &&
+    d.paymentInformation !== null &&
+    d.paymentInformation !== '' &&
+    typeof d.paymentInformation !== 'string'
+  )
+    return false;
 
   return true;
 };
@@ -122,19 +129,20 @@ export const isClientFromData = (data: unknown): data is ClientFromData => {
   if (typeof d.name !== 'string') return false;
   if (typeof d.shortName !== 'string') return false;
 
-  if (d.id !== undefined && typeof d.id !== 'number') return false;
+  if (d.id !== undefined && d.id !== null && d.id !== '' && typeof d.id !== 'number') return false;
 
-  if (d.email !== undefined) {
+  if (d.email !== undefined && d.email !== null && d.email !== '') {
     if (typeof d.email !== 'string') return false;
-    if (d.email !== '' && !validators.email(d.email)) return false;
+    if (!validators.email(d.email)) return false;
   }
-  if (d.phone !== undefined) {
+  if (d.phone !== undefined && d.phone !== null && d.phone !== '') {
     if (typeof d.phone !== 'string') return false;
-    if (d.phone !== '' && !validators.phone(d.phone)) return false;
+    if (!validators.phone(d.phone)) return false;
   }
-  if (d.address !== undefined && typeof d.address !== 'string') return false;
-  if (d.code !== undefined && typeof d.code !== 'string') return false;
-  if (d.additional !== undefined && typeof d.additional !== 'string') return false;
+  if (d.address !== undefined && d.address !== null && d.address !== '' && typeof d.address !== 'string') return false;
+  if (d.code !== undefined && d.code !== null && d.code !== '' && typeof d.code !== 'string') return false;
+  if (d.additional !== undefined && d.additional !== null && d.additional !== '' && typeof d.additional !== 'string')
+    return false;
 
   return true;
 };
@@ -155,7 +163,7 @@ export const isCurrencyFromData = (data: unknown): data is CurrencyFromData => {
   if (typeof d.text !== 'string') return false;
   if (!isValidCurrencyFormat(d.format)) return false;
 
-  if (d.id !== undefined && typeof d.id !== 'number') return false;
+  if (d.id !== undefined && d.id !== null && d.id !== '' && typeof d.id !== 'number') return false;
 
   return true;
 };

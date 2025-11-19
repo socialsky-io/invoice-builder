@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { UploadImage } from '../../components/uploadImage/UploadImage';
 import { useForm } from '../../hooks/useForm';
 import type { Business, BusinessFromData } from '../../types/business';
-import { fromUint8Array } from '../../utils/functions';
+import { fromUint8Array, toUint8Array } from '../../utils/functions';
 import { validators } from '../../utils/validators';
 
 interface Props {
@@ -34,8 +34,9 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
   });
   const [logoUrl, setLogoUrl] = useState<string | undefined>(fromUint8Array(business?.logo) ?? undefined);
 
-  const onUpload = (file: Blob) => {
-    setForm(prev => ({ ...prev, logo: file }));
+  const onUpload = async (file: Blob) => {
+    const fileUnitArray = await toUint8Array(t, file);
+    if (fileUnitArray) setForm(prev => ({ ...prev, logo: fileUnitArray }));
   };
 
   const validateField = (field: keyof typeof errors, value: string) => {

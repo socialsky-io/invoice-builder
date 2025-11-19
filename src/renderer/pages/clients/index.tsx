@@ -24,7 +24,7 @@ export const ClientsPage: FC = () => {
       shortName: 'JD',
       address: '123 Main St, Springfield',
       email: 'john.doe@email.com',
-      phone: '+1-555-1234',
+      phone: '+14155552671',
       code: 'A001',
       additional: 'VAT DE123456789'
     },
@@ -33,7 +33,7 @@ export const ClientsPage: FC = () => {
       shortName: 'JS',
       address: '456 Elm St, Shelbyville',
       email: 'jane.smith@email.com',
-      phone: '+1-555-5678',
+      phone: '+14155552671',
       code: 'B002'
     }
   ];

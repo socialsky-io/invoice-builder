@@ -91,9 +91,11 @@ const getAllEntities =
     ${havingClause}
   `;
 
+    const data = await getAllRows<T & { invoiceCount: number; quotesCount: number }>(db, sql);
+
     return {
       success: true,
-      data: getAllRows<T & { invoiceCount: number; quotesCount: number }>(db, sql)
+      data: data
     };
   };
 
@@ -104,7 +106,7 @@ const handleEntity =
 
     try {
       if (isUpdate) {
-        const setClause = fields.map(f => `${String(f)} = ?`).join(', ') + `, updatedAt = datetime('now','localtime')`;
+        const setClause = fields.map(f => `${String(f)} = ?`).join(', ') + `, updatedAt = datetime('now')`;
 
         await runDb(db, `UPDATE ${table} SET ${setClause} WHERE id = ?`, [...params, data.id ?? -1]);
       } else {
@@ -282,7 +284,7 @@ const initIpcHandler = (db: Database, path: string) => {
     `;
     return {
       success: true,
-      data: getAllRows(db, sql)
+      data: await getAllRows(db, sql)
     };
   });
 
@@ -322,7 +324,7 @@ const initIpcHandler = (db: Database, path: string) => {
     `;
     return {
       success: true,
-      data: getAllRows(db, sql)
+      data: await getAllRows(db, sql)
     };
   });
 
@@ -363,7 +365,7 @@ const initIpcHandler = (db: Database, path: string) => {
 
     return {
       success: true,
-      data: getAllRows(db, sql)
+      data: await getAllRows(db, sql)
     };
   });
 

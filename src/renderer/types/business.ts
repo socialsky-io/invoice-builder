@@ -53,7 +53,7 @@ export interface BusinessUpdate extends BusinessAdd {
 
 export interface BusinessFromData {
   id?: number;
-  logo?: Blob;
+  logo?: Uint8Array;
   email?: string;
   phone?: string;
   name: string;
