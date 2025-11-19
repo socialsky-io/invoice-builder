@@ -210,11 +210,14 @@ export const exportExcel = async (columns: Columns, rows: Rows, fileName = 'expo
     for (const col of columns) {
       const value = row[col];
 
-      if (value instanceof Uint8Array) {
-        processedRow.push(await uint8ArrayToDataUrl(value));
-      } else {
-        processedRow.push(value);
-      }
+      // Leaving logos column out of excel
+      // if (value instanceof Uint8Array) {
+      //   processedRow.push(await uint8ArrayToDataUrl(value));
+      // } else {
+      //   processedRow.push(value);
+      // }
+
+      processedRow.push(value);
     }
 
     sheet.addRow(processedRow);
