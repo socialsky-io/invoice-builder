@@ -24,7 +24,9 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
     address: business?.address ?? '',
     website: business?.website ?? '',
     additional: business?.additional ?? '',
-    paymentInformation: business?.paymentInformation ?? ''
+    paymentInformation: business?.paymentInformation ?? '',
+    file_size: business?.file_size,
+    file_type: business?.file_type
   });
   const [errors, setErrors] = useState({
     email: false,
@@ -34,9 +36,19 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
   });
   const [logoUrl, setLogoUrl] = useState<string | undefined>(fromUint8Array(business?.logo) ?? undefined);
 
-  const onUpload = async (file: Blob) => {
-    const fileUnitArray = await toUint8Array(t, file);
-    if (fileUnitArray) setForm(prev => ({ ...prev, logo: fileUnitArray }));
+  const onUpload = async (file?: Blob) => {
+    if (file) {
+      const fileUnitArray = await toUint8Array(t, file);
+      if (fileUnitArray)
+        setForm(prev => ({
+          ...prev,
+          logo: fileUnitArray,
+          file_size: file.size,
+          file_type: file.type
+        }));
+    } else {
+      setForm(prev => ({ ...prev, logo: undefined, file_size: undefined, file_type: undefined }));
+    }
   };
 
   const validateField = (field: keyof typeof errors, value: string) => {

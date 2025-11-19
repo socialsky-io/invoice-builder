@@ -100,6 +100,8 @@ const init = async () => {
       additional TEXT,
       paymentInformation TEXT,
       logo BLOB,
+      file_size INTEGER,
+      file_type TEXT,
       createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
       updatedAt DATETIME NOT NULL DEFAULT (datetime('now'))
     );

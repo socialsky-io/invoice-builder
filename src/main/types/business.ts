@@ -10,4 +10,6 @@ export interface Business {
   website?: string;
   additional?: string;
   paymentInformation?: string;
+  file_size?: number;
+  file_type?: string;
 }

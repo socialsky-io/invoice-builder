@@ -203,7 +203,8 @@
     "noSort": "Nerikiuoti",
     "ascending": "Didėjimo tvarka",
     "descending": "Mažėjimo tvarka",
-    "filters": "Filtrai"
+    "filters": "Filtrai",
+    "clear": "Išvalyti"
   },
   "error": {
     "fileTooLarge": "Failas yra per didelis. Maksimalus leidžiamas dydis yra {{maxSizeMB}}MB.",

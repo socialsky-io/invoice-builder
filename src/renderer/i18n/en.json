@@ -203,7 +203,8 @@
     "noSort": "No sort",
     "ascending": "Ascending",
     "descending": "Descending",
-    "filters": "Filters"
+    "filters": "Filters",
+    "clear": "Clear"
   },
   "error": {
     "fileTooLarge": "File is too large. Maximum allowed size is {{maxSizeMB}}MB.",
