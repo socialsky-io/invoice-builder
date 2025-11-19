@@ -87,7 +87,7 @@ export const BusinessesPage = () => {
 
   return (
     <CRUDPage<Business, BusinessAdd, BusinessUpdate>
-      title={t('menuItems.businesses')}
+      title={t('businesses.title')}
       filters={filters}
       excelColumns={excelColumns}
       excelFileName={excelFileName}

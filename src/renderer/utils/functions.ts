@@ -7,6 +7,7 @@ import type { BusinessFromData } from '../types/business';
 import type { ClientFromData } from '../types/client';
 import type { CurrencyFromData } from '../types/currency';
 import type { Columns, Row, Rows, RowValue } from '../types/excel';
+import type { UnitFromData } from '../types/unit';
 import { validators } from './validators';
 
 export const validateOnlyNumbersLetters = (value: string) => {
@@ -117,6 +118,18 @@ export const isBusinessFromData = (data: unknown): data is BusinessFromData => {
     typeof d.paymentInformation !== 'string'
   )
     return false;
+
+  return true;
+};
+
+export const isUnitFromData = (data: unknown): data is UnitFromData => {
+  if (typeof data !== 'object' || data === null) return false;
+
+  const d = data as Record<string, unknown>;
+
+  if (typeof d.name !== 'string') return false;
+
+  if (d.id !== undefined && d.id !== null && d.id !== '' && typeof d.id !== 'number') return false;
 
   return true;
 };

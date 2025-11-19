@@ -68,7 +68,7 @@ export const ClientsPage: FC = () => {
 
   return (
     <CRUDPage<Client, ClientAdd, ClientUpdate>
-      title={t('menuItems.clients')}
+      title={t('clients.title')}
       filters={filters}
       excelColumns={excelColumns}
       excelFileName={excelFileName}
@@ -79,9 +79,7 @@ export const ClientsPage: FC = () => {
         return { items: clients, execute };
       }}
       useAdd={({ item, immediate, onDone }) => useClientAdd({ client: item, immediate, onDone })}
-      useAddBatch={({ item, immediate, onDone }) =>
-        useClientAddBatch({ clients: item as ClientAdd[], immediate, onDone })
-      }
+      useAddBatch={({ item, immediate, onDone }) => useClientAddBatch({ clients: item, immediate, onDone })}
       useUpdate={({ item, immediate, onDone }) => useClientUpdate({ client: item, immediate, onDone })}
       useDelete={useClientDelete}
       searchField={'name'}

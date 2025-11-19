@@ -62,6 +62,7 @@
     "dateFormat": "Date format"
   },
   "businesses": {
+    "title": "Business",
     "noItem": "Selected a business to view details.",
     "add": "Add business",
     "filter": {
@@ -107,6 +108,7 @@
     "shortNameHelper": "Maximum 2 characters"
   },
   "clients": {
+    "title": "Client",
     "noItem": "Selected a client to view details.",
     "add": "Add client",
     "filter": {
@@ -124,6 +126,7 @@
     }
   },
   "currencies": {
+    "title": "Currency",
     "noItem": "Selected a currency to view details.",
     "add": "Add currency",
     "filter": {
@@ -145,6 +148,27 @@
     "symbol": "Symbol",
     "text": "Text",
     "format": "Format"
+  },
+  "units": {
+    "title": "Unit",
+    "noItem": "Selected a unit to view details.",
+    "add": "Add unit",
+    "filter": {
+      "allText": "All units",
+      "atleastOneInvoiceText": "Units who have invoices",
+      "atleastOneInvoiceDesc": "Units which has at least one invoice",
+      "noInvoicesText": "Units who do not have invoices",
+      "noInvoicesDesc": "Units with no invoices",
+      "noInvoices30Text": "Inactive Units (30 days)",
+      "noInvoices30Desc": "No invoices in the last 30 days",
+      "noInvoices60Text": "Inactive Units (60 days)",
+      "noInvoices60Desc": "No invoices in the last 60 days",
+      "noInvoices90Text": "Inactive Units (90 days)",
+      "noInvoices90Desc": "No invoices in the last 90 days"
+    }
+  },
+  "unitsModal": {
+    "name": "Name"
   },
   "ariaLabel": {
     "menu": "Main menu",

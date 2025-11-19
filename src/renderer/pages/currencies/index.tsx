@@ -63,7 +63,7 @@ export const CurrenciesPage: FC = () => {
 
   return (
     <CRUDPage<Currency, CurrencyAdd, CurrencyUpdate>
-      title={t('menuItems.currencies')}
+      title={t('currencies.title')}
       filters={filters}
       excelColumns={excelColumns}
       excelFileName={excelFileName}

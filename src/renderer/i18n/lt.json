@@ -65,6 +65,7 @@
     "noItem": "Pasirinkite įmonę, kad peržiūrėtumėte detales.",
     "add": "Pridėti įmonę",
     "filter": {
+      "title": "Įmonė",
       "allText": "Visos įmonės",
       "atleastOneInvoiceText": "Įmonės su bent viena sąskaita",
       "atleastOneInvoiceDesc": "Įmonės, turinčios bent vieną sąskaitą",
@@ -107,6 +108,7 @@
     "shortNameHelper": "Maksimaliai 2 simboliai"
   },
   "clients": {
+    "title": "Klientas",
     "noItem": "Pasirinkite klientą, kad pamatytumėte detales.",
     "add": "Pridėti klientą",
     "filter": {
@@ -124,6 +126,7 @@
     }
   },
   "currencies": {
+    "title": "Valiuta",
     "noItem": "Pasirinkite valiutą, kad pamatytumėte jos informaciją.",
     "add": "Pridėti valiutą",
     "filter": {
@@ -145,6 +148,27 @@
     "symbol": "Simbolis",
     "text": "Pavadinimas",
     "format": "Formatas"
+  },
+  "units": {
+    "title": "Vienetas",
+    "noItem": "Pasirinkite vienetą, kad pamatytumėte detales.",
+    "add": "Pridėti vienetą",
+    "filter": {
+      "allText": "Visi vienetai",
+      "atleastOneInvoiceText": "Vienetai su sąskaitomis",
+      "atleastOneInvoiceDesc": "Vienetai, kurie turi bent vieną sąskaitą",
+      "noInvoicesText": "Vienetai be sąskaitų",
+      "noInvoicesDesc": "Vienetai, kuriems nėra sukurtų sąskaitų",
+      "noInvoices30Text": "Neaktyvūs vienetai (30 dienų)",
+      "noInvoices30Desc": "Nėra sąskaitų per pastarąsias 30 dienų",
+      "noInvoices60Text": "Neaktyvūs vienetai (60 dienų)",
+      "noInvoices60Desc": "Nėra sąskaitų per pastarąsias 60 dienų",
+      "noInvoices90Text": "Neaktyvūs vienetai (90 dienų)",
+      "noInvoices90Desc": "Nėra sąskaitų per pastarąsias 90 dienų"
+    }
+  },
+  "unitsModal": {
+    "name": "Pavadinimas"
   },
   "ariaLabel": {
     "menu": "Pagrindinis meniu",

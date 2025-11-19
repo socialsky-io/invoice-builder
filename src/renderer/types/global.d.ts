@@ -36,7 +36,7 @@ declare global {
       addItem: (data: ItemAdd) => Promise<Response>;
       addBatchItem: (data: ItemAdd[]) => Promise<Response>;
 
-      getAllUnits: (filter?: FilterType) => Promise<Unit[]>;
+      getAllUnits: (filter?: FilterType) => Promise<Response<Unit[]>>;
       updateUnit: (data: UnitUpdate) => Promise<Response>;
       deleteUnit: (id: number) => Promise<Response>;
       addUnit: (data: UnitAdd) => Promise<Response>;
