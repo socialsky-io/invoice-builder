@@ -2,18 +2,18 @@ import { Grid, TextField } from '@mui/material';
 import { useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from '../../hooks/useForm';
-import type { Unit, UnitFromData } from '../../types/unit';
+import type { Category, CategoryFromData } from '../../types/category';
 import { validators } from '../../utils/validators';
 
 interface Props {
-  unit?: Unit;
-  handleChange?: (data: { unit: UnitFromData; isFormValid: boolean }) => void;
+  category?: Category;
+  handleChange?: (data: { category: CategoryFromData; isFormValid: boolean }) => void;
 }
-export const Form: FC<Props> = ({ handleChange = () => {}, unit }) => {
+export const Form: FC<Props> = ({ handleChange = () => {}, category }) => {
   const { t } = useTranslation();
-  const { form, setForm, update } = useForm<UnitFromData>({
-    id: unit?.id,
-    name: unit?.name ?? ''
+  const { form, setForm, update } = useForm<CategoryFromData>({
+    id: category?.id,
+    name: category?.name ?? ''
   });
   const [errors, setErrors] = useState({
     name: false
@@ -29,16 +29,16 @@ export const Form: FC<Props> = ({ handleChange = () => {}, unit }) => {
 
   useEffect(() => {
     setForm({
-      id: unit?.id,
-      name: unit?.name ?? ''
+      id: category?.id,
+      name: category?.name ?? ''
     });
-  }, [unit]);
+  }, [category]);
 
   useEffect(() => {
     const valid = form.name.trim() !== '' && !errors.name;
 
     handleChange({
-      unit: form,
+      category: form,
       isFormValid: valid
     });
   }, [form, errors]);
@@ -47,7 +47,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, unit }) => {
     <Grid container spacing={2}>
       <Grid size={{ xs: 12, md: 12 }}>
         <TextField
-          label={t('unitsModal.name')}
+          label={t('categoriesModal.name')}
           fullWidth
           required
           value={form.name}

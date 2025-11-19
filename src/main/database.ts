@@ -54,7 +54,7 @@ const initInitialData = async () => {
   await runAsync(
     db,
     `
-      INSERT OR IGNORE INTO catageries (name)
+      INSERT OR IGNORE INTO categories (name)
       VALUES
         ('Goods'),
         ('Services');
@@ -136,7 +136,7 @@ const init = async () => {
   await runAsync(
     db,
     `
-    CREATE TABLE IF NOT EXISTS catageries (
+    CREATE TABLE IF NOT EXISTS categories (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL UNIQUE,
       createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
@@ -171,7 +171,7 @@ const init = async () => {
       createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
       updatedAt DATETIME NOT NULL DEFAULT (datetime('now')),
       FOREIGN KEY (unitId) REFERENCES units(id) ON DELETE CASCADE,
-      FOREIGN KEY (categoryId) REFERENCES catageries(id) ON DELETE CASCADE
+      FOREIGN KEY (categoryId) REFERENCES categories(id) ON DELETE CASCADE
     );
   `
   );

@@ -170,6 +170,27 @@
   "unitsModal": {
     "name": "Pavadinimas"
   },
+  "categories": {
+    "title": "Kategorija",
+    "noItem": "Pasirinkite kategoriją, kad pamatytumėte detales.",
+    "add": "Pridėti kategoriją",
+    "filter": {
+      "allText": "Visos kategorijos",
+      "atleastOneInvoiceText": "Kategorijos su sąskaitomis",
+      "atleastOneInvoiceDesc": "Kategorijos, kurios turi bent vieną sąskaitą",
+      "noInvoicesText": "Kategorijos be sąskaitų",
+      "noInvoicesDesc": "Kategorijos, kurioms nėra sukurtų sąskaitų",
+      "noInvoices30Text": "Neaktyvios kategorijos (30 dienų)",
+      "noInvoices30Desc": "Nėra sąskaitų per pastarąsias 30 dienų",
+      "noInvoices60Text": "Neaktyvios kategorijos (60 dienų)",
+      "noInvoices60Desc": "Nėra sąskaitų per pastarąsias 60 dienų",
+      "noInvoices90Text": "Neaktyvios kategorijos (90 dienų)",
+      "noInvoices90Desc": "Nėra sąskaitų per pastarąsias 90 dienų"
+    }
+  },
+  "categoriesModal": {
+    "name": "Pavadinimas"
+  },
   "ariaLabel": {
     "menu": "Pagrindinis meniu",
     "back": "Grįžti atgal",

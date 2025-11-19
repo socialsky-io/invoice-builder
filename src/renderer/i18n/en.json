@@ -159,15 +159,36 @@
       "atleastOneInvoiceDesc": "Units which has at least one invoice",
       "noInvoicesText": "Units who do not have invoices",
       "noInvoicesDesc": "Units with no invoices",
-      "noInvoices30Text": "Inactive Units (30 days)",
+      "noInvoices30Text": "Inactive units (30 days)",
       "noInvoices30Desc": "No invoices in the last 30 days",
-      "noInvoices60Text": "Inactive Units (60 days)",
+      "noInvoices60Text": "Inactive units (60 days)",
       "noInvoices60Desc": "No invoices in the last 60 days",
-      "noInvoices90Text": "Inactive Units (90 days)",
+      "noInvoices90Text": "Inactive units (90 days)",
       "noInvoices90Desc": "No invoices in the last 90 days"
     }
   },
   "unitsModal": {
+    "name": "Name"
+  },
+  "categories": {
+    "title": "Category",
+    "noItem": "Selected a category to view details.",
+    "add": "Add category",
+    "filter": {
+      "allText": "All categories",
+      "atleastOneInvoiceText": "Categories who have invoices",
+      "atleastOneInvoiceDesc": "Categories which has at least one invoice",
+      "noInvoicesText": "Categories who do not have invoices",
+      "noInvoicesDesc": "Categories with no invoices",
+      "noInvoices30Text": "Inactive categories (30 days)",
+      "noInvoices30Desc": "No invoices in the last 30 days",
+      "noInvoices60Text": "Inactive categories (60 days)",
+      "noInvoices60Desc": "No invoices in the last 60 days",
+      "noInvoices90Text": "Inactive categories (90 days)",
+      "noInvoices90Desc": "No invoices in the last 90 days"
+    }
+  },
+  "categoriesModal": {
     "name": "Name"
   },
   "ariaLabel": {

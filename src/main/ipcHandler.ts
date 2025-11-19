@@ -353,7 +353,7 @@ const initIpcHandler = (db: Database, path: string) => {
         c.*,
         COUNT(DISTINCT ii.invoiceId) AS invoiceCount,
         COUNT(DISTINCT qi.quoteId) AS quotesCount
-      FROM catageries c
+      FROM categories c
       LEFT JOIN items it ON it.categoryId = c.id
       LEFT JOIN invoice_items ii ON ii.itemId = it.id
       LEFT JOIN quote_items qi ON qi.itemId = it.id

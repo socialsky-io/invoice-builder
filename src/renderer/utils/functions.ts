@@ -4,6 +4,7 @@ import type { TFunction } from 'i18next';
 import { CurrencyFormat } from '../enums/currencyFormat';
 import { SortType } from '../enums/sortType';
 import type { BusinessFromData } from '../types/business';
+import type { CategoryFromData } from '../types/category';
 import type { ClientFromData } from '../types/client';
 import type { CurrencyFromData } from '../types/currency';
 import type { Columns, Row, Rows, RowValue } from '../types/excel';
@@ -123,6 +124,18 @@ export const isBusinessFromData = (data: unknown): data is BusinessFromData => {
 };
 
 export const isUnitFromData = (data: unknown): data is UnitFromData => {
+  if (typeof data !== 'object' || data === null) return false;
+
+  const d = data as Record<string, unknown>;
+
+  if (typeof d.name !== 'string') return false;
+
+  if (d.id !== undefined && d.id !== null && d.id !== '' && typeof d.id !== 'number') return false;
+
+  return true;
+};
+
+export const isCategoryFromData = (data: unknown): data is CategoryFromData => {
   if (typeof data !== 'object' || data === null) return false;
 
   const d = data as Record<string, unknown>;
