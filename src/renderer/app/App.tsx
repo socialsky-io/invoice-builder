@@ -7,6 +7,7 @@ import i18n from '../i18n';
 import { useAppDispatch, useAppSelector } from '../state/configureStore';
 import { addToast, removeToast, selectIsLoading, selectToasts, setSettings } from '../state/pageSlice';
 import type { Response } from '../types/response';
+import type { Settings } from '../types/settings';
 import { AppLayout } from './AppLayout';
 
 export const App: FC = () => {
@@ -15,7 +16,7 @@ export const App: FC = () => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const { settings } = useSettingsRetrieve({
-    onDone: (data: Response) => {
+    onDone: (data: Response<Settings>) => {
       if (!data.success) {
         if (data.message) dispatch(addToast({ message: data.message, severity: 'error' }));
         else if (data.key) dispatch(addToast({ message: t(data.key), severity: 'error' }));

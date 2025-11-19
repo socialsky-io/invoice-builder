@@ -15,22 +15,22 @@ declare global {
 
       openUrl: (url: string) => Promise<void>;
 
-      getAllSettings: () => Promise<Settings>;
+      getAllSettings: () => Promise<Response<Settings>>;
       updateSettings: (data: SettingsUpdate) => Promise<Response>;
 
-      getAllBusinesses: (filter?: FilterType) => Promise<Business[]>;
+      getAllBusinesses: (filter?: FilterType) => Promise<Response<Business[]>>;
       updateBusiness: (data: BusinessUpdate) => Promise<Response>;
       deleteBusiness: (id: number) => Promise<Response>;
       addBusiness: (data: BusinessAdd) => Promise<Response>;
       addBatchBusiness: (data: BusinessAdd[]) => Promise<Response>;
 
-      getAllClients: (filter?: FilterType) => Promise<Client[]>;
+      getAllClients: (filter?: FilterType) => Promise<Response<Client[]>>;
       updateClient: (data: ClientUpdate) => Promise<Response>;
       deleteClient: (id: number) => Promise<Response>;
       addClient: (data: ClientAdd) => Promise<Response>;
       addBatchClient: (data: ClientAdd[]) => Promise<Response>;
 
-      getAllItems: (filter?: FilterType) => Promise<Item[]>;
+      getAllItems: (filter?: FilterType) => Promise<Response<Item[]>>;
       updateItem: (data: ItemUpdate) => Promise<Response>;
       deleteItem: (id: number) => Promise<Response>;
       addItem: (data: ItemAdd) => Promise<Response>;
@@ -42,13 +42,13 @@ declare global {
       addUnit: (data: UnitAdd) => Promise<Response>;
       addBatchUnit: (data: UnitAdd[]) => Promise<Response>;
 
-      getAllCategories: (filter?: FilterType) => Promise<Category[]>;
+      getAllCategories: (filter?: FilterType) => Promise<Response<Category[]>>;
       updateCategory: (data: CategoryUpdate) => Promise<Response>;
       deleteCategory: (id: number) => Promise<Response>;
       addCategory: (data: CategoryAdd) => Promise<Response>;
       addBatchCategory: (data: CategoryAdd[]) => Promise<Response>;
 
-      getAllCurrencies: (filter?: FilterType) => Promise<Currency[]>;
+      getAllCurrencies: (filter?: FilterType) => Promise<Response<Currency[]>>;
       updateCurrency: (data: CurrencyUpdate) => Promise<Response>;
       deleteCurrency: (id: number) => Promise<Response>;
       addCurrency: (data: CurrencyAdd) => Promise<Response>;

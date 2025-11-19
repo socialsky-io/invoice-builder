@@ -4,7 +4,7 @@ import type { RequestHook } from '../../types/requestHook';
 import type { Response } from '../../types/response';
 import { useAsyncAction } from '../useAsyncAction';
 
-interface UseCurrencyUpdateParams extends RequestHook {
+interface UseCurrencyUpdateParams extends RequestHook<Response<CurrencyUpdate>> {
   currency?: CurrencyUpdate;
 }
 
@@ -14,12 +14,12 @@ export const useCurrencyUpdate = ({
   showLoader = true,
   onDone
 }: UseCurrencyUpdateParams) => {
-  const asyncFn = useCallback((): Promise<Response> => {
+  const asyncFn = useCallback((): Promise<Response<CurrencyUpdate>> => {
     if (!currency) return Promise.resolve({ success: false });
     return window.electronAPI.updateCurrency(currency);
   }, [currency]);
 
-  const { data, loading, execute } = useAsyncAction<Response>(asyncFn, {
+  const { data, loading, execute } = useAsyncAction<Response<CurrencyUpdate>>(asyncFn, {
     immediate,
     showLoader,
     onDone

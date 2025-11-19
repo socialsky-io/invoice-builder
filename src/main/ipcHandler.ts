@@ -15,7 +15,7 @@ interface SqliteError extends Error {
 }
 
 const isSqliteError = (error: unknown): error is SqliteError => {
-  return error instanceof Error && 'code' in error && typeof (error as any).code === 'string';
+  return error instanceof Error && 'code' in error && typeof (error as Record<string, unknown>).code === 'string';
 };
 
 const mapSqliteError = (error: unknown): { message?: string; key?: string } => {
@@ -91,7 +91,10 @@ const getAllEntities =
     ${havingClause}
   `;
 
-    return getAllRows<T & { invoiceCount: number; quotesCount: number }>(db, sql);
+    return {
+      success: true,
+      data: getAllRows<T & { invoiceCount: number; quotesCount: number }>(db, sql)
+    };
   };
 
 const handleEntity =
@@ -158,14 +161,17 @@ const initIpcHandler = (db: Database, path: string) => {
     const row = await getFirstRow(db, 'SELECT * FROM settings LIMIT 1');
     if (!row) return null;
     return {
-      ...row,
-      isDarkMode: row.isDarkMode === 1,
-      shouldIncludeYear: row.shouldIncludeYear === 1,
-      shouldIncludeMonth: row.shouldIncludeMonth === 1,
-      shouldIncludeBusinessName: row.shouldIncludeBusinessName === 1,
-      quotesON: row.quotesON === 1,
-      reportsON: row.reportsON === 1,
-      overviewCardsON: row.overviewCardsON === 1
+      success: true,
+      data: {
+        ...row,
+        isDarkMode: row.isDarkMode === 1,
+        shouldIncludeYear: row.shouldIncludeYear === 1,
+        shouldIncludeMonth: row.shouldIncludeMonth === 1,
+        shouldIncludeBusinessName: row.shouldIncludeBusinessName === 1,
+        quotesON: row.quotesON === 1,
+        reportsON: row.reportsON === 1,
+        overviewCardsON: row.overviewCardsON === 1
+      }
     };
   });
 
@@ -274,8 +280,10 @@ const initIpcHandler = (db: Database, path: string) => {
       GROUP BY it.id
       ${havingClause}
     `;
-
-    return getAllRows(db, sql);
+    return {
+      success: true,
+      data: getAllRows(db, sql)
+    };
   });
 
   ipcMain.handle('add-unit', async (_event, data: Unit) => handleUnits(data));
@@ -312,8 +320,10 @@ const initIpcHandler = (db: Database, path: string) => {
       GROUP BY u.id
       ${havingClause}
     `;
-
-    return getAllRows(db, sql);
+    return {
+      success: true,
+      data: getAllRows(db, sql)
+    };
   });
 
   ipcMain.handle('add-category', async (_event, data: Category) => handleCategories(data));
@@ -351,7 +361,10 @@ const initIpcHandler = (db: Database, path: string) => {
       ${havingClause}
     `;
 
-    return getAllRows(db, sql);
+    return {
+      success: true,
+      data: getAllRows(db, sql)
+    };
   });
 
   ipcMain.handle('add-currency', async (_event, data: Currency) => handleCurrencies(data));

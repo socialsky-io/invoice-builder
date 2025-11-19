@@ -3,13 +3,14 @@ import { useAppDispatch } from '../../state/configureStore';
 import { setBusinesses } from '../../state/pageSlice';
 import type { Business } from '../../types/business';
 import type { RequestHook } from '../../types/requestHook';
+import type { Response } from '../../types/response';
 import { uint8ArrayToDataUrl } from '../../utils/functions';
 import { useAsyncAction } from '../useAsyncAction';
 
-export const useBusinessesRetrieve = ({ showLoader = true, filter }: RequestHook) => {
+export const useBusinessesRetrieve = ({ showLoader = true, filter, onDone }: RequestHook<Response<Business[]>>) => {
   const dispatch = useAppDispatch();
   const asyncFn = useCallback(() => window.electronAPI.getAllBusinesses(filter), [filter]);
-  const { data: businesses, execute } = useAsyncAction<Business[]>(asyncFn, { showLoader });
+  const { data: businesses, execute } = useAsyncAction<Response<Business[]>>(asyncFn, { showLoader, onDone });
 
   const prepareBusinesses = async (businesses: Business[]) => {
     const serialized = await Promise.all(
@@ -22,13 +23,15 @@ export const useBusinessesRetrieve = ({ showLoader = true, filter }: RequestHook
   };
 
   useEffect(() => {
-    if (!businesses) return;
+    if (!businesses || !businesses.data) return;
 
     (async () => {
-      const serializableBusinesses = await prepareBusinesses(businesses);
-      dispatch(setBusinesses(serializableBusinesses));
+      if (businesses && businesses.data) {
+        const serializableBusinesses = await prepareBusinesses(businesses.data);
+        dispatch(setBusinesses(serializableBusinesses));
+      }
     })();
   }, [businesses, dispatch]);
 
-  return { businesses: businesses ?? [], execute };
+  return { businesses: businesses?.data ?? [], execute };
 };

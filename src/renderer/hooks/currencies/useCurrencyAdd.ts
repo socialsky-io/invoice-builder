@@ -4,7 +4,7 @@ import type { RequestHook } from '../../types/requestHook';
 import type { Response } from '../../types/response';
 import { useAsyncAction } from '../useAsyncAction';
 
-interface UseCurrencyAddParams extends RequestHook {
+interface UseCurrencyAddParams extends RequestHook<Response<CurrencyAdd>> {
   currency?: CurrencyAdd;
 }
 
@@ -14,7 +14,7 @@ export const useCurrencyAdd = ({ currency, immediate = true, showLoader = true, 
     return window.electronAPI.addCurrency(currency);
   }, [currency]);
 
-  const { data, loading, execute } = useAsyncAction<Response>(asyncFn, {
+  const { data, loading, execute } = useAsyncAction<Response<CurrencyAdd>>(asyncFn, {
     immediate,
     showLoader,
     onDone

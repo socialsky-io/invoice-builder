@@ -1,19 +1,20 @@
 import { useCallback, useEffect } from 'react';
 import { useAppDispatch } from '../../state/configureStore';
 import { setClients } from '../../state/pageSlice';
-import type { Business } from '../../types/business';
+import type { Client } from '../../types/client';
 import type { RequestHook } from '../../types/requestHook';
+import type { Response } from '../../types/response';
 import { useAsyncAction } from '../useAsyncAction';
 
-export const useClientsRetrieve = ({ showLoader = true, filter }: RequestHook) => {
+export const useClientsRetrieve = ({ showLoader = true, filter, onDone }: RequestHook<Response<Client[]>>) => {
   const dispatch = useAppDispatch();
   const asyncFn = useCallback(() => window.electronAPI.getAllClients(filter), [filter]);
-  const { data: clients, execute } = useAsyncAction<Business[]>(asyncFn, { showLoader });
+  const { data: clients, execute } = useAsyncAction<Response<Client[]>>(asyncFn, { showLoader, onDone });
 
   useEffect(() => {
-    if (!clients) return;
-    dispatch(setClients(clients));
+    if (!clients || !clients.data) return;
+    dispatch(setClients(clients.data));
   }, [clients, dispatch]);
 
-  return { clients: clients ?? [], execute };
+  return { clients: clients?.data ?? [], execute };
 };

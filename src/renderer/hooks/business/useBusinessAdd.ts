@@ -3,8 +3,7 @@ import type { BusinessAdd } from '../../types/business';
 import type { RequestHook } from '../../types/requestHook';
 import type { Response } from '../../types/response';
 import { useAsyncAction } from '../useAsyncAction';
-
-interface UseBusinessAddParams extends RequestHook {
+interface UseBusinessAddParams extends RequestHook<Response<BusinessAdd>> {
   business?: BusinessAdd;
 }
 
@@ -14,7 +13,7 @@ export const useBusinessAdd = ({ business, immediate = true, showLoader = true, 
     return window.electronAPI.addBusiness(business);
   }, [business]);
 
-  const { data, loading, execute } = useAsyncAction<Response>(asyncFn, {
+  const { data, loading, execute } = useAsyncAction<Response<BusinessAdd>>(asyncFn, {
     immediate,
     showLoader,
     onDone

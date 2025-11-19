@@ -67,7 +67,7 @@ export const ClientsPage: FC = () => {
   ];
 
   return (
-    <CRUDPage
+    <CRUDPage<Client, ClientAdd, ClientUpdate>
       title={t('menuItems.clients')}
       filters={filters}
       excelColumns={excelColumns}
@@ -78,11 +78,11 @@ export const ClientsPage: FC = () => {
         const { clients, execute } = useClientsRetrieve({ filter: filter, onDone });
         return { items: clients, execute };
       }}
-      useAdd={({ item, immediate, onDone }) => useClientAdd({ client: item as ClientAdd, immediate, onDone })}
+      useAdd={({ item, immediate, onDone }) => useClientAdd({ client: item, immediate, onDone })}
       useAddBatch={({ item, immediate, onDone }) =>
         useClientAddBatch({ clients: item as ClientAdd[], immediate, onDone })
       }
-      useUpdate={({ item, immediate, onDone }) => useClientUpdate({ client: item as ClientUpdate, immediate, onDone })}
+      useUpdate={({ item, immediate, onDone }) => useClientUpdate({ client: item, immediate, onDone })}
       useDelete={useClientDelete}
       searchField={'name'}
       sortOptions={[
@@ -92,7 +92,7 @@ export const ClientsPage: FC = () => {
       noItemButtonText={t('clients.add')}
       noItemText={t('clients.noItem')}
       leftTitle={t('menuItems.clients')}
-      validateAndNormalize={data => {
+      validateAndNormalize={async data => {
         if (!isClientFromData(data)) return;
         return data;
       }}

@@ -4,7 +4,7 @@ import type { RequestHook } from '../../types/requestHook';
 import type { Response } from '../../types/response';
 import { useAsyncAction } from '../useAsyncAction';
 
-interface UseBusinessUpdateParams extends RequestHook {
+interface UseBusinessUpdateParams extends RequestHook<Response<BusinessUpdate>> {
   business?: BusinessUpdate;
 }
 
@@ -14,12 +14,12 @@ export const useBusinessUpdate = ({
   showLoader = true,
   onDone
 }: UseBusinessUpdateParams) => {
-  const asyncFn = useCallback(async (): Promise<Response> => {
+  const asyncFn = useCallback(async (): Promise<Response<BusinessUpdate>> => {
     if (!business) return Promise.resolve({ success: false });
     return window.electronAPI.updateBusiness(business);
   }, [business]);
 
-  const { data, loading, execute } = useAsyncAction<Response>(asyncFn, {
+  const { data, loading, execute } = useAsyncAction<Response<BusinessUpdate>>(asyncFn, {
     immediate,
     showLoader,
     onDone

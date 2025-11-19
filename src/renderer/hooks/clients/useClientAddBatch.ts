@@ -4,7 +4,7 @@ import type { RequestHook } from '../../types/requestHook';
 import type { Response } from '../../types/response';
 import { useAsyncAction } from '../useAsyncAction';
 
-interface UseClientAddParams extends RequestHook {
+interface UseClientAddParams extends RequestHook<Response<ClientAdd[]>> {
   clients?: ClientAdd[];
 }
 
@@ -14,7 +14,7 @@ export const useClientAddBatch = ({ clients, immediate = true, showLoader = true
     return window.electronAPI.addBatchClient(clients);
   }, [clients]);
 
-  const { data, loading, execute } = useAsyncAction<Response>(asyncFn, {
+  const { data, loading, execute } = useAsyncAction<Response<ClientAdd[]>>(asyncFn, {
     immediate,
     showLoader,
     onDone

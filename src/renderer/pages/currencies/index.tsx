@@ -62,7 +62,7 @@ export const CurrenciesPage: FC = () => {
   ];
 
   return (
-    <CRUDPage
+    <CRUDPage<Currency, CurrencyAdd, CurrencyUpdate>
       title={t('menuItems.currencies')}
       filters={filters}
       excelColumns={excelColumns}
@@ -73,13 +73,9 @@ export const CurrenciesPage: FC = () => {
         const { currencies, execute } = useCurrenciesRetrieve({ filter: filter, onDone });
         return { items: currencies, execute };
       }}
-      useAdd={({ item, immediate, onDone }) => useCurrencyAdd({ currency: item as CurrencyAdd, immediate, onDone })}
-      useAddBatch={({ item, immediate, onDone }) =>
-        useCurrencyAddBatch({ currencies: item as CurrencyAdd[], immediate, onDone })
-      }
-      useUpdate={({ item, immediate, onDone }) =>
-        useCurrencyUpdate({ currency: item as CurrencyUpdate, immediate, onDone })
-      }
+      useAdd={({ item, immediate, onDone }) => useCurrencyAdd({ currency: item, immediate, onDone })}
+      useAddBatch={({ item, immediate, onDone }) => useCurrencyAddBatch({ currencies: item, immediate, onDone })}
+      useUpdate={({ item, immediate, onDone }) => useCurrencyUpdate({ currency: item, immediate, onDone })}
       useDelete={useCurrencyDelete}
       searchField={'text'}
       sortOptions={[
@@ -89,7 +85,7 @@ export const CurrenciesPage: FC = () => {
       noItemButtonText={t('currencies.add')}
       noItemText={t('currencies.noItem')}
       leftTitle={t('menuItems.currencies')}
-      validateAndNormalize={data => {
+      validateAndNormalize={async data => {
         if (!isCurrencyFromData(data)) return;
         return data;
       }}

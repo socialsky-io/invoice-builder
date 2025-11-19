@@ -3,17 +3,18 @@ import { useAppDispatch } from '../../state/configureStore';
 import { setCurrencies } from '../../state/pageSlice';
 import type { Currency } from '../../types/currency';
 import type { RequestHook } from '../../types/requestHook';
+import type { Response } from '../../types/response';
 import { useAsyncAction } from '../useAsyncAction';
 
-export const useCurrenciesRetrieve = ({ showLoader = true, filter }: RequestHook) => {
+export const useCurrenciesRetrieve = ({ showLoader = true, filter, onDone }: RequestHook<Response<Currency[]>>) => {
   const dispatch = useAppDispatch();
   const asyncFn = useCallback(() => window.electronAPI.getAllCurrencies(filter), [filter]);
-  const { data: currencies, execute } = useAsyncAction<Currency[]>(asyncFn, { showLoader });
+  const { data: currencies, execute } = useAsyncAction<Response<Currency[]>>(asyncFn, { showLoader, onDone });
 
   useEffect(() => {
-    if (!currencies) return;
-    dispatch(setCurrencies(currencies));
+    if (!currencies || !currencies.data) return;
+    dispatch(setCurrencies(currencies.data));
   }, [currencies, dispatch]);
 
-  return { currencies: currencies ?? [], execute };
+  return { currencies: currencies?.data ?? [], execute };
 };

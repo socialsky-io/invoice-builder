@@ -4,7 +4,7 @@ import type { RequestHook } from '../../types/requestHook';
 import type { Response } from '../../types/response';
 import { useAsyncAction } from '../useAsyncAction';
 
-interface UseClientAddParams extends RequestHook {
+interface UseClientAddParams extends RequestHook<Response<ClientAdd>> {
   client?: ClientAdd;
 }
 
@@ -14,7 +14,7 @@ export const useClientAdd = ({ client, immediate = true, showLoader = true, onDo
     return window.electronAPI.addClient(client);
   }, [client]);
 
-  const { data, loading, execute } = useAsyncAction<Response>(asyncFn, {
+  const { data, loading, execute } = useAsyncAction<Response<ClientAdd>>(asyncFn, {
     immediate,
     showLoader,
     onDone

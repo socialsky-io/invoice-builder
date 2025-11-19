@@ -2,18 +2,19 @@ import { useCallback, useEffect } from 'react';
 import { useAppDispatch } from '../../state/configureStore';
 import { setSettings } from '../../state/pageSlice';
 import type { RequestHook } from '../../types/requestHook';
+import type { Response } from '../../types/response';
 import type { Settings } from '../../types/settings';
 import { useAsyncAction } from '../useAsyncAction';
 
-export const useSettingsRetrieve = ({ showLoader = true }: RequestHook) => {
+export const useSettingsRetrieve = ({ showLoader = true, onDone }: RequestHook<Response<Settings>>) => {
   const dispatch = useAppDispatch();
   const asyncFn = useCallback(() => window.electronAPI.getAllSettings(), []);
-  const { data: settings, loading, execute } = useAsyncAction<Settings>(asyncFn, { showLoader });
+  const { data: settings, loading, execute } = useAsyncAction<Response<Settings>>(asyncFn, { showLoader, onDone });
 
   useEffect(() => {
-    if (!settings) return;
-    dispatch(setSettings(settings));
+    if (!settings || !settings.data) return;
+    dispatch(setSettings(settings.data));
   }, [settings, dispatch]);
 
-  return { settings, loading, execute };
+  return { settings: settings?.data, loading, execute };
 };

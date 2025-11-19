@@ -37,7 +37,7 @@ export const SettingsPage = () => {
   const { execute } = useSettingsUpdate({
     newSettings: stableSettings ?? {},
     immediate: false,
-    onDone: (data: Response) => {
+    onDone: (data: Response<unknown>) => {
       if (!data.success) {
         if (data.message) dispatch(addToast({ message: data.message, severity: 'error' }));
         else if (data.key) dispatch(addToast({ message: t(data.key), severity: 'error' }));
