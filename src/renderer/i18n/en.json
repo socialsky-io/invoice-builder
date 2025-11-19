@@ -167,7 +167,9 @@
     "noWorksheetFound": "No worksheet found",
     "headerRowEmpty": "Header row is empty or missing",
     "importFailed": "Import failed",
-    "invalidLogo": "Invalid logo string"
+    "invalidLogo": "Invalid logo string",
+    "invalidConstraint": "Record violates a database constraint.",
+    "unknownError": "Unknown database error"
   },
   "common": {
     "save": "Save",

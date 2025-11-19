@@ -18,14 +18,14 @@ const isSqliteError = (error: unknown): error is SqliteError => {
   return error instanceof Error && 'code' in error && typeof (error as any).code === 'string';
 };
 
-const mapSqliteError = (error: unknown): string => {
+const mapSqliteError = (error: unknown): { message?: string; key?: string } => {
   if (isSqliteError(error)) {
     if (error.code === 'SQLITE_CONSTRAINT') {
-      return 'Record violates a database constraint.';
+      return { key: 'error.invalidConstraint' };
     }
-    return error.message;
+    return { message: error.message };
   }
-  return 'Unknown database error';
+  return { key: 'error.invalidConstraint' };
 };
 
 const prepareUpdate = (data: UpdateData, id?: number) => {
@@ -114,7 +114,7 @@ const handleEntity =
 
       return { success: true };
     } catch (error) {
-      return { success: false, message: mapSqliteError(error) };
+      return { success: false, ...mapSqliteError(error) };
     }
   };
 
@@ -200,7 +200,7 @@ const initIpcHandler = (db: Database, path: string) => {
         );
         return { success: true };
       } catch (error) {
-        return { success: false, message: mapSqliteError(error) };
+        return { success: false, ...mapSqliteError(error) };
       }
     }
   );
@@ -212,7 +212,7 @@ const initIpcHandler = (db: Database, path: string) => {
       await runDb(db, 'DELETE FROM clients WHERE id = ?;', [id]);
       return { success: true };
     } catch (error) {
-      return { success: false, message: mapSqliteError(error) };
+      return { success: false, ...mapSqliteError(error) };
     }
   });
   ipcMain.handle('batch-add-client', async (_event, data: Client[]) => {
@@ -231,7 +231,7 @@ const initIpcHandler = (db: Database, path: string) => {
       await runDb(db, 'DELETE FROM businesses WHERE id = ?;', [id]);
       return { success: true };
     } catch (error) {
-      return { success: false, message: mapSqliteError(error) };
+      return { success: false, ...mapSqliteError(error) };
     }
   });
   ipcMain.handle('batch-add-business', async (_event, data: Business[]) => {
@@ -250,7 +250,7 @@ const initIpcHandler = (db: Database, path: string) => {
       await runDb(db, 'DELETE FROM items WHERE id = ?;', [id]);
       return { success: true };
     } catch (error) {
-      return { success: false, message: mapSqliteError(error) };
+      return { success: false, ...mapSqliteError(error) };
     }
   });
   ipcMain.handle('batch-add-item', async (_event, data: Item[]) => {
@@ -285,7 +285,7 @@ const initIpcHandler = (db: Database, path: string) => {
       await runDb(db, 'DELETE FROM units WHERE id = ?;', [id]);
       return { success: true };
     } catch (error) {
-      return { success: false, message: mapSqliteError(error) };
+      return { success: false, ...mapSqliteError(error) };
     }
   });
   ipcMain.handle('batch-add-unit', async (_event, data: Unit[]) => {
@@ -323,7 +323,7 @@ const initIpcHandler = (db: Database, path: string) => {
       await runDb(db, 'DELETE FROM categories WHERE id = ?;', [id]);
       return { success: true };
     } catch (error) {
-      return { success: false, message: mapSqliteError(error) };
+      return { success: false, ...mapSqliteError(error) };
     }
   });
   ipcMain.handle('batch-add-category', async (_event, data: Category[]) => {
@@ -361,7 +361,7 @@ const initIpcHandler = (db: Database, path: string) => {
       await runDb(db, 'DELETE FROM currencies WHERE id = ?;', [id]);
       return { success: true };
     } catch (error) {
-      return { success: false, message: mapSqliteError(error) };
+      return { success: false, ...mapSqliteError(error) };
     }
   });
   ipcMain.handle('batch-add-currency', async (_event, data: Currency[]) => {

@@ -97,8 +97,9 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
   const { items, execute: reload } = useRetrieve({
     filter: selectedFilter?.value,
     onDone: (data: Response) => {
-      if (!data.success && data.message) {
-        dispatch(addToast({ message: data.message, severity: 'error' }));
+      if (!data.success) {
+        if (data.message) dispatch(addToast({ message: data.message, severity: 'error' }));
+        else if (data.key) dispatch(addToast({ message: t(data.key), severity: 'error' }));
       }
     }
   });
@@ -111,8 +112,9 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
       setSelectedItem(undefined);
       reload();
 
-      if (!data.success && data.message) {
-        dispatch(addToast({ message: data.message, severity: 'error' }));
+      if (!data.success) {
+        if (data.message) dispatch(addToast({ message: data.message, severity: 'error' }));
+        else if (data.key) dispatch(addToast({ message: t(data.key), severity: 'error' }));
       }
     }
   });
@@ -125,8 +127,9 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
       setSelectedItem(undefined);
       reload();
 
-      if (!data.success && data.message) {
-        dispatch(addToast({ message: data.message, severity: 'error' }));
+      if (!data.success) {
+        if (data.message) dispatch(addToast({ message: data.message, severity: 'error' }));
+        else if (data.key) dispatch(addToast({ message: t(data.key), severity: 'error' }));
       }
     }
   });
@@ -139,8 +142,9 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
       if (!isDesktop) setSelectedItem(undefined);
       reload();
 
-      if (!data.success && data.message) {
-        dispatch(addToast({ message: data.message, severity: 'error' }));
+      if (!data.success) {
+        if (data.message) dispatch(addToast({ message: data.message, severity: 'error' }));
+        else if (data.key) dispatch(addToast({ message: t(data.key), severity: 'error' }));
       }
     }
   });
@@ -153,8 +157,9 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
       setSelectedItem(undefined);
       reload();
 
-      if (!data.success && data.message) {
-        dispatch(addToast({ message: data.message, severity: 'error' }));
+      if (!data.success) {
+        if (data.message) dispatch(addToast({ message: data.message, severity: 'error' }));
+        else if (data.key) dispatch(addToast({ message: t(data.key), severity: 'error' }));
       }
     }
   });

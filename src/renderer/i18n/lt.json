@@ -167,7 +167,9 @@
     "noWorksheetFound": "Darbalapis nerastas",
     "headerRowEmpty": "Antraštės eilutė tuščia arba jos trūksta",
     "importFailed": "Importavimas nepavyko",
-    "invalidLogo": "Neteisingas logotipo tekstas"
+    "invalidLogo": "Neteisingas logotipo tekstas",
+    "invalidConstraint": "Įrašas pažeidžia duomenų bazės apribojimą.",
+    "unknownError": "Nežinoma duomenų bazės klaida"
   },
   "common": {
     "save": "Išsaugoti",
@@ -183,6 +185,7 @@
     "quotes": "Pasiūlymai",
     "noData": "Duomenų pagal paieškos kriterijus nėra",
     "noDataYet": "Duomenų dar nėra. Pradėkite juos pridėti...",
+    "importExport": "Importuoti / Eksportuoti",
     "import": "Importuoti",
     "export": "Eksportuoti",
     "downloadTemplate": "Atsisiųsti šabloną",

@@ -38,8 +38,9 @@ export const SettingsPage = () => {
     newSettings: stableSettings ?? {},
     immediate: false,
     onDone: (data: Response) => {
-      if (!data.success && data.message) {
-        dispatch(addToast({ message: data.message, severity: 'error' }));
+      if (!data.success) {
+        if (data.message) dispatch(addToast({ message: data.message, severity: 'error' }));
+        else if (data.key) dispatch(addToast({ message: t(data.key), severity: 'error' }));
       }
     }
   });
