@@ -166,7 +166,8 @@
     "unsupportedImage": "Unsupported image type",
     "noWorksheetFound": "No worksheet found",
     "headerRowEmpty": "Header row is empty or missing",
-    "importFailed": "Import failed"
+    "importFailed": "Import failed",
+    "invalidLogo": "Invalid logo string"
   },
   "common": {
     "save": "Save",

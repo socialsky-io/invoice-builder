@@ -93,6 +93,7 @@ export const ClientsPage: FC = () => {
       noItemText={t('clients.noItem')}
       leftTitle={t('menuItems.clients')}
       validateAndNormalize={data => {
+        if (!isClientFromData(data)) return;
         return data;
       }}
       renderListItem={(item, onEdit, onDelete) => (

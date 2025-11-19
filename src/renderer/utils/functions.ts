@@ -7,6 +7,7 @@ import type { BusinessFromData } from '../types/business';
 import type { ClientFromData } from '../types/client';
 import type { CurrencyFromData } from '../types/currency';
 import type { Columns, Row, Rows, RowValue } from '../types/excel';
+import { validators } from './validators';
 
 export const validateOnlyNumbersLetters = (value: string) => {
   const isValid = /^[a-zA-Z0-9]*$/.test(value);
@@ -87,9 +88,23 @@ export const isBusinessFromData = (data: unknown): data is BusinessFromData => {
   if (typeof d.shortName !== 'string') return false;
 
   if (d.id !== undefined && typeof d.id !== 'number') return false;
-  if (d.logo !== undefined && !(d.logo instanceof Blob)) return false;
-  if (d.email !== undefined && typeof d.email !== 'string') return false;
-  if (d.phone !== undefined && typeof d.phone !== 'string') return false;
+
+  if (d.logo !== undefined && d.logo !== '' && d.logo != null) {
+    // const isString = typeof d.logo === 'string';
+    const isBlob = d.logo instanceof Blob;
+
+    // if (!isString && !isBlob) return false;
+    if (!isBlob) return false;
+  }
+
+  if (d.email !== undefined) {
+    if (typeof d.email !== 'string') return false;
+    if (d.email !== '' && !validators.email(d.email)) return false;
+  }
+  if (d.phone !== undefined) {
+    if (typeof d.phone !== 'string') return false;
+    if (d.phone !== '' && !validators.phone(d.phone)) return false;
+  }
   if (d.role !== undefined && typeof d.role !== 'string') return false;
   if (d.address !== undefined && typeof d.address !== 'string') return false;
   if (d.website !== undefined && typeof d.website !== 'string') return false;
@@ -108,8 +123,15 @@ export const isClientFromData = (data: unknown): data is ClientFromData => {
   if (typeof d.shortName !== 'string') return false;
 
   if (d.id !== undefined && typeof d.id !== 'number') return false;
-  if (d.email !== undefined && typeof d.email !== 'string') return false;
-  if (d.phone !== undefined && typeof d.phone !== 'string') return false;
+
+  if (d.email !== undefined) {
+    if (typeof d.email !== 'string') return false;
+    if (d.email !== '' && !validators.email(d.email)) return false;
+  }
+  if (d.phone !== undefined) {
+    if (typeof d.phone !== 'string') return false;
+    if (d.phone !== '' && !validators.phone(d.phone)) return false;
+  }
   if (d.address !== undefined && typeof d.address !== 'string') return false;
   if (d.code !== undefined && typeof d.code !== 'string') return false;
   if (d.additional !== undefined && typeof d.additional !== 'string') return false;
@@ -138,17 +160,25 @@ export const isCurrencyFromData = (data: unknown): data is CurrencyFromData => {
   return true;
 };
 
-export const dataUrlToUint8Array = (dataUrl: string): Uint8Array => {
-  const base64Index = dataUrl.indexOf(',') + 1;
-  const base64 = dataUrl.slice(base64Index);
-  const binaryString = atob(base64);
-  const len = binaryString.length;
-  const bytes = new Uint8Array(len);
-  for (let i = 0; i < len; i++) {
-    bytes[i] = binaryString.charCodeAt(i);
-  }
-  return bytes;
-};
+// Leaving logos column out of excel
+// export const dataUrlToBlob = (dataUrl: string): Blob => {
+//   try {
+//     const base64Index = dataUrl.indexOf(',') + 1;
+//     const base64 = dataUrl.slice(base64Index);
+//     const mimeTypeMatch = dataUrl.match(/^data:(.*?);base64,/);
+//     const mimeType = mimeTypeMatch ? mimeTypeMatch[1] : 'application/octet-stream';
+
+//     const byteCharacters = atob(base64);
+//     const byteNumbers = new Array(byteCharacters.length);
+//     for (let i = 0; i < byteCharacters.length; i++) {
+//       byteNumbers[i] = byteCharacters.charCodeAt(i);
+//     }
+//     const byteArray = new Uint8Array(byteNumbers);
+//     return new Blob([byteArray], { type: mimeType });
+//   } catch (error) {
+//     throw new Error(t("error.invalidLogo"));
+//   }
+// };
 
 export const isDataUrl = (value: unknown): value is string => {
   return typeof value === 'string' && /^data:[\w/+.-]+;base64,[A-Za-z0-9+/=]+$/.test(value);
@@ -219,11 +249,15 @@ export const importExcel = async (
     const rowData: Row = {} as Row;
     columns.forEach((col, i) => {
       const cellValue = row.getCell(i + 1).value as RowValue;
-      if (isDataUrl(cellValue)) {
-        rowData[col] = dataUrlToUint8Array(cellValue);
-      } else {
-        rowData[col] = cellValue;
-      }
+
+      // Leaving logos column out of excel
+      // if (isDataUrl(cellValue)) {
+      //   rowData[col] = dataUrlToBlob(cellValue);
+      // } else {
+      //   rowData[col] = cellValue;
+      // }
+
+      rowData[col] = cellValue;
     });
     rows.push(rowData);
   });

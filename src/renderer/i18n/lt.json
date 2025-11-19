@@ -166,7 +166,8 @@
     "unsupportedImage": "Nepalaikomas paveikslėlio tipas",
     "noWorksheetFound": "Darbalapis nerastas",
     "headerRowEmpty": "Antraštės eilutė tuščia arba jos trūksta",
-    "importFailed": "Importavimas nepavyko"
+    "importFailed": "Importavimas nepavyko",
+    "invalidLogo": "Neteisingas logotipo tekstas"
   },
   "common": {
     "save": "Išsaugoti",

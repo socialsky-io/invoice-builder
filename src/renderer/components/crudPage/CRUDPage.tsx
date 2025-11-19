@@ -258,9 +258,9 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
             severity: 'error'
           })
         );
+      } else {
+        setNewItemsBatch(normalizedRows);
       }
-
-      setNewItemsBatch(normalizedRows);
     },
     [t, validateAndNormalize]
   );
