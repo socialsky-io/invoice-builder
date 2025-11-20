@@ -75,6 +75,34 @@ const getHavingClause = (
       return '';
   }
 };
+const getOrCreateByName = async (
+  db: Database,
+  table: 'units' | 'categories',
+  name: string
+): Promise<number | undefined> => {
+  const row = await getFirstRow(db, `SELECT id FROM ${table} WHERE name = ? LIMIT 1`, [name]);
+  if (row?.id) return row.id as number;
+
+  await runDb(db, `INSERT INTO ${table} (name) VALUES (?)`, [name]);
+
+  const newRow = await getFirstRow(db, `SELECT id FROM ${table} WHERE name = ? LIMIT 1`, [name]);
+  if (newRow?.id) return newRow.id as number;
+
+  return undefined;
+};
+
+const resolveItemRelations = async (db: Database, data: Item): Promise<Item> => {
+  const item = { ...data };
+
+  if (typeof item.categoryId === 'undefined' && item.categoryName) {
+    item.categoryId = await getOrCreateByName(db, 'categories', item.categoryName);
+  }
+  if (typeof item.unitId === 'undefined' && item.unitName) {
+    item.unitId = await getOrCreateByName(db, 'units', item.unitName);
+  }
+
+  return item;
+};
 
 const getAllEntities =
   <T extends Record<string, unknown>>(db: Database, table: string, keyFieldName: string) =>
@@ -267,7 +295,8 @@ const initIpcHandler = (db: Database, path: string) => {
   });
   ipcMain.handle('batch-add-item', async (_event, data: Item[]) => {
     for (const row of data) {
-      const result = await handleItems(row);
+      const finalItem = await resolveItemRelations(db, row);
+      const result = await handleItems(finalItem);
       if (!result.success) return result;
     }
     return { success: true };
@@ -279,8 +308,12 @@ const initIpcHandler = (db: Database, path: string) => {
       SELECT 
         it.*,
         COUNT(DISTINCT ii.invoiceId) AS invoiceCount,
-        COUNT(DISTINCT qi.quoteId) AS quotesCount
+        COUNT(DISTINCT qi.quoteId) AS quotesCount,
+        u.name AS unitName,
+        c.name AS categoryName
       FROM items it
+      LEFT JOIN units u ON it.unitId = u.id
+      LEFT JOIN categories c ON it.categoryId = c.id
       LEFT JOIN invoice_items ii ON ii.itemId = it.id
       LEFT JOIN quote_items qi ON qi.itemId = it.id
       GROUP BY it.id

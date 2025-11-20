@@ -70,7 +70,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, client }) => {
 
   return (
     <Grid container spacing={2}>
-      <Grid size={{ xs: 12, md: 4 }}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <TextField
           label={t('clientsModal.name')}
           fullWidth
@@ -84,7 +84,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, client }) => {
           }}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 4 }}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <TextField
           label={t('clientsModal.shortName')}
           fullWidth
@@ -103,7 +103,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, client }) => {
           }}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 4 }}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <TextField
           label={t('clientsModal.address')}
           fullWidth
@@ -111,7 +111,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, client }) => {
           onChange={e => update('address', e.target.value)}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 4 }}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <TextField
           label={t('clientsModal.code')}
           fullWidth
@@ -119,7 +119,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, client }) => {
           onChange={e => update('code', e.target.value)}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 4 }}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <TextField
           type="email"
           label={t('clientsModal.email')}
@@ -133,7 +133,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, client }) => {
           helperText={errors.email ? t('clientsModal.invalidEmail') : ''}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 4 }}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <TextField
           label={t('clientsModal.phone')}
           fullWidth

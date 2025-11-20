@@ -101,7 +101,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
       <Grid size={{ xs: 12, md: 12 }} sx={{ display: 'flex', justifyContent: 'center' }}>
         <UploadImage onUpload={onUpload} logoUrl={logoUrl} />
       </Grid>
-      <Grid size={{ xs: 12, md: 4 }}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <TextField
           label={t('businessesModal.name')}
           fullWidth
@@ -115,7 +115,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
           }}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 4 }}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <TextField
           label={t('businessesModal.shortName')}
           fullWidth
@@ -134,7 +134,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
           }}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 4 }}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <TextField
           label={t('businessesModal.address')}
           fullWidth
@@ -142,7 +142,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
           onChange={e => update('address', e.target.value)}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 4 }}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <TextField
           label={t('businessesModal.role')}
           fullWidth
@@ -150,7 +150,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
           onChange={e => update('role', e.target.value)}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 4 }}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <TextField
           type="email"
           label={t('businessesModal.email')}
@@ -164,7 +164,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
           helperText={errors.email ? t('businessesModal.invalidEmail') : ''}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 4 }}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <TextField
           label={t('businessesModal.phone')}
           fullWidth
@@ -182,7 +182,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
           }}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 4 }}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <TextField
           label={t('businessesModal.website')}
           fullWidth
@@ -190,7 +190,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
           onChange={e => update('website', e.target.value)}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 8 }}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <TextField
           multiline
           label={t('businessesModal.additional')}

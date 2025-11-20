@@ -3,6 +3,9 @@ export interface Item {
   name: string;
   amount_cents?: number;
   unitId?: number;
+  amount?: number;
   categoryId?: number;
+  categoryName?: string;
+  unitName?: string;
   description?: string;
 }

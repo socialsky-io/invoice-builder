@@ -16,5 +16,5 @@ export interface PageState {
   items: Item[];
   currencies: Currency[];
   units: Unit[];
-  category: Category[];
+  categories: Category[];
 }

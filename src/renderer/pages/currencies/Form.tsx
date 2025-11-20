@@ -93,20 +93,6 @@ export const Form: FC<Props> = ({ handleChange = () => {}, currency }) => {
         />
       </Grid>
       <Grid size={{ xs: 12, md: 4 }}>
-        <TextField
-          label={t('currenciesModal.text')}
-          fullWidth
-          required
-          value={form.text}
-          error={errors.text}
-          helperText={errors.text ? t('common.fieldRequired') : ''}
-          onChange={e => {
-            update('text', e.target.value);
-            validateField('text', e.target.value);
-          }}
-        />
-      </Grid>
-      <Grid size={{ xs: 12, md: 4 }}>
         <Autocomplete
           fullWidth
           disabled={isFormatDisabled}
@@ -137,6 +123,20 @@ export const Form: FC<Props> = ({ handleChange = () => {}, currency }) => {
             />
           )}
           freeSolo={false}
+        />
+      </Grid>
+      <Grid size={{ xs: 12, md: 12 }}>
+        <TextField
+          label={t('currenciesModal.text')}
+          fullWidth
+          required
+          value={form.text}
+          error={errors.text}
+          helperText={errors.text ? t('common.fieldRequired') : ''}
+          onChange={e => {
+            update('text', e.target.value);
+            validateField('text', e.target.value);
+          }}
         />
       </Grid>
     </Grid>

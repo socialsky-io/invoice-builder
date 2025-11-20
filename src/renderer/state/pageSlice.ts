@@ -23,7 +23,7 @@ const initialState: PageState = {
   items: [],
   currencies: [],
   units: [],
-  category: []
+  categories: []
 };
 
 export const pageSlice = createSlice({
@@ -70,7 +70,7 @@ export const pageSlice = createSlice({
       state.units = action.payload;
     },
     setCategories: (state, action: PayloadAction<Category[]>) => {
-      state.category = action.payload;
+      state.categories = action.payload;
     },
     setMode: (state, action: PayloadAction<boolean>) => {
       if (!state.settings) return;
@@ -145,10 +145,21 @@ export const selectToasts = createSelector(selectState, state => state.toasts);
 export const selectSettings = createSelector(selectState, state => state.settings);
 export const selectBusinesses = createSelector(selectState, state => state.businesses);
 export const selectClients = createSelector(selectState, state => state.clients);
-export const selectCategories = createSelector(selectState, state => state.category);
+export const selectCategories = createSelector(selectState, state => state.categories);
 export const selectCurrencies = createSelector(selectState, state => state.currencies);
 export const selectUnits = createSelector(selectState, state => state.units);
 export const selectItems = createSelector(selectState, state => state.items);
+
+export const selectUnitsOptions = createSelector(selectState, state =>
+  state.units.map(u => {
+    return { label: u.name, value: u.id };
+  })
+);
+export const selectCategoriesOptions = createSelector(selectState, state =>
+  state.categories.map(c => {
+    return { label: c.name, value: c.id };
+  })
+);
 
 export const {
   enableLoading,

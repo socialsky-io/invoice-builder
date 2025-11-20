@@ -1,6 +1,7 @@
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 import type { TFunction } from 'i18next';
+import { AmountFormat } from '../enums/amountFormat';
 import { CurrencyFormat } from '../enums/currencyFormat';
 import { SortType } from '../enums/sortType';
 import type { BusinessFromData } from '../types/business';
@@ -8,6 +9,7 @@ import type { CategoryFromData } from '../types/category';
 import type { ClientFromData } from '../types/client';
 import type { CurrencyFromData } from '../types/currency';
 import type { Columns, Row, Rows, RowValue } from '../types/excel';
+import type { ItemFromData } from '../types/item';
 import type { UnitFromData } from '../types/unit';
 import { validators } from './validators';
 
@@ -118,6 +120,48 @@ export const isBusinessFromData = (data: unknown): data is BusinessFromData => {
     d.paymentInformation !== '' &&
     typeof d.paymentInformation !== 'string'
   )
+    return false;
+
+  return true;
+};
+
+export const isItemFromData = (data: unknown): data is ItemFromData => {
+  if (typeof data !== 'object' || data === null) return false;
+
+  const d = data as Record<string, unknown>;
+
+  if (typeof d.name !== 'string') return false;
+
+  if (d.id !== undefined && d.id !== null && d.id !== '' && typeof d.id !== 'number') return false;
+
+  if (
+    d.amount_cents !== undefined &&
+    d.amount_cents !== null &&
+    d.amount_cents !== '' &&
+    typeof d.amount_cents !== 'number'
+  )
+    return false;
+  if (d.amount !== undefined && d.amount !== null && d.amount !== '' && typeof d.amount !== 'number') return false;
+  if (
+    d.description !== undefined &&
+    d.description !== null &&
+    d.description !== '' &&
+    typeof d.description !== 'string'
+  )
+    return false;
+
+  if (d.unitID !== undefined && d.unitID !== null && d.unitID !== '' && typeof d.unitID !== 'number') return false;
+  if (d.categoryID !== undefined && d.categoryID !== null && d.categoryID !== '' && typeof d.categoryID !== 'number')
+    return false;
+
+  if (
+    d.categoryName !== undefined &&
+    d.categoryName !== null &&
+    d.categoryName !== '' &&
+    typeof d.categoryName !== 'string'
+  )
+    return false;
+  if (d.unitName !== undefined && d.unitName !== null && d.unitName !== '' && typeof d.unitName !== 'string')
     return false;
 
   return true;
@@ -304,4 +348,29 @@ export const importExcel = async (
 
 export const getFormattedLabel = (data: { label: string; symbol: string; code: string }) => {
   return data.label.replace('{symbol}', data.symbol || '').replace('{code}', data.code || '');
+};
+
+export const getFormattingMeta = (amountFormat: AmountFormat = AmountFormat.enUS) => {
+  const hasDecimal = !amountFormat.includes('no-decimal');
+  const separatorMap: Record<string, { thousand: string; decimal: string }> = {
+    'en-US': { thousand: ',', decimal: '.' },
+    'lt-LT': { thousand: ' ', decimal: ',' },
+    'de-DE': { thousand: '.', decimal: ',' }
+  };
+  const baseLocale = amountFormat.replace('-no-decimal', '');
+  const { thousand, decimal } = separatorMap[baseLocale] || { thousand: ',', decimal: '.' };
+
+  return { hasDecimal, thousand, decimal, baseLocale };
+};
+
+export const formatAmount = (amount: number, amountFormat: AmountFormat = AmountFormat.enUS) => {
+  const { hasDecimal, baseLocale } = getFormattingMeta(amountFormat);
+
+  const options: Intl.NumberFormatOptions = {
+    minimumFractionDigits: hasDecimal ? 2 : 0,
+    maximumFractionDigits: hasDecimal ? 2 : 0,
+    useGrouping: true
+  };
+
+  return new Intl.NumberFormat(baseLocale, options).format(amount);
 };

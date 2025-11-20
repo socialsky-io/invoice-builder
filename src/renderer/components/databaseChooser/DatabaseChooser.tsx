@@ -57,9 +57,10 @@ export const DatabaseChooser: FC<Props> = ({ onDatabaseRead }) => {
   });
 
   const saveDbList = useCallback((list: string[]) => {
-    setSavedDbs(list);
+    const sortedList = [...list].sort((a, b) => a.localeCompare(b));
+    setSavedDbs(sortedList);
     try {
-      localStorage.setItem('databases', JSON.stringify(list));
+      localStorage.setItem('databases', JSON.stringify(sortedList));
     } catch (err) {
       dispatch(addToast({ message: t('error.failedToSave'), severity: 'error' }));
     }
@@ -93,7 +94,9 @@ export const DatabaseChooser: FC<Props> = ({ onDatabaseRead }) => {
   useEffect(() => {
     try {
       const raw = localStorage.getItem('databases');
-      if (raw) setSavedDbs(JSON.parse(raw) as string[]);
+      if (raw) {
+        setSavedDbs(JSON.parse(raw) as string[]);
+      }
 
       const lastUsedLanguage = localStorage.getItem('lastUsedLanguage');
       if (lastUsedLanguage) i18n.changeLanguage(lastUsedLanguage);

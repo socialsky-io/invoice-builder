@@ -196,6 +196,31 @@
     "description": "Choose an existing database or create a new one. You can remember frequently used databases for quick access.",
     "button": "Select database file"
   },
+  "items": {
+    "title": "Item",
+    "noItem": "Selected a item to view details.",
+    "add": "Add item",
+    "filter": {
+      "allText": "All items",
+      "atleastOneInvoiceText": "Items who have invoices",
+      "atleastOneInvoiceDesc": "Items which has at least one invoice",
+      "noInvoicesText": "Items who do not have invoices",
+      "noInvoicesDesc": "Items with no invoices",
+      "noInvoices30Text": "Inactive items (30 days)",
+      "noInvoices30Desc": "No invoices in the last 30 days",
+      "noInvoices60Text": "Inactive items (60 days)",
+      "noInvoices60Desc": "No invoices in the last 60 days",
+      "noInvoices90Text": "Inactive items (90 days)",
+      "noInvoices90Desc": "No invoices in the last 90 days"
+    }
+  },
+  "itemsModal": {
+    "name": "Name",
+    "description": "Description",
+    "amount": "Amount",
+    "unit": "Unit",
+    "category": "Category"
+  },
   "ariaLabel": {
     "menu": "Main menu",
     "back": "Return back",

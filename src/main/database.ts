@@ -165,7 +165,7 @@ const init = async () => {
     CREATE TABLE IF NOT EXISTS items (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
-      amount_cents INTEGER, 
+      amount_cents INTEGER DEFAULT (0), 
       unitId INTEGER,
       categoryId INTEGER,
       description TEXT,

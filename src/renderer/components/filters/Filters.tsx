@@ -65,6 +65,8 @@ export const BottomFilterSheet: FC<Props> = ({ filters, onFilter = () => {}, sel
               mx: 'auto',
               borderTopLeftRadius: 16,
               borderTopRightRadius: 16,
+              borderBottomLeftRadius: 0,
+              borderBottomRightRadius: 0,
               p: 3
             }
           }
