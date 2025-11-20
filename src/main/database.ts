@@ -1,4 +1,3 @@
-import { app } from 'electron';
 import fs from 'fs';
 import path from 'path';
 import sqlite3 from 'sqlite3';
@@ -6,7 +5,7 @@ import { getFirstRow, runAsync } from './functions';
 import { initIpcHandler } from './ipcHandler';
 
 let db: sqlite3.Database;
-let dbPath: string;
+let dbPath: string | undefined;
 
 const initInitialData = async () => {
   const row = await getFirstRow(db, 'SELECT * FROM settings LIMIT 1');
@@ -241,7 +240,7 @@ const initDatabase = async () => {
   if (!dbPath) throw new Error('Database path not set');
 
   await new Promise<void>((resolve, reject) => {
-    db = new sqlite3.Database(dbPath, err => {
+    db = new sqlite3.Database(dbPath!, err => {
       if (err) {
         reject(new Error(`Failed to open database: ${err.message}`));
         return;
@@ -252,25 +251,15 @@ const initDatabase = async () => {
   });
 };
 
-const setupDB = async (data: { dbname: string; appName?: string; onReady?: () => void }) => {
-  const databaseFileName = data.dbname;
-  const localAppData = process.env.LOCALAPPDATA;
-  if (data.appName && localAppData) {
-    app.setName(data.appName);
+const setupDB = async (data: { fullPath: string }) => {
+  const folder = path.dirname(data.fullPath);
+  fs.mkdirSync(folder, { recursive: true });
+  dbPath = data.fullPath;
 
-    const folderPath = path.join(localAppData, app.getName());
-    fs.mkdirSync(folderPath, { recursive: true });
-
-    dbPath = path.join(folderPath, databaseFileName);
-
-    await initDatabase();
-    await init();
-    await initInitialData();
-    initIpcHandler(db, dbPath);
-    if (data.onReady) {
-      data.onReady();
-    }
-  }
+  await initDatabase();
+  await init();
+  await initInitialData();
+  initIpcHandler(db, dbPath);
 };
 
 export { db, setupDB };

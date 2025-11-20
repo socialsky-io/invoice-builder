@@ -191,10 +191,16 @@
   "categoriesModal": {
     "name": "Pavadinimas"
   },
+  "databaseChooser": {
+    "title": "Atidaryti arba sukurti duomenų bazę",
+    "description": "Pasirinkite esamą duomenų bazę arba sukurkite naują. Galite išsaugoti dažnai naudojamas duomenų bazes greitam priėjimui.",
+    "button": "Pasirinkti duomenų bazės failą"
+  },
   "ariaLabel": {
     "menu": "Pagrindinis meniu",
     "back": "Grįžti atgal",
     "delete": "Ištrinti",
+    "remove": "Pašalinti",
     "add": "Pridėti",
     "uploadImage": "Įkelti paveikslėlį",
     "crop": "Apkarpyti paveikslėlį",
@@ -215,7 +221,9 @@
     "importFailed": "Importavimas nepavyko",
     "invalidLogo": "Neteisingas logotipo tekstas",
     "invalidConstraint": "Įrašas pažeidžia duomenų bazės apribojimą.",
-    "unknownError": "Nežinoma duomenų bazės klaida"
+    "unknownError": "Nežinoma duomenų bazės klaida",
+    "failedToLoad": "Nepavyko įkelti išsaugoto DB sąrašo",
+    "failedToSave": "Nepavyko išsaugoti DB sąrašo"
   },
   "common": {
     "save": "Išsaugoti",
@@ -236,6 +244,7 @@
     "export": "Eksportuoti",
     "downloadTemplate": "Atsisiųsti šabloną",
     "and": "ir",
-    "selectFilterType": "Pasirinkite filtro tipą"
+    "selectFilterType": "Pasirinkite filtro tipą",
+    "selectImage": "Pasirinkite vaizdo failą"
   }
 }

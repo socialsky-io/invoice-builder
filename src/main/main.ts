@@ -2,13 +2,12 @@ import { config } from 'dotenv';
 import { app, BrowserWindow } from 'electron';
 import { dirname, join, resolve } from 'path';
 import { fileURLToPath } from 'url';
-import { setupDB } from './database';
+import { initIpcHandlerForDB } from './ipcHandler';
 
 config();
 
 const devServer = process.env.VITE_DEV_SERVER_URL;
 const dbName = process.env.VITE_DB_NAME || 'app_database.db';
-const appName = process.env.VITE_APP_NAME;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const preloadPath = join(resolve(), 'dist-electron/preload/preload.cjs');
@@ -40,13 +39,8 @@ const createWindow = () => {
 };
 
 app.whenReady().then(() => {
-  setupDB({
-    dbname: dbName,
-    appName: appName,
-    onReady: () => {
-      createWindow();
-    }
-  });
+  createWindow();
+  initIpcHandlerForDB(dbName);
 });
 
 app.on('window-all-closed', () => {

@@ -1,5 +1,6 @@
-import { useCallback, useEffect, type FC } from 'react';
+import { useCallback, useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
+import { DatabaseChooser } from '../components/databaseChooser/DatabaseChooser';
 import { SpinnerOverlay } from '../components/spinner/spinner';
 import { ToastContainer } from '../components/toast/toastContainer';
 import { useSettingsRetrieve } from '../hooks/settings/useSettingsRetrieve';
@@ -11,11 +12,13 @@ import type { Settings } from '../types/settings';
 import { AppLayout } from './AppLayout';
 
 export const App: FC = () => {
+  const [dbReady, setDbReady] = useState<boolean>(false);
   const isLoading = useAppSelector(selectIsLoading);
   const toasts = useAppSelector(selectToasts);
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
-  const { settings } = useSettingsRetrieve({
+  const { settings, execute: getSettings } = useSettingsRetrieve({
+    immediate: false,
     onDone: (data: Response<Settings>) => {
       if (!data.success) {
         if (data.message) dispatch(addToast({ message: data.message, severity: 'error' }));
@@ -31,18 +34,29 @@ export const App: FC = () => {
     [dispatch]
   );
 
+  const onDatabaseRead = useCallback(() => {
+    setDbReady(true);
+    getSettings();
+  }, [getSettings]);
+
   useEffect(() => {
     if (settings) {
       dispatch(setSettings(settings));
       i18n.changeLanguage(settings.language);
+      localStorage.setItem('lastUsedLanguage', settings.language);
     }
   }, [settings, dispatch]);
 
   return (
     <>
-      <AppLayout />
-      <ToastContainer toasts={toasts} onClose={handleClose} />
-      {isLoading && <SpinnerOverlay />}
+      {!dbReady && <DatabaseChooser onDatabaseRead={onDatabaseRead} />}
+      {dbReady && (
+        <>
+          <AppLayout />
+          <ToastContainer toasts={toasts} onClose={handleClose} />
+          {isLoading && <SpinnerOverlay />}
+        </>
+      )}
     </>
   );
 };

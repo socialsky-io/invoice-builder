@@ -23,18 +23,27 @@ export const ThemeProviderWrapper: React.FC<{ children: ReactNode }> = ({ childr
 
   useEffect(() => {
     const isDarkMode = storeSettings?.isDarkMode;
-    if (typeof isDarkMode !== undefined) {
+    if (typeof isDarkMode !== 'undefined') {
       const saved = isDarkMode ? Themes.dark : Themes.light;
+      localStorage.setItem('latUsedTheme', saved);
       setMode(saved);
     } else {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setMode(prefersDark ? Themes.dark : Themes.light);
+      const lastUsedTheme = localStorage.getItem('latUsedTheme');
+      if (lastUsedTheme) {
+        const next = lastUsedTheme === Themes.light ? Themes.light : Themes.dark;
+        setMode(next);
+      } else {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const newMode = prefersDark ? Themes.dark : Themes.light;
+        localStorage.setItem('latUsedTheme', newMode);
+        setMode(newMode);
+      }
     }
   }, [storeSettings]);
 
   const toggleMode = () => {
     const next = mode === Themes.light ? Themes.dark : Themes.light;
-
+    localStorage.setItem('latUsedTheme', next);
     setMode(next);
   };
 

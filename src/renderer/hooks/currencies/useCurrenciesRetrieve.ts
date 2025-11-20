@@ -6,10 +6,19 @@ import type { RequestHook } from '../../types/requestHook';
 import type { Response } from '../../types/response';
 import { useAsyncAction } from '../useAsyncAction';
 
-export const useCurrenciesRetrieve = ({ showLoader = true, filter, onDone }: RequestHook<Response<Currency[]>>) => {
+export const useCurrenciesRetrieve = ({
+  showLoader = true,
+  immediate = true,
+  filter,
+  onDone
+}: RequestHook<Response<Currency[]>>) => {
   const dispatch = useAppDispatch();
   const asyncFn = useCallback(() => window.electronAPI.getAllCurrencies(filter), [filter]);
-  const { data: currencies, execute } = useAsyncAction<Response<Currency[]>>(asyncFn, { showLoader, onDone });
+  const { data: currencies, execute } = useAsyncAction<Response<Currency[]>>(asyncFn, {
+    showLoader,
+    immediate,
+    onDone
+  });
 
   useEffect(() => {
     if (!currencies || !currencies.data) return;

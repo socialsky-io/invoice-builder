@@ -191,10 +191,16 @@
   "categoriesModal": {
     "name": "Name"
   },
+  "databaseChooser": {
+    "title": "Open or create a database",
+    "description": "Choose an existing database or create a new one. You can remember frequently used databases for quick access.",
+    "button": "Select database file"
+  },
   "ariaLabel": {
     "menu": "Main menu",
     "back": "Return back",
     "delete": "Delete",
+    "remove": "Remove",
     "add": "Add",
     "uploadImage": "Upload image",
     "crop": "Crop image",
@@ -215,7 +221,9 @@
     "importFailed": "Import failed",
     "invalidLogo": "Invalid logo string",
     "invalidConstraint": "Record violates a database constraint.",
-    "unknownError": "Unknown database error"
+    "unknownError": "Unknown database error",
+    "failedToLoad": "Failed to load saved DB list",
+    "failedToSave": "Failed to save DB list"
   },
   "common": {
     "save": "Save",
@@ -236,6 +244,7 @@
     "export": "Export",
     "downloadTemplate": "Download template",
     "and": "and",
-    "selectFilterType": "Select filter type"
+    "selectFilterType": "Select filter type",
+    "selectImage": "Select an image file"
   }
 }

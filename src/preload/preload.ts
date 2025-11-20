@@ -11,6 +11,9 @@ import type { UnitAdd, UnitUpdate } from '../renderer/types/unit';
 contextBridge.exposeInMainWorld('electronAPI', {
   ping: () => console.log('pong'),
 
+  selectDatabase: () => ipcRenderer.invoke('show-save-db-dialog'),
+  initializeDatabase: (data: { fullPath: string }) => ipcRenderer.invoke('initialize-db', data),
+
   openUrl: (url: string) => ipcRenderer.invoke('open-url', url),
 
   getAllSettings: () => ipcRenderer.invoke('get-all-settings'),

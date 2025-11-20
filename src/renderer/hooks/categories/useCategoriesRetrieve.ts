@@ -6,10 +6,19 @@ import type { RequestHook } from '../../types/requestHook';
 import type { Response } from '../../types/response';
 import { useAsyncAction } from '../useAsyncAction';
 
-export const useCategoriesRetrieve = ({ showLoader = true, filter, onDone }: RequestHook<Response<Category[]>>) => {
+export const useCategoriesRetrieve = ({
+  immediate = true,
+  showLoader = true,
+  filter,
+  onDone
+}: RequestHook<Response<Category[]>>) => {
   const dispatch = useAppDispatch();
   const asyncFn = useCallback(() => window.electronAPI.getAllCategories(filter), [filter]);
-  const { data: categories, execute } = useAsyncAction<Response<Category[]>>(asyncFn, { showLoader, onDone });
+  const { data: categories, execute } = useAsyncAction<Response<Category[]>>(asyncFn, {
+    showLoader,
+    immediate,
+    onDone
+  });
 
   useEffect(() => {
     if (!categories || !categories.data) return;

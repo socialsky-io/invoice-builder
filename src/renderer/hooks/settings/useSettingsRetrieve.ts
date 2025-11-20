@@ -6,10 +6,18 @@ import type { Response } from '../../types/response';
 import type { Settings } from '../../types/settings';
 import { useAsyncAction } from '../useAsyncAction';
 
-export const useSettingsRetrieve = ({ showLoader = true, onDone }: RequestHook<Response<Settings>>) => {
+export const useSettingsRetrieve = ({
+  showLoader = true,
+  immediate = true,
+  onDone
+}: RequestHook<Response<Settings>>) => {
   const dispatch = useAppDispatch();
   const asyncFn = useCallback(() => window.electronAPI.getAllSettings(), []);
-  const { data: settings, loading, execute } = useAsyncAction<Response<Settings>>(asyncFn, { showLoader, onDone });
+  const {
+    data: settings,
+    loading,
+    execute
+  } = useAsyncAction<Response<Settings>>(asyncFn, { immediate, showLoader, onDone });
 
   useEffect(() => {
     if (!settings || !settings.data) return;

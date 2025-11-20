@@ -69,7 +69,14 @@ export const UploadImage: React.FC<UploadSquareProps> = ({ onUpload, size = 120,
           }
         }}
       >
-        <input ref={inputRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleChange} />
+        <input
+          ref={inputRef}
+          type="file"
+          accept="image/*"
+          title={t('common.selectImage')}
+          style={{ display: 'none' }}
+          onChange={handleChange}
+        />
         {croppedImageUrl && !cropDialogOpen ? (
           <>
             <img

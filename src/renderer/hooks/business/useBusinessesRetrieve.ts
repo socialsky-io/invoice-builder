@@ -7,10 +7,19 @@ import type { Response } from '../../types/response';
 import { uint8ArrayToDataUrl } from '../../utils/functions';
 import { useAsyncAction } from '../useAsyncAction';
 
-export const useBusinessesRetrieve = ({ showLoader = true, filter, onDone }: RequestHook<Response<Business[]>>) => {
+export const useBusinessesRetrieve = ({
+  immediate = true,
+  showLoader = true,
+  filter,
+  onDone
+}: RequestHook<Response<Business[]>>) => {
   const dispatch = useAppDispatch();
   const asyncFn = useCallback(() => window.electronAPI.getAllBusinesses(filter), [filter]);
-  const { data: businesses, execute } = useAsyncAction<Response<Business[]>>(asyncFn, { showLoader, onDone });
+  const { data: businesses, execute } = useAsyncAction<Response<Business[]>>(asyncFn, {
+    showLoader,
+    immediate,
+    onDone
+  });
 
   const prepareBusinesses = async (businesses: Business[]) => {
     const serialized = await Promise.all(

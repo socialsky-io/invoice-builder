@@ -97,6 +97,7 @@ export const SettingsPage = () => {
   const onLanguageFormat = useCallback(
     (data: { language: Language; amountFormat: AmountFormat; dateFormat: DateFormat }) => {
       i18n.changeLanguage(data.language);
+      localStorage.setItem('lastUsedLanguage', data.language);
 
       dispatch(
         setLanguageDate({

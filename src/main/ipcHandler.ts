@@ -1,5 +1,7 @@
-import { ipcMain, shell } from 'electron';
+import { dialog, ipcMain, shell } from 'electron';
+import { join } from 'path';
 import type { Database } from 'sqlite3';
+import { setupDB } from './database';
 import { getAllRows, getFirstRow, runDb } from './functions';
 import type { Business } from './types/business';
 import type { Category } from './types/category';
@@ -391,4 +393,24 @@ const initIpcHandler = (db: Database, path: string) => {
   ipcMain.handle('get-all-currencies', async (_event, filter) => getAllCurrencies(filter));
 };
 
-export { initIpcHandler };
+const initIpcHandlerForDB = (dbName: string) => {
+  ipcMain.handle('show-save-db-dialog', async () => {
+    const defaultPath = join(process.env.USERPROFILE || process.cwd(), dbName);
+    const result = await dialog.showSaveDialog({
+      title: 'Select database file',
+      defaultPath,
+      filters: [{ name: 'SQLite DB', extensions: ['db'] }]
+    });
+    return { success: true, data: { canceled: result.canceled, filePath: result.filePath } };
+  });
+  ipcMain.handle('initialize-db', async (_event, opts: { fullPath: string }) => {
+    try {
+      await setupDB({ fullPath: opts.fullPath });
+      return { success: true };
+    } catch (error) {
+      return { success: false, message: error instanceof Error ? error.message : String(error) };
+    }
+  });
+};
+
+export { initIpcHandler, initIpcHandlerForDB };
