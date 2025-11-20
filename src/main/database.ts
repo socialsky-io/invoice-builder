@@ -219,7 +219,7 @@ const init = async () => {
       discountType TEXT CHECK(discountType IN ('fixed','percentage')),
       discountAmountCents INTEGER DEFAULT 0, 
       discountPercent REAL DEFAULT 0 ,
-      shippingFee_cents INTEGER NOT NULL DEFAULT 0,
+      shippingFeeCents INTEGER NOT NULL DEFAULT 0,
       FOREIGN KEY (businessId) REFERENCES businesses(id),
       FOREIGN KEY (clientId) REFERENCES clients(id),
       FOREIGN KEY (currencyId) REFERENCES currencies(id),
