@@ -245,7 +245,8 @@
     "headerRowEmpty": "Header row is empty or missing",
     "importFailed": "Import failed",
     "invalidLogo": "Invalid logo string",
-    "invalidConstraint": "Record violates a database constraint.",
+    "invalidConstraintUnique": "Record violates a database constraint.",
+    "invalidConstraintForeign": "Record is being used as reference.",
     "unknownError": "Unknown database error",
     "failedToLoad": "Failed to load saved DB list",
     "failedToSave": "Failed to save DB list"

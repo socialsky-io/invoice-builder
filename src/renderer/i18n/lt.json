@@ -245,7 +245,8 @@
     "headerRowEmpty": "Antraštės eilutė tuščia arba jos trūksta",
     "importFailed": "Importavimas nepavyko",
     "invalidLogo": "Neteisingas logotipo tekstas",
-    "invalidConstraint": "Įrašas pažeidžia duomenų bazės apribojimą.",
+    "invalidConstraintUnique": "Įrašas pažeidžia duomenų bazės unikalumo apribojimą.",
+    "invalidConstraintForeign": "Įrašas yra naudojamas kaip nuoroda.",
     "unknownError": "Nežinoma duomenų bazės klaida",
     "failedToLoad": "Nepavyko įkelti išsaugoto DB sąrašo",
     "failedToSave": "Nepavyko išsaugoti DB sąrašo"

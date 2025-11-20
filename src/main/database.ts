@@ -62,6 +62,7 @@ const initInitialData = async () => {
 };
 
 const init = async () => {
+  await runAsync(db, 'PRAGMA foreign_keys = ON;');
   await runAsync(
     db,
     `
@@ -171,8 +172,8 @@ const init = async () => {
       description TEXT,
       createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
       updatedAt DATETIME NOT NULL DEFAULT (datetime('now')),
-      FOREIGN KEY (unitId) REFERENCES units(id) ON DELETE CASCADE,
-      FOREIGN KEY (categoryId) REFERENCES categories(id) ON DELETE CASCADE
+      FOREIGN KEY (unitId) REFERENCES units(id),
+      FOREIGN KEY (categoryId) REFERENCES categories(id)
     );
   `
   );
@@ -186,9 +187,9 @@ const init = async () => {
       currencyId INTEGER NOT NULL,
       createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
       updatedAt DATETIME NOT NULL DEFAULT (datetime('now')),
-      FOREIGN KEY (businessId) REFERENCES businesses(id) ON DELETE CASCADE,
-      FOREIGN KEY (cliendId) REFERENCES clients(id) ON DELETE CASCADE,
-      FOREIGN KEY (currencyId) REFERENCES currencies(id) ON DELETE CASCADE
+      FOREIGN KEY (businessId) REFERENCES businesses(id),
+      FOREIGN KEY (cliendId) REFERENCES clients(id),
+      FOREIGN KEY (currencyId) REFERENCES currencies(id)
     )
   `
   );
@@ -200,8 +201,8 @@ const init = async () => {
         invoiceId INTEGER NOT NULL,
         itemId INTEGER NOT NULL,
         quantity INTEGER NOT NULL DEFAULT 0,
-        FOREIGN KEY (invoiceId) REFERENCES invoices(id) ON DELETE CASCADE,
-        FOREIGN KEY (itemId) REFERENCES items(id) ON DELETE CASCADE
+        FOREIGN KEY (invoiceId) REFERENCES invoices(id),
+        FOREIGN KEY (itemId) REFERENCES items(id)
     )
   `
   );
@@ -215,9 +216,9 @@ const init = async () => {
       currencyId INTEGER NOT NULL,
       createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
       updatedAt DATETIME NOT NULL DEFAULT (datetime('now')),
-      FOREIGN KEY (businessId) REFERENCES businesses(id) ON DELETE CASCADE,
-      FOREIGN KEY (cliendId) REFERENCES clients(id) ON DELETE CASCADE,
-      FOREIGN KEY (currencyId) REFERENCES currencies(id) ON DELETE CASCADE
+      FOREIGN KEY (businessId) REFERENCES businesses(id),
+      FOREIGN KEY (cliendId) REFERENCES clients(id),
+      FOREIGN KEY (currencyId) REFERENCES currencies(id)
     )
   `
   );
@@ -229,8 +230,8 @@ const init = async () => {
         quoteId INTEGER NOT NULL,
         itemId INTEGER NOT NULL,
         quantity INTEGER NOT NULL DEFAULT 0,
-        FOREIGN KEY (quoteId) REFERENCES quotes(id) ON DELETE CASCADE,
-        FOREIGN KEY (itemId) REFERENCES items(id) ON DELETE CASCADE
+        FOREIGN KEY (quoteId) REFERENCES quotes(id),
+        FOREIGN KEY (itemId) REFERENCES items(id)
     )
   `
   );

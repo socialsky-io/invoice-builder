@@ -22,8 +22,11 @@ const isSqliteError = (error: unknown): error is SqliteError => {
 
 const mapSqliteError = (error: unknown): { message?: string; key?: string } => {
   if (isSqliteError(error)) {
-    if (error.code === 'SQLITE_CONSTRAINT') {
-      return { key: 'error.invalidConstraint' };
+    if (error.message.indexOf('UNIQUE constraint failed') > -1) {
+      return { key: 'error.invalidConstraintUnique' };
+    }
+    if (error.message.indexOf('FOREIGN KEY constraint failed') > -1) {
+      return { key: 'error.invalidConstraintForeign' };
     }
     return { message: error.message };
   }
