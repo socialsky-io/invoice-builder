@@ -14,8 +14,8 @@ export interface Business {
   quotesCount: number;
   createdAt: string;
   updatedAt: string;
-  file_size?: number;
-  file_type?: string;
+  fileSize?: number;
+  fileType?: string;
 }
 
 export interface BusinessModified {
@@ -34,8 +34,8 @@ export interface BusinessModified {
   quotesCount: number;
   createdAt: string;
   updatedAt: string;
-  file_size?: number;
-  file_type?: string;
+  fileSize?: number;
+  fileType?: string;
 }
 
 export interface BusinessAdd {
@@ -49,8 +49,8 @@ export interface BusinessAdd {
   additional?: string;
   paymentInformation?: string;
   logo?: Uint8Array | null;
-  file_size?: number;
-  file_type?: string;
+  fileSize?: number;
+  fileType?: string;
 }
 
 export interface BusinessUpdate extends BusinessAdd {
@@ -69,6 +69,6 @@ export interface BusinessFromData {
   website?: string;
   additional?: string;
   paymentInformation?: string;
-  file_size?: number;
-  file_type?: string;
+  fileSize?: number;
+  fileType?: string;
 }

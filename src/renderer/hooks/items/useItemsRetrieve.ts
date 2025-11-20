@@ -17,7 +17,7 @@ export const useItemsRetrieve = ({ showLoader = true, filter, onDone }: RequestH
 
     const modifiedItems = items.data.map(i => ({
       ...i,
-      amount: i.amount_cents ? i.amount_cents / 100 : undefined
+      amount: i.amountCents ? i.amountCents / 100 : undefined
     }));
 
     dispatch(setItems(modifiedItems));

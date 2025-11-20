@@ -1,7 +1,7 @@
 export interface Item {
   id?: number;
   name: string;
-  amount_cents?: number;
+  amountCents?: number;
   unitId?: number;
   amount?: number;
   categoryId?: number;

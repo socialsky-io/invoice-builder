@@ -1,7 +1,7 @@
 export interface Item {
   id: number;
   name: string;
-  amount_cents?: number;
+  amountCents?: number;
   amount?: number;
   unitId?: number;
   categoryId?: number;
@@ -16,7 +16,7 @@ export interface Item {
 
 export interface ItemAdd {
   name: string;
-  amount_cents?: number;
+  amountCents?: number;
   unitId?: number;
   categoryId?: number;
   description?: string;
@@ -31,7 +31,7 @@ export interface ItemUpdate extends ItemAdd {
 export interface ItemFromData {
   id?: number;
   name: string;
-  amount_cents?: number;
+  amountCents?: number;
   amount?: number;
   unitId?: number;
   categoryId?: number;

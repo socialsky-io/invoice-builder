@@ -25,8 +25,8 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
     website: business?.website ?? '',
     additional: business?.additional ?? '',
     paymentInformation: business?.paymentInformation ?? '',
-    file_size: business?.file_size,
-    file_type: business?.file_type
+    fileSize: business?.fileSize,
+    fileType: business?.fileType
   });
   const [errors, setErrors] = useState({
     email: false,
@@ -43,11 +43,11 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
         setForm(prev => ({
           ...prev,
           logo: fileUnitArray,
-          file_size: file.size,
-          file_type: file.type
+          fileSize: file.size,
+          fileType: file.type
         }));
     } else {
-      setForm(prev => ({ ...prev, logo: undefined, file_size: undefined, file_type: undefined }));
+      setForm(prev => ({ ...prev, logo: undefined, fileSize: undefined, fileType: undefined }));
     }
   };
 

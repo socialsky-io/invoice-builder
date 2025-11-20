@@ -165,11 +165,11 @@ const businessFields: (keyof Business)[] = [
   'additional',
   'paymentInformation',
   'logo',
-  'file_size',
-  'file_type'
+  'fileSize',
+  'fileType'
 ];
 const clientFields: (keyof Client)[] = ['name', 'shortName', 'address', 'email', 'phone', 'code', 'additional'];
-const itemFields: (keyof Item)[] = ['name', 'amount_cents', 'unitId', 'categoryId', 'description'];
+const itemFields: (keyof Item)[] = ['name', 'amountCents', 'unitId', 'categoryId', 'description'];
 const currencyFields: (keyof Currency)[] = ['code', 'symbol', 'text', 'format'];
 const unitFields: (keyof Unit)[] = ['name'];
 const categoryFields: (keyof Category)[] = ['name'];

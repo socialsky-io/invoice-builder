@@ -95,7 +95,7 @@ export const ItemsPage: FC = () => {
           const raw = data.amount;
           const parsed = typeof raw === 'number' ? raw : Number(String(raw).replace(/,/g, ''));
           if (!Number.isNaN(parsed)) {
-            data.amount_cents = parsed * 100;
+            data.amountCents = parsed * 100;
           }
         }
 

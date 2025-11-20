@@ -46,8 +46,8 @@ export const Form: FC<Props> = ({ handleChange = () => {}, item }) => {
   const { form, setForm, update } = useForm<ItemFromData>({
     id: item?.id,
     name: item?.name ?? '',
-    amount_cents: item?.amount_cents,
-    amount: item?.amount_cents ? item.amount_cents / 100 : 0,
+    amountCents: item?.amountCents,
+    amount: item?.amountCents ? item.amountCents / 100 : 0,
     unitId: item?.unitId,
     categoryId: item?.categoryId,
     description: item?.description ?? ''
@@ -69,8 +69,8 @@ export const Form: FC<Props> = ({ handleChange = () => {}, item }) => {
     setForm({
       id: item?.id,
       name: item?.name ?? '',
-      amount_cents: item?.amount_cents,
-      amount: item?.amount_cents ? item.amount_cents / 100 : 0,
+      amountCents: item?.amountCents,
+      amount: item?.amountCents ? item.amountCents / 100 : 0,
       unitId: item?.unitId,
       categoryId: item?.categoryId,
       description: item?.description ?? ''
@@ -85,7 +85,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, item }) => {
         id: form.id,
         name: form.name,
         amount: form.amount,
-        amount_cents: form.amount ? form.amount * 100 : 0,
+        amountCents: form.amount ? form.amount * 100 : 0,
         unitId: form.unitId,
         categoryId: form.categoryId,
         description: form.description

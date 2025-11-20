@@ -19,7 +19,7 @@ export const List: FC<Props> = ({ item, onEdit, onDelete }) => {
       onEdit={onEdit}
       onDelete={onDelete}
       getName={c => c.name}
-      getAdditional={c => `${formatAmount(c.amount_cents ? c.amount_cents / 100 : 0, settings?.amountFormat)}`}
+      getAdditional={c => `${formatAmount(c.amountCents ? c.amountCents / 100 : 0, settings?.amountFormat)}`}
       getInvoiceCount={c => c.invoiceCount}
       getQuotesCount={c => c.quotesCount}
     />

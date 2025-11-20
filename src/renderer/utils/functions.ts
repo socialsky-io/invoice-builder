@@ -135,10 +135,10 @@ export const isItemFromData = (data: unknown): data is ItemFromData => {
   if (d.id !== undefined && d.id !== null && d.id !== '' && typeof d.id !== 'number') return false;
 
   if (
-    d.amount_cents !== undefined &&
-    d.amount_cents !== null &&
-    d.amount_cents !== '' &&
-    typeof d.amount_cents !== 'number'
+    d.amountCents !== undefined &&
+    d.amountCents !== null &&
+    d.amountCents !== '' &&
+    typeof d.amountCents !== 'number'
   )
     return false;
   if (d.amount !== undefined && d.amount !== null && d.amount !== '' && typeof d.amount !== 'number') return false;
