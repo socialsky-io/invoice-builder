@@ -1,6 +1,5 @@
 import { DarkMode, Description, FileDownload, Language, LightMode } from '@mui/icons-material';
 import AssessmentIcon from '@mui/icons-material/Assessment';
-import DashboardIcon from '@mui/icons-material/Dashboard';
 import InfoIcon from '@mui/icons-material/Info';
 import PolicyIcon from '@mui/icons-material/Policy';
 import ReceiptIcon from '@mui/icons-material/Receipt';
@@ -23,14 +22,12 @@ interface Props {
   onModeChange?: (isDark: boolean) => void;
   toggleQuotes?: (value: boolean) => void;
   toggleReports?: (value: boolean) => void;
-  toggleCardOverviews?: (value: boolean) => void;
 }
 export const Menu: FC<Props> = ({
   onSelected = () => {},
   selectedMenu,
   toggleQuotes = () => {},
   toggleReports = () => {},
-  toggleCardOverviews = () => {},
   onModeChange = () => {}
 }) => {
   const { mode, toggleMode } = useContext(ThemeContext);
@@ -90,17 +87,6 @@ export const Menu: FC<Props> = ({
       checked: storeSettings?.reportsON ?? true,
       onChange: () => {
         toggleReports(!storeSettings?.reportsON);
-      }
-    },
-    {
-      text: t('settingsMenuItems.titles.turnCardOverviews'),
-      description: t('settingsMenuItems.descriptions.turnCardOverviews'),
-      icon: <DashboardIcon />,
-      isToggle: true,
-      isSelected: false,
-      checked: storeSettings?.overviewCardsON ?? true,
-      onChange: () => {
-        toggleCardOverviews(!storeSettings?.overviewCardsON);
       }
     }
   ];

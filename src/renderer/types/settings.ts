@@ -15,7 +15,6 @@ export interface Settings {
   shouldIncludeBusinessName: boolean;
   quotesON: boolean;
   reportsON: boolean;
-  overviewCardsON: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -32,5 +31,4 @@ export interface SettingsUpdate {
   shouldIncludeBusinessName?: boolean;
   quotesON?: boolean;
   reportsON?: boolean;
-  overviewCardsON?: boolean;
 }

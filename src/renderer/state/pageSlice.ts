@@ -93,13 +93,6 @@ export const pageSlice = createSlice({
         reportsON: action.payload
       };
     },
-    setCardOverviews: (state, action: PayloadAction<boolean>) => {
-      if (!state.settings) return;
-      state.settings = {
-        ...state.settings,
-        overviewCardsON: action.payload
-      };
-    },
     setCustomInvoiseSettings: (
       state,
       action: PayloadAction<{
@@ -172,7 +165,6 @@ export const {
   setMode,
   setQuotes,
   setReports,
-  setCardOverviews,
   setClients,
   setCustomInvoiseSettings,
   setLanguageDate,

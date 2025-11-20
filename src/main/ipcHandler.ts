@@ -204,8 +204,7 @@ const initIpcHandler = (db: Database, path: string) => {
         shouldIncludeMonth: row.shouldIncludeMonth === 1,
         shouldIncludeBusinessName: row.shouldIncludeBusinessName === 1,
         quotesON: row.quotesON === 1,
-        reportsON: row.reportsON === 1,
-        overviewCardsON: row.overviewCardsON === 1
+        reportsON: row.reportsON === 1
       }
     };
   });
@@ -226,7 +225,6 @@ const initIpcHandler = (db: Database, path: string) => {
         shouldIncludeBusinessName?: boolean;
         quotesON?: boolean;
         reportsON?: boolean;
-        overviewCardsON?: boolean;
       }
     ) => {
       try {

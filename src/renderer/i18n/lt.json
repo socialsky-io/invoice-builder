@@ -29,7 +29,6 @@
       "about": "Apie",
       "turnQuotes": "Pasiūlymai",
       "turnReports": "Ataskaitos",
-      "turnCardOverviews": "Santraukos kortelės",
       "tutorial": "Pamoka"
     },
     "descriptions": {
@@ -44,7 +43,6 @@
       "about": "Sužinokite daugiau apie šią programą, jos funkcijas.",
       "turnQuotes": "Įjunkti arba išjungti pasiūlymų kūrimo funkciją",
       "turnReports": "Įjunkti arba išjungti ataskaitų teikimo funkciją",
-      "turnCardOverviews": "Rodyti santraukos korteles su sumomis ir pagrindiniais rodikliais pasiūlymų/sąskaitų išdėstyme",
       "tutorial": "Peržiūrėkite gidą, kaip naudotis programa"
     }
   },

@@ -79,7 +79,6 @@ const init = async () => {
       shouldIncludeBusinessName INTEGER NOT NULL DEFAULT 1 CHECK (shouldIncludeBusinessName IN (0,1)),
       quotesON INTEGER NOT NULL DEFAULT 1 CHECK (quotesON IN (0,1)),
       reportsON INTEGER NOT NULL DEFAULT 1 CHECK (reportsON IN (0,1)),
-      overviewCardsON INTEGER NOT NULL DEFAULT 1 CHECK (overviewCardsON IN (0,1)),
       createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
       updatedAt DATETIME NOT NULL DEFAULT (datetime('now'))
     )
@@ -294,6 +293,8 @@ const init = async () => {
         rate REAL NOT NULL,
         type TEXT NOT NULL CHECK(type IN ('exclusive','inclusive','deducted')),
         amountCents INTEGER NOT NULL,
+        createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
+        updatedAt DATETIME NOT NULL DEFAULT (datetime('now')),
         FOREIGN KEY (invoiceItemId) REFERENCES invoice_items(id) ON DELETE CASCADE,
         FOREIGN KEY (quoteItemId) REFERENCES invoice_items(id) ON DELETE CASCADE,
         CHECK (

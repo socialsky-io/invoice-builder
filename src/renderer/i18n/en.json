@@ -29,7 +29,6 @@
       "about": "About",
       "turnQuotes": "Quotes",
       "turnReports": "Reports",
-      "turnCardOverviews": "Card overviews",
       "tutorial": "Tutorial"
     },
     "descriptions": {
@@ -44,7 +43,6 @@
       "about": "Learn more about this app, its features.",
       "turnQuotes": "Enable or disable quote creation feature",
       "turnReports": "Enable or disable reporting feature",
-      "turnCardOverviews": "Show summary cards with totals and key metrics on quotes/invoices layouts",
       "tutorial": "Checkout guide on how to use application"
     }
   },

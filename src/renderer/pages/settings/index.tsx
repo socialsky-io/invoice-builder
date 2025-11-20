@@ -13,7 +13,6 @@ import { useAppDispatch, useAppSelector } from '../../state/configureStore';
 import {
   addToast,
   selectSettings,
-  setCardOverviews,
   setCustomInvoiseSettings,
   setLanguageDate,
   setMode,
@@ -62,13 +61,6 @@ export const SettingsPage = () => {
   const toggleReports = useCallback(
     (value: boolean) => {
       dispatch(setReports(value));
-    },
-    [dispatch]
-  );
-
-  const toggleCardOverviews = useCallback(
-    (value: boolean) => {
-      dispatch(setCardOverviews(value));
     },
     [dispatch]
   );
@@ -153,7 +145,6 @@ export const SettingsPage = () => {
       onModeChange={onModeChange}
       toggleQuotes={toggleQuotes}
       toggleReports={toggleReports}
-      toggleCardOverviews={toggleCardOverviews}
     />
   );
 
