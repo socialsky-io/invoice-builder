@@ -182,14 +182,55 @@ const init = async () => {
     `
     CREATE TABLE IF NOT EXISTS invoices (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
+      invoiceType TEXT NOT NULL CHECK(invoiceType IN ('quotation','invoice')),
+      convertedFromQuotationId INTEGER NULL,
       businessId INTEGER NOT NULL,
-      cliendId INTEGER NOT NULL,
+      clientId INTEGER NOT NULL,
       currencyId INTEGER NOT NULL,
       createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
       updatedAt DATETIME NOT NULL DEFAULT (datetime('now')),
+      issuedAt DATETIME NOT NULL,
+      dueDate DATETIME,
+      invoiceNumber TEXT NOT NULL,
+      state TEXT NOT NULL DEFAULT 'draft' CHECK (state IN ('draft','ready','partially-paid','paid','void')),
+      customerNotes TEXT,
+      thanksNotes TEXT,
+      termsConditionNotes TEXT,
+      discountName TEXT,
+      businessName TEXT NOT NULL,
+      businessAddress TEXT,
+      businessRole TEXT,
+      businessEmail TEXT,
+      businessPhone TEXT,
+      businessWebsite TEXT,
+      businessAdditional TEXT,
+      businessPaymentInformation TEXT,
+      businessLogo BLOB,
+      businessFile_size INTEGER,
+      businessFile_type TEXT,
+      clientName TEXT NOT NULL,
+      clientAddress TEXT,
+      clientEmail TEXT,
+      clientPhone TEXT,
+      clientCode TEXT,
+      clientAdditional TEXT,
+      currencyCode TEXT NOT NULL,
+      currencySymbol TEXT NOT NULL,
+      discountType TEXT CHECK(discountType IN ('fixed','percentage')),
+      discountAmount_cents INTEGER DEFAULT 0, 
+      discountPercent REAL DEFAULT 0 ,
+      shippingFee_cents INTEGER NOT NULL DEFAULT 0,
       FOREIGN KEY (businessId) REFERENCES businesses(id),
-      FOREIGN KEY (cliendId) REFERENCES clients(id),
-      FOREIGN KEY (currencyId) REFERENCES currencies(id)
+      FOREIGN KEY (clientId) REFERENCES clients(id),
+      FOREIGN KEY (currencyId) REFERENCES currencies(id),
+      FOREIGN KEY (convertedFromQuotationId) REFERENCES invoices(id),
+      UNIQUE (businessId, invoiceNumber),
+      CHECK (
+        (discountType = 'fixed' AND discountAmount_cents >= 0 AND discountPercent = 0) OR
+        (discountType = 'percentage' AND discountPercent >= 0 AND discountAmount_cents = 0) OR
+        (discountType IS NULL)
+      ),
+      CHECK (dueDate IS NULL OR dueDate >= issuedAt)
     )
   `
   );
@@ -198,42 +239,124 @@ const init = async () => {
     `
     CREATE TABLE IF NOT EXISTS invoice_items (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        invoiceId INTEGER NOT NULL,
-        itemId INTEGER NOT NULL,
+        invoiceId INTEGER,       
+        quoteId INTEGER,
+        itemId INTEGER,
+        itemName TEXT NOT NULL,
+        unitPrice_cents INTEGER NOT NULL DEFAULT (0), 
+        description TEXT,
+        unitName TEXT,
+        categoryName TEXT,
         quantity INTEGER NOT NULL DEFAULT 0,
-        FOREIGN KEY (invoiceId) REFERENCES invoices(id),
-        FOREIGN KEY (itemId) REFERENCES items(id)
+        createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
+        updatedAt DATETIME NOT NULL DEFAULT (datetime('now')),
+        FOREIGN KEY (invoiceId) REFERENCES invoices(id) ON DELETE CASCADE,
+        FOREIGN KEY (quoteId) REFERENCES invoices(id) ON DELETE CASCADE,
+        FOREIGN KEY (itemId) REFERENCES items(id) ON DELETE SET NULL,
+        CHECK (
+          (invoiceId IS NOT NULL AND quoteId IS NULL) OR
+          (invoiceId IS NULL AND quoteId IS NOT NULL)
+        )
     )
   `
   );
   await runAsync(
     db,
     `
-    CREATE TABLE IF NOT EXISTS quotes (
+    CREATE TABLE IF NOT EXISTS invoice_taxes (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      businessId INTEGER NOT NULL,
-      cliendId INTEGER NOT NULL,
-      currencyId INTEGER NOT NULL,
+      invoiceId INTEGER,       
+      quoteId INTEGER,
+      name TEXT NOT NULL,              
+      rate REAL NOT NULL,                 
+      type TEXT NOT NULL CHECK(type IN ('exclusive','inclusive','deducted')), 
+      amount_cents INTEGER NOT NULL,
       createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
       updatedAt DATETIME NOT NULL DEFAULT (datetime('now')),
-      FOREIGN KEY (businessId) REFERENCES businesses(id),
-      FOREIGN KEY (cliendId) REFERENCES clients(id),
-      FOREIGN KEY (currencyId) REFERENCES currencies(id)
+      FOREIGN KEY (invoiceId) REFERENCES invoices(id) ON DELETE CASCADE,
+      FOREIGN KEY (quoteId) REFERENCES invoices(id) ON DELETE CASCADE,
+      CHECK (
+        (invoiceId IS NOT NULL AND quoteId IS NULL) OR
+        (invoiceId IS NULL AND quoteId IS NOT NULL)
+      )
     )
   `
   );
   await runAsync(
     db,
     `
-    CREATE TABLE IF NOT EXISTS quote_items (
+    CREATE TABLE IF NOT EXISTS invoice_item_taxes (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        quoteId INTEGER NOT NULL,
-        itemId INTEGER NOT NULL,
-        quantity INTEGER NOT NULL DEFAULT 0,
-        FOREIGN KEY (quoteId) REFERENCES quotes(id),
-        FOREIGN KEY (itemId) REFERENCES items(id)
+        invoiceItemId INTEGER,
+        quoteItemId INTEGER,
+        name TEXT NOT NULL,
+        rate REAL NOT NULL,
+        type TEXT NOT NULL CHECK(type IN ('exclusive','inclusive','deducted')),
+        amount_cents INTEGER NOT NULL,
+        FOREIGN KEY (invoiceItemId) REFERENCES invoice_items(id) ON DELETE CASCADE,
+        FOREIGN KEY (quoteItemId) REFERENCES invoice_items(id) ON DELETE CASCADE,
+        CHECK (
+          (invoiceItemId IS NOT NULL AND quoteItemId IS NULL) OR
+          (invoiceItemId IS NULL AND quoteItemId IS NOT NULL)
+        )
     )
   `
+  );
+  await runAsync(
+    db,
+    `
+    CREATE TABLE IF NOT EXISTS invoice_payments (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        invoiceId INTEGER,       
+        quoteId INTEGER,
+        amount_cents INTEGER NOT NULL,
+        paidAt DATETIME NOT NULL DEFAULT (datetime('now')),
+        paymentMethod TEXT NOT NULL,           
+        notes TEXT,
+        createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
+        updatedAt DATETIME NOT NULL DEFAULT (datetime('now')),
+        FOREIGN KEY (invoiceId) REFERENCES invoices(id) ON DELETE CASCADE,
+        FOREIGN KEY (quoteId) REFERENCES invoices(id) ON DELETE CASCADE,
+        CHECK (
+          (invoiceId IS NOT NULL AND quoteId IS NULL) OR
+          (invoiceId IS NULL AND quoteId IS NOT NULL)
+        )
+    )
+  `
+  );
+  await runAsync(
+    db,
+    `
+    CREATE TABLE IF NOT EXISTS attachments (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      invoiceId INTEGER,       
+      quoteId INTEGER,
+      filename TEXT NOT NULL,
+      fileType TEXT NOT NULL,            
+      fileSize INTEGER NOT NULL,        
+      data BLOB NOT NULL,                
+      createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
+      updatedAt DATETIME NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (invoiceId) REFERENCES invoices(id) ON DELETE CASCADE,
+      FOREIGN KEY (quoteId) REFERENCES invoices(id) ON DELETE CASCADE,
+      CHECK (
+        (invoiceId IS NOT NULL AND quoteId IS NULL) OR
+        (invoiceId IS NULL AND quoteId IS NOT NULL)
+      )
+    )
+  `
+  );
+  await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_invoice_items_invoiceId ON invoice_items(invoiceId)`);
+  await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_invoice_taxes_invoiceId ON invoice_taxes(invoiceId)`);
+  await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_invoice_payments_invoiceId ON invoice_payments(invoiceId)`);
+  await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_attachments_invoiceId ON attachments(invoiceId)`);
+  await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_invoices_clientId ON invoices(clientId)`);
+  await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_invoices_businessId ON invoices(businessId)`);
+  await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_invoices_business_client ON invoices(businessId, clientId)`);
+  await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_invoices_type ON invoices(invoiceType)`);
+  await runAsync(
+    db,
+    `CREATE INDEX IF NOT EXISTS idx_invoices_convertedFromQuotationId ON invoices(convertedFromQuotationId)`
   );
 };
 

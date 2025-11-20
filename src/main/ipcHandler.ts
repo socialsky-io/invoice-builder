@@ -111,18 +111,16 @@ const getAllEntities =
   <T extends Record<string, unknown>>(db: Database, table: string, keyFieldName: string) =>
   async (filter: 'All' | 'AtleastOneInvoice' | 'NoInvoices' | 'NoInvoices30' | 'NoInvoices60' | 'NoInvoices90') => {
     const havingClause = getHavingClause(filter, 'i.updatedAt', 'i.id');
-
     const sql = `
-    SELECT 
-      t.*,
-      COUNT(DISTINCT i.id) AS invoiceCount,
-      COUNT(DISTINCT q.id) AS quotesCount
-    FROM ${table} t
-    LEFT JOIN invoices i ON i.${keyFieldName} = t.id
-    LEFT JOIN quotes q ON q.${keyFieldName} = t.id
-    GROUP BY t.id
-    ${havingClause}
-  `;
+      SELECT 
+        t.*,
+        COUNT(DISTINCT CASE WHEN i.invoiceType = 'invoice' THEN i.id END) AS invoiceCount,
+        COUNT(DISTINCT CASE WHEN i.invoiceType = 'quotation' THEN i.id END) AS quotesCount
+      FROM ${table} t
+      LEFT JOIN invoices i ON i.${keyFieldName} = t.id
+      GROUP BY t.id
+      ${havingClause}
+    `;
 
     const data = await getAllRows<T & { invoiceCount: number; quotesCount: number }>(db, sql);
 
@@ -187,7 +185,7 @@ const initIpcHandler = (db: Database, path: string) => {
   const handleCategories = handleEntity<Category>(db, 'categories', categoryFields);
   const handleCurrencies = handleEntity<Currency>(db, 'currencies', currencyFields);
   const getAllBusinesses = getAllEntities(db, 'businesses', 'businessId');
-  const getAllClients = getAllEntities(db, 'clients', 'cliendId');
+  const getAllClients = getAllEntities(db, 'clients', 'clientId');
   const getAllCurrencies = getAllEntities(db, 'currencies', 'currencyId');
 
   ipcMain.handle('open-url', async (_event, url: string) => {
@@ -308,19 +306,18 @@ const initIpcHandler = (db: Database, path: string) => {
     const havingClause = getHavingClause(filter, 'ii.updatedAt', 'ii.invoiceId');
 
     const sql = `
-      SELECT 
+    SELECT 
         it.*,
-        COUNT(DISTINCT ii.invoiceId) AS invoiceCount,
-        COUNT(DISTINCT qi.quoteId) AS quotesCount,
+        COUNT(DISTINCT CASE WHEN ii.invoiceId IS NOT NULL THEN ii.invoiceId END) AS invoiceCount,
+        COUNT(DISTINCT CASE WHEN ii.quoteId IS NOT NULL THEN ii.quoteId END) AS quotesCount,
         u.name AS unitName,
         c.name AS categoryName
-      FROM items it
-      LEFT JOIN units u ON it.unitId = u.id
-      LEFT JOIN categories c ON it.categoryId = c.id
-      LEFT JOIN invoice_items ii ON ii.itemId = it.id
-      LEFT JOIN quote_items qi ON qi.itemId = it.id
-      GROUP BY it.id
-      ${havingClause}
+    FROM items it
+    LEFT JOIN units u ON it.unitId = u.id
+    LEFT JOIN categories c ON it.categoryId = c.id
+    LEFT JOIN invoice_items ii ON ii.itemId = it.id
+    GROUP BY it.id
+    ${havingClause}
     `;
     return {
       success: true,
@@ -350,15 +347,12 @@ const initIpcHandler = (db: Database, path: string) => {
 
     const sql = `
       SELECT
-        u.*,
-        COUNT(DISTINCT ii.invoiceId) AS invoiceCount,
-        COUNT(DISTINCT qi.quoteId) AS quotesCount
+          u.*,
+          COUNT(DISTINCT CASE WHEN ii.invoiceId IS NOT NULL THEN ii.invoiceId END) AS invoiceCount,
+          COUNT(DISTINCT CASE WHEN ii.quoteId IS NOT NULL THEN ii.quoteId END) AS quotesCount
       FROM units u
       LEFT JOIN items it ON it.unitId = u.id
       LEFT JOIN invoice_items ii ON ii.itemId = it.id
-      LEFT JOIN quote_items qi ON qi.itemId = it.id
-      LEFT JOIN invoices i ON i.id = ii.invoiceId
-      LEFT JOIN quotes q ON q.id = qi.quoteId
       GROUP BY u.id
       ${havingClause}
     `;
@@ -387,18 +381,14 @@ const initIpcHandler = (db: Database, path: string) => {
   });
   ipcMain.handle('get-all-categories', async (_event, filter) => {
     const havingClause = getHavingClause(filter, 'i.updatedAt', 'i.id');
-
     const sql = `
       SELECT
-        c.*,
-        COUNT(DISTINCT ii.invoiceId) AS invoiceCount,
-        COUNT(DISTINCT qi.quoteId) AS quotesCount
+          c.*,
+          COUNT(DISTINCT CASE WHEN ii.invoiceId IS NOT NULL THEN ii.invoiceId END) AS invoiceCount,
+          COUNT(DISTINCT CASE WHEN ii.quoteId IS NOT NULL THEN ii.quoteId END) AS quotesCount
       FROM categories c
       LEFT JOIN items it ON it.categoryId = c.id
       LEFT JOIN invoice_items ii ON ii.itemId = it.id
-      LEFT JOIN quote_items qi ON qi.itemId = it.id
-      LEFT JOIN invoices i ON i.id = ii.invoiceId
-      LEFT JOIN quotes q ON q.id = qi.quoteId
       GROUP BY c.id
       ${havingClause}
     `;
