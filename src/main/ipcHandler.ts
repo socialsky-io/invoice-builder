@@ -405,6 +405,7 @@ const initIpcHandlerForDB = (dbName: string) => {
   });
   ipcMain.handle('initialize-db', async (_event, opts: { fullPath: string }) => {
     try {
+      resetIPCHandlers();
       await setupDB({ fullPath: opts.fullPath });
       return { success: true };
     } catch (error) {
@@ -413,4 +414,47 @@ const initIpcHandlerForDB = (dbName: string) => {
   });
 };
 
-export { initIpcHandler, initIpcHandlerForDB };
+const resetIPCHandlers = () => {
+  ipcMain.removeHandler('open-url');
+
+  ipcMain.removeHandler('get-all-settings');
+  ipcMain.removeHandler('update-settings');
+
+  ipcMain.removeHandler('add-client');
+  ipcMain.removeHandler('update-client');
+  ipcMain.removeHandler('delete-client');
+  ipcMain.removeHandler('batch-add-client');
+  ipcMain.removeHandler('get-all-clients');
+
+  ipcMain.removeHandler('add-business');
+  ipcMain.removeHandler('update-business');
+  ipcMain.removeHandler('delete-business');
+  ipcMain.removeHandler('batch-add-business');
+  ipcMain.removeHandler('get-all-businesses');
+
+  ipcMain.removeHandler('add-item');
+  ipcMain.removeHandler('update-item');
+  ipcMain.removeHandler('delete-item');
+  ipcMain.removeHandler('batch-add-item');
+  ipcMain.removeHandler('get-all-items');
+
+  ipcMain.removeHandler('add-unit');
+  ipcMain.removeHandler('update-unit');
+  ipcMain.removeHandler('delete-unit');
+  ipcMain.removeHandler('batch-add-unit');
+  ipcMain.removeHandler('get-all-units');
+
+  ipcMain.removeHandler('add-category');
+  ipcMain.removeHandler('update-category');
+  ipcMain.removeHandler('delete-category');
+  ipcMain.removeHandler('batch-add-category');
+  ipcMain.removeHandler('get-all-categories');
+
+  ipcMain.removeHandler('add-currency');
+  ipcMain.removeHandler('update-currency');
+  ipcMain.removeHandler('delete-currency');
+  ipcMain.removeHandler('batch-add-currency');
+  ipcMain.removeHandler('get-all-currencies');
+};
+
+export { initIpcHandler, initIpcHandlerForDB, resetIPCHandlers };
