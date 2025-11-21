@@ -109,6 +109,13 @@ export const isBusinessFromData = (data: unknown): data is BusinessFromData => {
     if (typeof d.phone !== 'string') return false;
     if (!validators.phone(d.phone)) return false;
   }
+  if (
+    d.description !== undefined &&
+    d.description !== null &&
+    d.description !== '' &&
+    typeof d.description !== 'string'
+  )
+    return false;
   if (d.role !== undefined && d.role !== null && d.role !== '' && typeof d.role !== 'string') return false;
   if (d.address !== undefined && d.address !== null && d.address !== '' && typeof d.address !== 'string') return false;
   if (d.website !== undefined && d.website !== null && d.website !== '' && typeof d.website !== 'string') return false;
@@ -201,6 +208,13 @@ export const isClientFromData = (data: unknown): data is ClientFromData => {
 
   if (d.id !== undefined && d.id !== null && d.id !== '' && typeof d.id !== 'number') return false;
 
+  if (
+    d.description !== undefined &&
+    d.description !== null &&
+    d.description !== '' &&
+    typeof d.description !== 'string'
+  )
+    return false;
   if (d.email !== undefined && d.email !== null && d.email !== '') {
     if (typeof d.email !== 'string') return false;
     if (!validators.email(d.email)) return false;

@@ -7,4 +7,5 @@ export interface Client {
   address?: string;
   additional?: string;
   code?: string;
+  description?: string;
 }

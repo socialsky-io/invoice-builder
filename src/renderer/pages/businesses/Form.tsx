@@ -26,7 +26,8 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
     additional: business?.additional ?? '',
     paymentInformation: business?.paymentInformation ?? '',
     fileSize: business?.fileSize,
-    fileType: business?.fileType
+    fileType: business?.fileType,
+    description: business?.description ?? ''
   });
   const [errors, setErrors] = useState({
     email: false,
@@ -75,7 +76,8 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
       address: business?.address ?? '',
       website: business?.website ?? '',
       additional: business?.additional ?? '',
-      paymentInformation: business?.paymentInformation ?? ''
+      paymentInformation: business?.paymentInformation ?? '',
+      description: business?.description ?? ''
     });
 
     setLogoUrl(fromUint8Array(business?.logo) ?? undefined);
@@ -191,6 +193,15 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
+        <TextField
+          label={t('businessesModal.description')}
+          fullWidth
+          rows={5}
+          value={form.description}
+          onChange={e => update('description', e.target.value)}
+        />
+      </Grid>
+      <Grid size={{ xs: 12, md: 12 }}>
         <TextField
           multiline
           label={t('businessesModal.additional')}

@@ -19,7 +19,8 @@ export const Form: FC<Props> = ({ handleChange = () => {}, client }) => {
     shortName: client?.shortName ?? '',
     code: client?.code ?? '',
     address: client?.address ?? '',
-    additional: client?.additional ?? ''
+    additional: client?.additional ?? '',
+    description: client?.description ?? ''
   });
   const [errors, setErrors] = useState({
     email: false,
@@ -49,7 +50,8 @@ export const Form: FC<Props> = ({ handleChange = () => {}, client }) => {
       shortName: client?.shortName ?? '',
       code: client?.code ?? '',
       address: client?.address ?? '',
-      additional: client?.additional ?? ''
+      additional: client?.additional ?? '',
+      description: client?.description ?? ''
     });
   }, [client]);
 
@@ -149,6 +151,14 @@ export const Form: FC<Props> = ({ handleChange = () => {}, client }) => {
               maxLength: 16
             }
           }}
+        />
+      </Grid>
+      <Grid size={{ xs: 12, md: 6 }}>
+        <TextField
+          label={t('clientsModal.description')}
+          fullWidth
+          value={form.description}
+          onChange={e => update('description', e.target.value)}
         />
       </Grid>
       <Grid size={{ xs: 12, md: 12 }}>

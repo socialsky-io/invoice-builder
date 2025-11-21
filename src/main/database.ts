@@ -101,6 +101,7 @@ const init = async () => {
       logo BLOB,
       fileSize INTEGER,
       fileType TEXT,
+      description TEXT,
       createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
       updatedAt DATETIME NOT NULL DEFAULT (datetime('now'))
     );
@@ -118,6 +119,7 @@ const init = async () => {
       phone TEXT,
       code TEXT,
       additional TEXT,
+      description TEXT,
       createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
       updatedAt DATETIME NOT NULL DEFAULT (datetime('now'))
     );
@@ -151,8 +153,8 @@ const init = async () => {
     CREATE TABLE IF NOT EXISTS currencies (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       code TEXT NOT NULL UNIQUE,
-      symbol TEXT NOT NULL UNIQUE,
-      text TEXT NOT NULL UNIQUE,
+      symbol TEXT NOT NULL,
+      text TEXT NOT NULL,
       format TEXT NOT NULL,
       createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
       updatedAt DATETIME NOT NULL DEFAULT (datetime('now'))
@@ -191,12 +193,14 @@ const init = async () => {
       issuedAt DATETIME NOT NULL,
       dueDate DATETIME,
       invoiceNumber TEXT NOT NULL,
-      state TEXT NOT NULL DEFAULT 'draft' CHECK (state IN ('draft','ready','partially-paid','paid','void')),
+      isArchived INTEGER NOT NULL DEFAULT 0 CHECK (isArchived IN (0,1)),
+      state TEXT NOT NULL DEFAULT 'draft' CHECK (state IN ('draft','ready','partially-paid','paid','canceled')),
       customerNotes TEXT,
       thanksNotes TEXT,
       termsConditionNotes TEXT,
       discountName TEXT,
       businessNameSnapshot TEXT NOT NULL,
+      businessDescriptionSnapshot TEXT,
       businessAddressSnapshot TEXT,
       businessRoleSnapshot TEXT,
       businessEmailSnapshot TEXT,
@@ -209,15 +213,16 @@ const init = async () => {
       businessFileTypeSnapshot TEXT,
       clientNameSnapshot TEXT NOT NULL,
       clientAddressSnapshot TEXT,
+      clientDescriptionSnapshot TEXT,
       clientEmailSnapshot TEXT,
       clientPhoneSnapshot TEXT,
       clientCodeSnapshot TEXT,
       clientAdditionalSnapshot TEXT,
       currencyCodeSnapshot TEXT NOT NULL,
       currencySymbolSnapshot TEXT NOT NULL,
-      discountType TEXT CHECK(discountType IN ('fixed','percentage')),
-      discountAmountCents INTEGER DEFAULT 0, 
-      discountPercent REAL DEFAULT 0 ,
+      discountType TEXT CHECK(discountType IN ('fixed','percentage') OR discountType IS NULL),
+      discountAmountCents INTEGER NOT NULL DEFAULT 0,
+      discountPercent REAL NOT NULL DEFAULT 0,
       shippingFeeCents INTEGER NOT NULL DEFAULT 0,
       FOREIGN KEY (businessId) REFERENCES businesses(id),
       FOREIGN KEY (clientId) REFERENCES clients(id),
@@ -227,7 +232,7 @@ const init = async () => {
       CHECK (
         (discountType = 'fixed' AND discountAmountCents >= 0 AND discountPercent = 0) OR
         (discountType = 'percentage' AND discountPercent >= 0 AND discountAmountCents = 0) OR
-        (discountType IS NULL)
+        (discountType IS NULL AND discountAmountCents = 0 AND discountPercent = 0)
       ),
       CHECK (dueDate IS NULL OR dueDate >= issuedAt),
       CHECK (convertedFromQuotationId IS NULL OR convertedFromQuotationId != id)
@@ -239,24 +244,18 @@ const init = async () => {
     `
     CREATE TABLE IF NOT EXISTS invoice_items (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        invoiceId INTEGER,       
-        quoteId INTEGER,
+        parentInvoiceId INTEGER NOT NULL,    
         itemId INTEGER,
         itemNameSnapshot TEXT NOT NULL,
         unitPriceCentsSnapshot INTEGER NOT NULL DEFAULT (0), 
         itemDescriptionSnapshot TEXT,
         unitNameSnapshot TEXT,
         categoryNameSnapshot TEXT,
-        quantity INTEGER NOT NULL DEFAULT 0,
+        quantity REAL NOT NULL DEFAULT 0,
         createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
         updatedAt DATETIME NOT NULL DEFAULT (datetime('now')),
-        FOREIGN KEY (invoiceId) REFERENCES invoices(id) ON DELETE CASCADE,
-        FOREIGN KEY (quoteId) REFERENCES invoices(id) ON DELETE CASCADE,
-        FOREIGN KEY (itemId) REFERENCES items(id) ON DELETE SET NULL,
-        CHECK (
-          (invoiceId IS NOT NULL AND quoteId IS NULL) OR
-          (invoiceId IS NULL AND quoteId IS NOT NULL)
-        )
+        FOREIGN KEY (parentInvoiceId) REFERENCES invoices(id) ON DELETE CASCADE,
+        FOREIGN KEY (itemId) REFERENCES items(id)
     )
   `
   );
@@ -265,20 +264,14 @@ const init = async () => {
     `
     CREATE TABLE IF NOT EXISTS invoice_taxes (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      invoiceId INTEGER,       
-      quoteId INTEGER,
+      parentInvoiceId INTEGER NOT NULL,   
       name TEXT NOT NULL,              
       rate REAL NOT NULL,                 
       type TEXT NOT NULL CHECK(type IN ('exclusive','inclusive','deducted')), 
       amountCents INTEGER NOT NULL,
       createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
       updatedAt DATETIME NOT NULL DEFAULT (datetime('now')),
-      FOREIGN KEY (invoiceId) REFERENCES invoices(id) ON DELETE CASCADE,
-      FOREIGN KEY (quoteId) REFERENCES invoices(id) ON DELETE CASCADE,
-      CHECK (
-        (invoiceId IS NOT NULL AND quoteId IS NULL) OR
-        (invoiceId IS NULL AND quoteId IS NOT NULL)
-      )
+      FOREIGN KEY (parentInvoiceId) REFERENCES invoices(id) ON DELETE CASCADE
     )
   `
   );
@@ -287,20 +280,14 @@ const init = async () => {
     `
     CREATE TABLE IF NOT EXISTS invoice_item_taxes (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        invoiceItemId INTEGER,
-        quoteItemId INTEGER,
+        parentInvoiceItemId INTEGER NOT NULL,
         name TEXT NOT NULL,
         rate REAL NOT NULL,
         type TEXT NOT NULL CHECK(type IN ('exclusive','inclusive','deducted')),
         amountCents INTEGER NOT NULL,
         createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
         updatedAt DATETIME NOT NULL DEFAULT (datetime('now')),
-        FOREIGN KEY (invoiceItemId) REFERENCES invoice_items(id) ON DELETE CASCADE,
-        FOREIGN KEY (quoteItemId) REFERENCES invoice_items(id) ON DELETE CASCADE,
-        CHECK (
-          (invoiceItemId IS NOT NULL AND quoteItemId IS NULL) OR
-          (invoiceItemId IS NULL AND quoteItemId IS NOT NULL)
-        )
+        FOREIGN KEY (parentInvoiceItemId) REFERENCES invoice_items(id) ON DELETE CASCADE
     )
   `
   );
@@ -309,20 +296,14 @@ const init = async () => {
     `
     CREATE TABLE IF NOT EXISTS invoice_payments (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        invoiceId INTEGER,       
-        quoteId INTEGER,
+        parentInvoiceId INTEGER NOT NULL,   
         amountCents INTEGER NOT NULL,
         paidAt DATETIME NOT NULL DEFAULT (datetime('now')),
         paymentMethod TEXT NOT NULL,           
         notes TEXT,
         createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
         updatedAt DATETIME NOT NULL DEFAULT (datetime('now')),
-        FOREIGN KEY (invoiceId) REFERENCES invoices(id) ON DELETE CASCADE,
-        FOREIGN KEY (quoteId) REFERENCES invoices(id) ON DELETE CASCADE,
-        CHECK (
-          (invoiceId IS NOT NULL AND quoteId IS NULL) OR
-          (invoiceId IS NULL AND quoteId IS NOT NULL)
-        )
+        FOREIGN KEY (parentInvoiceId) REFERENCES invoices(id) ON DELETE CASCADE
     )
   `
   );
@@ -331,27 +312,21 @@ const init = async () => {
     `
     CREATE TABLE IF NOT EXISTS attachments (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      invoiceId INTEGER,       
-      quoteId INTEGER,
+      parentInvoiceId INTEGER NOT NULL,   
       filename TEXT NOT NULL,
       fileType TEXT NOT NULL,            
       fileSize INTEGER NOT NULL,        
       data BLOB NOT NULL,                
       createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
       updatedAt DATETIME NOT NULL DEFAULT (datetime('now')),
-      FOREIGN KEY (invoiceId) REFERENCES invoices(id) ON DELETE CASCADE,
-      FOREIGN KEY (quoteId) REFERENCES invoices(id) ON DELETE CASCADE,
-      CHECK (
-        (invoiceId IS NOT NULL AND quoteId IS NULL) OR
-        (invoiceId IS NULL AND quoteId IS NOT NULL)
-      )
+      FOREIGN KEY (parentInvoiceId) REFERENCES invoices(id) ON DELETE CASCADE
     )
   `
   );
-  await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_invoice_items_invoiceId ON invoice_items(invoiceId)`);
-  await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_invoice_taxes_invoiceId ON invoice_taxes(invoiceId)`);
-  await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_invoice_payments_invoiceId ON invoice_payments(invoiceId)`);
-  await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_attachments_invoiceId ON attachments(invoiceId)`);
+  await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_invoice_items_invoiceId ON invoice_items(parentInvoiceId)`);
+  await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_invoice_taxes_invoiceId ON invoice_taxes(parentInvoiceId)`);
+  await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_invoice_payments_invoiceId ON invoice_payments(parentInvoiceId)`);
+  await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_attachments_invoiceId ON attachments(parentInvoiceId)`);
   await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_invoices_clientId ON invoices(clientId)`);
   await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_invoices_businessId ON invoices(businessId)`);
   await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_invoices_business_client ON invoices(businessId, clientId)`);
@@ -360,6 +335,7 @@ const init = async () => {
     db,
     `CREATE INDEX IF NOT EXISTS idx_invoices_convertedFromQuotationId ON invoices(convertedFromQuotationId)`
   );
+  await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_invoice_items_itemId ON invoice_items(itemId);`);
 };
 
 const initDatabase = async () => {

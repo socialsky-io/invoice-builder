@@ -16,7 +16,7 @@ import { List } from './List';
 
 export const ClientsPage: FC = () => {
   const { t } = useTranslation();
-  const excelColumns = ['name', 'shortName', 'address', 'email', 'phone', 'code', 'additional'];
+  const excelColumns = ['name', 'shortName', 'address', 'email', 'phone', 'code', 'description', 'additional'];
   const excelFileName = 'clients';
   const excelTemplateData: Rows = [
     {
@@ -26,6 +26,7 @@ export const ClientsPage: FC = () => {
       email: 'john.doe@email.com',
       phone: '+14155552671',
       code: 'A001',
+      description: 'Some description',
       additional: 'VAT DE123456789'
     },
     {

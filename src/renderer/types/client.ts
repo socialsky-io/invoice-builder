@@ -11,6 +11,7 @@ export interface Client {
   quotesCount: number;
   createdAt: string;
   updatedAt: string;
+  description?: string;
 }
 
 export interface ClientAdd {
@@ -21,6 +22,7 @@ export interface ClientAdd {
   phone?: string;
   code?: string;
   additional?: string;
+  description?: string;
 }
 
 export interface ClientUpdate extends ClientAdd {
@@ -36,4 +38,5 @@ export interface ClientFromData {
   address?: string;
   code?: string;
   additional?: string;
+  description?: string;
 }

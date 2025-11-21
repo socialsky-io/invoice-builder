@@ -16,6 +16,7 @@ export interface Business {
   updatedAt: string;
   fileSize?: number;
   fileType?: string;
+  description?: string;
 }
 
 export interface BusinessModified {
@@ -36,6 +37,7 @@ export interface BusinessModified {
   updatedAt: string;
   fileSize?: number;
   fileType?: string;
+  description?: string;
 }
 
 export interface BusinessAdd {
@@ -51,6 +53,7 @@ export interface BusinessAdd {
   logo?: Uint8Array | null;
   fileSize?: number;
   fileType?: string;
+  description?: string;
 }
 
 export interface BusinessUpdate extends BusinessAdd {
@@ -71,4 +74,5 @@ export interface BusinessFromData {
   paymentInformation?: string;
   fileSize?: number;
   fileType?: string;
+  description?: string;
 }

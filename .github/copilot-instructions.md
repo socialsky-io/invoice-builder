@@ -2,80 +2,69 @@
 
 Purpose
 
-- Provide concise, actionable guidance so an AI coding agent can be productive immediately.
+- Short, actionable notes so an AI coding agent can be productive immediately in this repo.
 
-Big picture (what this repo is)
+Big picture
 
-- Electron + Vite + React desktop app. Renderer lives in `src/renderer`, main (Electron) code in `src/main`, and preload in `src/preload`.
-- Development uses three concurrent build/watch targets: renderer (Vite dev server), preload (CJS build), and main (CJS build) — see `package.json` scripts.
+- Electron app with three runtime parts:
+  - Renderer: React + Vite (src/renderer). Runs in a BrowserWindow with `contextIsolation: true`.
+  - Preload: small CJS bundle (src/preload) that exposes a curated `window.electronAPI` surface.
+  - Main: Electron main process (src/main) that manages the app lifecycle and SQLite DB.
+  - Reasoning: app separates platform code (DB, file dialogs) from UI, keeping renderer sandboxed.
 
-Key files and example references
+Key files to read first
 
-- Dev & build scripts: `package.json` (`npm run dev`, `npm run build`).
-- Electron entry: `src/main/main.ts` (creates BrowserWindow, reads `VITE_DEV_SERVER_URL`).
-- IPC handlers: `src/main/ipcHandler.ts` — canonical list of IPC channels and server-side logic.
-- Preload exposures: `src/preload/preload.ts` — the single source of truth for `window.electronAPI` methods available to renderer.
-- DB setup & schema: `src/main/database.ts` — app uses SQLite via `sqlite3`, creates tables and initial data.
-- DB helpers: `src/main/functions.ts` — promisified helpers `runDb`, `getFirstRow`, `getAllRows` and boolean<->int conversions.
+- `package.json` — dev scripts and which builds run concurrently (`npm run dev`).
+- `src/main/main.ts` — BrowserWindow creation, dev server detection, and IPC handlers for DB setup.
+- `src/preload/preload.ts` — central source of safe APIs exposed to the renderer (see `electronAPI`).
+- `src/main/ipcHandler.ts` — canonical IPC handlers for CRUD and utility operations; includes a global guard to avoid double-registration.
+- `src/main/database.ts` — DB init / schema / seeding and `setupDB({ fullPath })` behaviour (idempotent; closes old DB when switching path).
+- `src/renderer/app/App.tsx` and `src/renderer/components/databaseChooser/DatabaseChooser.tsx` — renderer DB-chooser UX and saved-DB list logic.
 
-Dev / Build / Test workflows (exact commands)
+Developer workflows (exact commands)
 
-- Run full dev environment (watch builds + launch):
-  - `npm run dev` (runs `dev:react`, `dev:preload`, `dev:electron`, `dev:electron:start`).
-- Build for production:
-  - `npm run build` (runs `build:react`, `build:preload`, `build:electron`).
-- Test: `npm test` (Vitest); coverage: `npm run test:coverage`.
-- Lint/format: `npm run lint`, `npm run format`, `npm run lint:fix`.
+- Dev (watch builds + open Electron):
+  - `npm run dev` (runs `dev:react`, `dev:preload`, `dev:electron`, then `dev:electron:start`).
+- Build bundles:
+  - `npm run build` (renderer + preload + main) — outputs: `dist/`, `dist-electron/preload/preload.cjs`, `dist-electron/main/main.cjs`.
+- Tests & checks:
+  - `npm test` (Vitest)
+  - `npm run test:coverage`
+  - `npm run lint`, `npm run format`
 
-Important environment variables
+Environment specifics
 
-- `VITE_DEV_SERVER_URL` — if set, `main.ts` loads renderer from dev server (useful during `npm run dev`).
-- `VITE_DB_NAME` — database filename (defaults to `app_database.db`).
-- `VITE_ENABLE_MOCKS` — when true, renderer will start MSW mocks (`src/renderer/mocks/browser`).
+- `VITE_DEV_SERVER_URL` — if present main loads dev server URL instead of built `dist/index.html`.
+- `VITE_DB_NAME` / `VITE_APP_NAME` — used by default setup; the app also supports user-chosen DB path via the UI.
+- `VITE_ENABLE_MOCKS` — toggles MSW mocks in renderer.
 
-IPC / Integration patterns (what to follow)
+IPC / change pattern (exact steps)
 
-- All renderer <-> main communication must use `window.electronAPI` as defined in `src/preload/preload.ts`.
-  - Example call from renderer: `const resp = await window.electronAPI.getAllClients()`.
-- When adding a new IPC channel:
-  1. Add handler in `src/main/ipcHandler.ts` (register with `ipcMain.handle`).
-  2. Expose a matching function in `src/preload/preload.ts` (contextBridge.exposeInMainWorld).
-  3. Add typed renderer wrapper (update `src/renderer/types/*` definitions if necessary).
-- Note: `contextIsolation: true` and `nodeIntegration: false` — never rely on `window.require` or direct `ipcRenderer` in renderer.
+1. Add/modify handler in `src/main/ipcHandler.ts` (use `ipcMain.handle('my-channel', handler)`). Keep return shape `{ success: boolean, ... }`.
+2. Expose in `src/preload/preload.ts` with `contextBridge.exposeInMainWorld('electronAPI', { myApi: () => ipcRenderer.invoke('my-channel') })`.
+3. Add types in `src/renderer/types/*` and `src/main/types/*` to keep payloads synced.
+4. Use the API in renderer code (`window.electronAPI.myApi()`), handle `success`/`message`/`key` fields.
 
-Database & types notes
+DB selection & UX specifics
 
-- SQLite is used via `sqlite3`. Booleans are stored as 0/1; helpers in `functions.ts` convert booleans for queries.
-- Initial data and schema live in `src/main/database.ts` — modifying schema requires coordinated updates to `init()` and potential migrations.
+- DB schema & seeding live in `src/main/database.ts`. Changes to schema must be reflected there and tested.
+- Renderer flow:
+  - Renderer checks DB readiness.
+  - User picks path with `electronAPI.selectDatabase()` (native save dialog).
+  - Renderer calls `electronAPI.initializeDatabase({ fullPath })` to set up or open DB.
+- Saved DB list: renderer stores remembered DB paths in `localStorage` (see `DatabaseChooser.tsx` and `App.tsx`). Search for `databases` to find current keys.
 
-Build outputs & path aliases
+Common pitfalls & fixes
 
-- Preload build -> `dist-electron/preload/preload.cjs` (consumed by BrowserWindow preload). See `vite.preload.config.ts`.
-- Main build -> `dist-electron/main/main.cjs`. See `vite.electron.config.ts`.
-- Renderer build -> `dist/` (regular Vite build). See `vite.config.ts`.
-- Path aliases: `@` => `src`, `@main` => `src/main` (configured in Vite configs).
+- Re-initializing DB: `setupDB` will close an existing DB when switching to a different path. If you see errors about duplicate handlers or failing `open-url` registration, ensure you are not re-calling init or reloading the main process incorrectly.
+- Preload API changes: always update renderer types and avoid direct `ipcRenderer` calls in renderer.
 
-Tests, mocks, and local development notes
+Where to change for a feature
 
-- Tests: Vitest configured in `vite.config.ts` (setup: `setupTests.ts`).
-- MSW: mock server lives in `src/renderer/mocks` and controlled by `VITE_ENABLE_MOCKS`.
+- IPC additions: `src/main/ipcHandler.ts`, `src/preload/preload.ts`, `src/renderer/types/*`, `src/main/types/*`, then renderer components/hooks.
+- DB migrations: `src/main/database.ts` (no migration system currently — add one when needed).
+- Setup UI: `src/renderer/components/databaseChooser/*` and `src/renderer/app/App.tsx`.
 
-Code conventions & safe edits
+If you want a sample PR that adds a new IPC channel, a migration template, or a styled DatabaseChooser using MUI, tell me which one and I will implement it.
 
-- TypeScript-first. Keep types in `src/renderer/types` and `src/main/types` in sync when changing IPC payloads.
-- Follow existing naming: IPC channels use kebab-case (e.g. `get-all-clients`) and preload methods use camelCase (e.g. `getAllClients`).
-- Error handling: many main-side handlers return `{ success: boolean, ... }`. Preserve that shape when adding handlers.
-
-When you change IPC signatures or DB schema, update these files together
-
-- `src/main/ipcHandler.ts` (handler logic)
-- `src/preload/preload.ts` (exposed api)
-- `src/renderer/types/*` (renderer types)
-- `src/main/types/*` (main side types)
-
-What I couldn't detect automatically
-
-- Packaging config for electron-builder is minimal in `package.json.build`; if you modify packaging behavior check `electron-builder` docs and test on target OS.
-- Any native modules may require `electron-rebuild` during native dependency changes.
-
-If something is unclear or you want this expanded (example-based walkthrough, more file pointers, or automation scripts), tell me which area to expand.
+<!-- GitHub Copilot / AI agent instructions for contributors working on invoice-builder -->
