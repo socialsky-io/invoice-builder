@@ -1,4 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron';
+import type { DBInitType } from '../renderer/enums/dbInitType';
 import type { FilterType } from '../renderer/enums/filterType';
 import type { BusinessAdd, BusinessUpdate } from '../renderer/types/business';
 import type { CategoryAdd, CategoryUpdate } from '../renderer/types/category';
@@ -13,8 +14,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   selectDatabase: () => ipcRenderer.invoke('show-save-db-dialog'),
   openDatabase: () => ipcRenderer.invoke('show-open-db-dialog'),
-  initializeDatabase: (data: { fullPath: string; mode?: 'open' | 'create' }) =>
-    ipcRenderer.invoke('initialize-db', data),
+  initializeDatabase: (data: { fullPath: string; mode?: DBInitType }) => ipcRenderer.invoke('initialize-db', data),
 
   openUrl: (url: string) => ipcRenderer.invoke('open-url', url),
 
@@ -55,5 +55,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   updateCurrency: (data: CurrencyUpdate) => ipcRenderer.invoke('update-currency', data),
   deleteCurrency: (id: number) => ipcRenderer.invoke('delete-currency', id),
   addCurrency: (data: CurrencyAdd) => ipcRenderer.invoke('add-currency', data),
-  addBatchCurrency: (data: CurrencyAdd[]) => ipcRenderer.invoke('batch-add-currency', data)
+  addBatchCurrency: (data: CurrencyAdd[]) => ipcRenderer.invoke('batch-add-currency', data),
+
+  getAllInvoices: (filter?: FilterType) => ipcRenderer.invoke('get-all-invoices', filter)
 });

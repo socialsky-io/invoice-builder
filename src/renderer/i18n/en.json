@@ -124,6 +124,7 @@
   },
   "common": {
     "and": "and",
+    "archived": "Archived",
     "cancel": "Cancel",
     "downloadTemplate": "Download template",
     "export": "Export",
@@ -131,7 +132,9 @@
     "import": "Import",
     "importExport": "Import / Export",
     "invoice": "Invoice",
+    "invoiceNumber": "Invoice number",
     "invoices": "Invoices",
+    "issuedAt": "Issued At",
     "lastUpdate": "Last updated",
     "name": "Name",
     "noData": "No data based on search criteria",
@@ -142,7 +145,9 @@
     "search": "Search...",
     "selectFilterType": "Select filter type",
     "selectImage": "Select an image file",
-    "sortBy": "Sort by"
+    "sortBy": "Sort by",
+    "state": "Status",
+    "text": "Text"
   },
   "currencies": {
     "add": "Add currency",
@@ -201,6 +206,17 @@
     "noWorksheetFound": "No worksheet found",
     "unknownError": "Unknown database error",
     "unsupportedImage": "Unsupported image type"
+  },
+  "invoices": {
+    "add": "Add invoice",
+    "dueDate": "Due in {{days}} day(s): {{date}}",
+    "dueToday": "Due in today: {{date}}",
+    "markedAsPaid": "Marked as paid: {{date}}",
+    "noItem": "Selected a invoice to view details.",
+    "overdue": "Overdue {{days}} day(s)",
+    "overpaid": "Overpaid: {{amount}}",
+    "partiallyPaid": "Partially paid: {{amount}} remaining",
+    "title": "Invoice"
   },
   "items": {
     "add": "Add item",

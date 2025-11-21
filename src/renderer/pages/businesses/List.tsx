@@ -19,6 +19,7 @@ export const List: FC<Props> = ({ item, onEdit, onDelete }) => {
       getPhone={c => c.phone}
       getInvoiceCount={c => c.invoiceCount}
       getQuotesCount={c => c.quotesCount}
+      getIsArchived={c => c.isArchived}
     />
   );
 };

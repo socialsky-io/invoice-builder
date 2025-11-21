@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import { CRUDPage } from '../../components/crudPage/CRUDPage';
 import { FilterType } from '../../enums/filterType';
-import { useBusinessAdd } from '../../hooks/business/useBusinessAdd';
-import { useBusinessAddBatch } from '../../hooks/business/useBusinessAddBatch';
-import { useBusinessDelete } from '../../hooks/business/useBusinessDelete';
-import { useBusinessesRetrieve } from '../../hooks/business/useBusinessesRetrieve';
-import { useBusinessUpdate } from '../../hooks/business/useBusinessUpdate';
+import { useBusinessAdd } from '../../hooks/businesses/useBusinessAdd';
+import { useBusinessAddBatch } from '../../hooks/businesses/useBusinessAddBatch';
+import { useBusinessDelete } from '../../hooks/businesses/useBusinessDelete';
+import { useBusinessesRetrieve } from '../../hooks/businesses/useBusinessesRetrieve';
+import { useBusinessUpdate } from '../../hooks/businesses/useBusinessUpdate';
 import type { Business, BusinessAdd, BusinessUpdate } from '../../types/business';
 import type { Rows } from '../../types/excel';
 import type { Filter } from '../../types/filter';

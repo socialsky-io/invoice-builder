@@ -65,6 +65,7 @@
     "@mui/material": "^7.3.5",
     "@react-pdf/renderer": "^4.3.1",
     "@reduxjs/toolkit": "^2.10.1",
+    "date-fns": "^4.1.0",
     "dotenv": "^17.2.3",
     "exceljs": "^4.4.0",
     "file-saver": "^2.0.5",

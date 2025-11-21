@@ -4,7 +4,7 @@ import { BusinessesPage } from '../pages/businesses';
 import { CategoriesPage } from '../pages/categories';
 import { ClientsPage } from '../pages/clients';
 import { CurrenciesPage } from '../pages/currencies';
-import { Invoices } from '../pages/invoices';
+import { InvoicesPage } from '../pages/invoices';
 import { ItemsPage } from '../pages/items';
 import { Quotes } from '../pages/quotes';
 import { Reports } from '../pages/reports';
@@ -22,8 +22,8 @@ export const AppRoutes: FC = () => {
       <Route path="units" element={<UnitsPage />} />
       <Route path="categories" element={<CategoriesPage />} />
       <Route path="items" element={<ItemsPage />} />
+      <Route path="invoices" element={<InvoicesPage />} />
 
-      <Route path="invoices" element={<Invoices />} />
       <Route path="reports" element={<Reports />} />
       <Route path="quotes" element={<Quotes />} />
 

@@ -124,6 +124,7 @@
   },
   "common": {
     "and": "ir",
+    "archived": "Archyvuota",
     "cancel": "Atšaukti",
     "downloadTemplate": "Atsisiųsti šabloną",
     "export": "Eksportuoti",
@@ -131,7 +132,9 @@
     "import": "Importuoti",
     "importExport": "Importuoti / Eksportuoti",
     "invoice": "Sąskaita",
+    "invoiceNumber": "Sąskaitos numeris",
     "invoices": "Sąskaitos",
+    "issuedAt": "Išrašyta",
     "lastUpdate": "Paskutinį kartą atnaujinta",
     "name": "Pavadinimas",
     "noData": "Duomenų pagal paieškos kriterijus nėra",
@@ -142,7 +145,9 @@
     "search": "Ieškoti...",
     "selectFilterType": "Pasirinkite filtro tipą",
     "selectImage": "Pasirinkite vaizdo failą",
-    "sortBy": "Rūšiuoti pagal"
+    "sortBy": "Rūšiuoti pagal",
+    "state": "Statusas",
+    "text": "Tekstas"
   },
   "currencies": {
     "add": "Pridėti valiutą",
@@ -201,6 +206,17 @@
     "noWorksheetFound": "Darbalapis nerastas",
     "unknownError": "Nežinoma duomenų bazės klaida",
     "unsupportedImage": "Nepalaikomas paveikslėlio tipas"
+  },
+  "invoices": {
+    "add": "Pridėti sąskaitą",
+    "dueDate": "Apmokėti per {{days}} d.: {{date}}",
+    "dueToday": "Terminas šiandien: {{date}}",
+    "markedAsPaid": "Pažymėta kaip apmokėta: {{date}}",
+    "noItem": "Pasirinkite sąskaitą, kad matytumėte detales.",
+    "overdue": "Vėluojama {{days}} d.",
+    "overpaid": "Permokėta: {{amount}}",
+    "partiallyPaid": "Iš dalies apmokėta: liko {{amount}}",
+    "title": "Sąskaita"
   },
   "items": {
     "add": "Pridėti prekę",

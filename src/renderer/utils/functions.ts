@@ -1,8 +1,10 @@
+import { format, parseISO } from 'date-fns';
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 import type { TFunction } from 'i18next';
 import { AmountFormat } from '../enums/amountFormat';
 import { CurrencyFormat } from '../enums/currencyFormat';
+import type { DateFormat } from '../enums/dateFormat';
 import { SortType } from '../enums/sortType';
 import type { BusinessFromData } from '../types/business';
 import type { CategoryFromData } from '../types/category';
@@ -12,6 +14,16 @@ import type { Columns, Row, Rows, RowValue } from '../types/excel';
 import type { ItemFromData } from '../types/item';
 import type { UnitFromData } from '../types/unit';
 import { validators } from './validators';
+
+export const formatDate = (date: string | Date, pattern: DateFormat) => {
+  if (!date) return '';
+
+  const d = typeof date === 'string' ? parseISO(date) : date;
+
+  if (isNaN(d.getTime())) return '';
+
+  return format(d, pattern);
+};
 
 export const validateOnlyNumbersLetters = (value: string) => {
   const isValid = /^[a-zA-Z0-9]*$/.test(value);
@@ -376,6 +388,17 @@ export const importExcel = async (
 
 export const getFormattedLabel = (data: { label: string; symbol: string; code: string }) => {
   return data.label.replace('{symbol}', data.symbol || '').replace('{code}', data.code || '');
+};
+
+export const getFormattedCurrency = (data: {
+  amount: number;
+  amountFormat: AmountFormat;
+  format: CurrencyFormat;
+  symbol: string;
+  code: string;
+}) => {
+  const formattedAmount = formatAmount(data.amount, data.amountFormat);
+  return data.format.replace('{symbol}', data.symbol).replace('{code}', data.code).replace('{amount}', formattedAmount);
 };
 
 export const getFormattingMeta = (amountFormat: AmountFormat = AmountFormat.enUS) => {

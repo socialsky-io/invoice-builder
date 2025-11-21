@@ -7,6 +7,7 @@ import type { BusinessModified } from '../types/business';
 import type { Category } from '../types/category';
 import type { Client } from '../types/client';
 import type { Currency } from '../types/currency';
+import type { InvoicesModified } from '../types/invoice';
 import type { Item } from '../types/item';
 import type { PageState } from '../types/pageState';
 import type { Settings } from '../types/settings';
@@ -23,7 +24,8 @@ const initialState: PageState = {
   items: [],
   currencies: [],
   units: [],
-  categories: []
+  categories: [],
+  invoices: []
 };
 
 export const pageSlice = createSlice({
@@ -68,6 +70,9 @@ export const pageSlice = createSlice({
     },
     setUnits: (state, action: PayloadAction<Unit[]>) => {
       state.units = action.payload;
+    },
+    setInvoices: (state, action: PayloadAction<InvoicesModified[]>) => {
+      state.invoices = action.payload;
     },
     setCategories: (state, action: PayloadAction<Category[]>) => {
       state.categories = action.payload;
@@ -142,6 +147,7 @@ export const selectCategories = createSelector(selectState, state => state.categ
 export const selectCurrencies = createSelector(selectState, state => state.currencies);
 export const selectUnits = createSelector(selectState, state => state.units);
 export const selectItems = createSelector(selectState, state => state.items);
+export const selectInvoices = createSelector(selectState, state => state.invoices);
 
 export const selectUnitsOptions = createSelector(selectState, state =>
   state.units.map(u => {
@@ -172,7 +178,8 @@ export const {
   setItems,
   setCategories,
   setCurrencies,
-  setUnits
+  setUnits,
+  setInvoices
 } = pageSlice.actions;
 
 export const pageReducer = pageSlice.reducer;

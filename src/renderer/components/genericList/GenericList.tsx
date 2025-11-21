@@ -28,6 +28,7 @@ interface GenericListProps<T extends { id: number }> {
   getAdditional?: (item: T) => string | undefined;
   getInvoiceCount: (item: T) => number;
   getQuotesCount?: (item: T) => number;
+  getIsArchived?: (item: T) => boolean;
 }
 export const GenericList = <T extends { id: number }>({
   item,
@@ -39,7 +40,8 @@ export const GenericList = <T extends { id: number }>({
   getPhone,
   getInvoiceCount,
   getQuotesCount,
-  getAdditional
+  getAdditional,
+  getIsArchived
 }: GenericListProps<T>) => {
   const theme = useTheme();
   const { t } = useTranslation();
@@ -53,6 +55,7 @@ export const GenericList = <T extends { id: number }>({
   const invoiceCount = getInvoiceCount(item);
   const quotesCount = getQuotesCount?.(item);
   const additional = getAdditional?.(item);
+  const isArchived = getIsArchived?.(item);
 
   return (
     <Paper
@@ -83,119 +86,153 @@ export const GenericList = <T extends { id: number }>({
         <Box
           sx={{
             display: 'flex',
-            flexDirection: 'row',
+            flexDirection: 'column',
             justifyContent: 'start',
             alignItems: 'center',
-            width: '100%'
+            width: '100%',
+            gap: 2
           }}
         >
-          {shortName && (
-            <ListItemIcon sx={{ minWidth: 40 }}>
+          {isArchived && (
+            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexDirection: 'row', width: '100%' }}>
+              <Box sx={{ flexGrow: 1 }} />
               <Box
                 sx={{
-                  width: 32,
-                  height: 32,
+                  width: 8,
+                  height: 8,
                   borderRadius: '50%',
-                  bgcolor:
-                    theme.palette.mode === Themes.dark ? theme.palette.secondary.dark : theme.palette.secondary.light,
-                  color: theme.palette.text.primary,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontWeight: 600,
-                  fontSize: 14
+                  bgcolor: theme.palette.grey[700],
+                  flexShrink: 0
                 }}
-              >
-                {shortName}
-              </Box>
-            </ListItemIcon>
-          )}
-
-          <ListItemText
-            primary={
+              />
               <Typography
+                color={theme.palette.text.secondary}
                 component="div"
                 variant="body1"
-                sx={{ fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis' }}
+                sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
               >
-                {name}
+                {t('common.archived').toUpperCase()}
               </Typography>
-            }
-            disableTypography
-            secondary={
-              <>
-                {additional && (
-                  <Typography
-                    component="div"
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis' }}
-                  >
-                    {additional}
-                  </Typography>
-                )}
-                {email && (
-                  <Typography
-                    component="div"
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis' }}
-                  >
-                    {email}
-                  </Typography>
-                )}
-                {phone && (
-                  <Typography
-                    component="div"
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis' }}
-                  >
-                    {phone}
-                  </Typography>
-                )}
-              </>
-            }
-            slotProps={{ primary: { sx: { fontWeight: 600 } } }}
-          />
-
-          <Box sx={{ flexGrow: 1 }} />
-
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, ml: 2 }}>
-            {!isMobile && (
-              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'end', whiteSpace: 'nowrap' }}>
-                <Typography variant="body2" sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                  {invoiceCount} {invoiceCount > 1 ? t('common.invoices') : t('common.invoice')}
-                </Typography>
-                {storeSettings?.quotesON && quotesCount !== undefined && (
-                  <Typography variant="body2" sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {quotesCount} {quotesCount > 1 ? t('common.quotes') : t('common.quote')}
-                  </Typography>
-                )}
-              </Box>
-            )}
-
-            <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
-
-            <Box sx={{ display: 'flex', gap: 0.5 }}>
-              <Tooltip title={t('ariaLabel.delete')}>
-                <IconButton
-                  size="small"
-                  color="error"
-                  onClick={e => {
-                    e.stopPropagation();
-                    onDelete(item.id);
+            </Box>
+          )}
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'start',
+              alignItems: 'center',
+              width: '100%'
+            }}
+          >
+            {shortName && (
+              <ListItemIcon sx={{ minWidth: 40 }}>
+                <Box
+                  sx={{
+                    width: 32,
+                    height: 32,
+                    borderRadius: '50%',
+                    bgcolor:
+                      theme.palette.mode === Themes.dark ? theme.palette.secondary.dark : theme.palette.secondary.light,
+                    color: theme.palette.text.primary,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontWeight: 600,
+                    fontSize: 14
                   }}
                 >
-                  <DeleteIcon fontSize="small" />
-                </IconButton>
-              </Tooltip>
+                  {shortName}
+                </Box>
+              </ListItemIcon>
+            )}
+
+            <ListItemText
+              primary={
+                <Typography
+                  component="div"
+                  variant="body1"
+                  sx={{ fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis' }}
+                >
+                  {name}
+                </Typography>
+              }
+              disableTypography
+              secondary={
+                <>
+                  {additional && (
+                    <Typography
+                      component="div"
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis' }}
+                    >
+                      {additional}
+                    </Typography>
+                  )}
+                  {email && (
+                    <Typography
+                      component="div"
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis' }}
+                    >
+                      {email}
+                    </Typography>
+                  )}
+                  {phone && (
+                    <Typography
+                      component="div"
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis' }}
+                    >
+                      {phone}
+                    </Typography>
+                  )}
+                </>
+              }
+              sx={{ m: 0 }}
+              slotProps={{ primary: { sx: { fontWeight: 600, m: 0 } } }}
+            />
+
+            <Box sx={{ flexGrow: 1 }} />
+
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, ml: 2 }}>
+              {!isMobile && (
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'end', whiteSpace: 'nowrap' }}>
+                  <Typography variant="body2" sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {invoiceCount} {invoiceCount > 1 ? t('common.invoices') : t('common.invoice')}
+                  </Typography>
+                  {storeSettings?.quotesON && quotesCount !== undefined && (
+                    <Typography variant="body2" sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {quotesCount} {quotesCount > 1 ? t('common.quotes') : t('common.quote')}
+                    </Typography>
+                  )}
+                </Box>
+              )}
+
+              <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
+
+              <Box sx={{ display: 'flex', gap: 0.5 }}>
+                <Tooltip title={t('ariaLabel.delete')}>
+                  <IconButton
+                    size="small"
+                    color="error"
+                    onClick={e => {
+                      e.stopPropagation();
+                      onDelete(item.id);
+                    }}
+                  >
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                </Tooltip>
+              </Box>
             </Box>
           </Box>
         </Box>
 
         {isMobile && (
-          <Box sx={{ display: 'flex', flexDirection: 'row', gap: 0.5, whiteSpace: 'nowrap' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'row', gap: 0.5, whiteSpace: 'nowrap', mt: 2 }}>
             <Typography variant="body2" sx={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {invoiceCount} {invoiceCount > 1 ? t('common.invoices') : t('common.invoice')}
             </Typography>

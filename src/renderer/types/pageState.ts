@@ -2,6 +2,7 @@ import type { BusinessModified } from './business';
 import type { Category } from './category';
 import type { Client } from './client';
 import type { Currency } from './currency';
+import type { InvoicesModified } from './invoice';
 import type { Item } from './item';
 import type { Settings } from './settings';
 import type { ToastMeta } from './toastMeta';
@@ -17,4 +18,5 @@ export interface PageState {
   currencies: Currency[];
   units: Unit[];
   categories: Category[];
+  invoices: InvoicesModified[];
 }

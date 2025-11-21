@@ -22,6 +22,7 @@ export const List: FC<Props> = ({ item, onEdit, onDelete }) => {
       getAdditional={c => `${formatAmount(c.amountCents ? c.amountCents / 100 : 0, settings?.amountFormat)}`}
       getInvoiceCount={c => c.invoiceCount}
       getQuotesCount={c => c.quotesCount}
+      getIsArchived={c => c.isArchived}
     />
   );
 };

@@ -92,7 +92,7 @@ export const CurrenciesPage: FC = () => {
       useDelete={useCurrencyDelete}
       searchField={'text'}
       sortOptions={[
-        { label: t('common.name'), value: 'text' },
+        { label: t('common.text'), value: 'text' },
         { label: t('common.lastUpdate'), value: 'updatedAt' }
       ]}
       noItemButtonText={t('currencies.add')}

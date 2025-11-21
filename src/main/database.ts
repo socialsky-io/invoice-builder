@@ -201,7 +201,7 @@ const init = async () => {
       dueDate DATETIME,
       invoiceNumber TEXT NOT NULL,
       isArchived INTEGER NOT NULL DEFAULT 0 CHECK (isArchived IN (0,1)),
-      state TEXT NOT NULL DEFAULT 'draft' CHECK (state IN ('draft','ready','partially-paid','paid','canceled')),
+      state TEXT NOT NULL DEFAULT 'unpaid' CHECK (state IN ('unpaid','partially','paid','canceled')),
       customerNotes TEXT,
       thanksNotes TEXT,
       termsConditionNotes TEXT,

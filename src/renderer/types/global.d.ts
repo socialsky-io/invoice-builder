@@ -1,10 +1,12 @@
 import type { FilterType } from '../enums/filterType';
 import type { Settings, SettingsUpdate } from '../types/settings';
+import type { DBInitType } from './../enums/dbInitType';
 import type { Business, BusinessAdd, BusinessUpdate } from './business';
 import type { Category, CategoryAdd, CategoryUpdate } from './category';
 import type { Client, ClientAdd, ClientUpdate } from './client';
 import type { Currency, CurrencyAdd, CurrencyUpdate } from './currency';
 import type { DBSelector } from './dbSelector';
+import type { Invoice } from './invoice';
 import type { Item, ItemAdd, ItemUpdate } from './item';
 import type { Response } from './response';
 import type { Unit, UnitAdd, UnitUpdate } from './unit';
@@ -17,7 +19,7 @@ declare global {
       openUrl: (url: string) => Promise<void>;
       selectDatabase: () => Promise<Response<DBSelector>>;
       openDatabase: () => Promise<Response<DBSelector>>;
-      initializeDatabase: (data: { fullPath: string; mode?: 'open' | 'create' }) => Promise<Response<unknown>>;
+      initializeDatabase: (data: { fullPath: string; mode?: DBInitType }) => Promise<Response<unknown>>;
 
       getAllSettings: () => Promise<Response<Settings>>;
       updateSettings: (data: SettingsUpdate) => Promise<Response<SettingsUpdate>>;
@@ -57,6 +59,8 @@ declare global {
       deleteCurrency: (id: number) => Promise<Response<unknown>>;
       addCurrency: (data: CurrencyAdd) => Promise<Response<CurrencyAdd>>;
       addBatchCurrency: (data: CurrencyAdd[]) => Promise<Response<CurrencyAdd[]>>;
+
+      getAllInvoices: (filter?: FilterType) => Promise<Response<Invoice[]>>;
     };
   }
 }

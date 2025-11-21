@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import { useCallback, useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
+import { DBInitType } from '../../enums/dbInitType';
 import { usDBOpener } from '../../hooks/dbSelector/usDBOpener';
 import { usDBSelector } from '../../hooks/dbSelector/usDBSelector';
 import { useDBInit } from '../../hooks/dbSelector/useDBInit';
@@ -31,14 +32,14 @@ export const DatabaseChooser: FC<Props> = ({ onDatabaseRead }) => {
   const { t } = useTranslation();
   const [selectedPath, setSelectedPath] = useState<string | null>(null);
   const [savedDbs, setSavedDbs] = useState<string[]>([]);
-  const [selectionMode, setSelectionMode] = useState<'open' | 'create' | undefined>(undefined);
+  const [selectionMode, setSelectionMode] = useState<DBInitType | undefined>(undefined);
   const [isInitializing, setIsInitializing] = useState(false);
 
   const { execute: selectDB } = usDBSelector({
     immediate: false,
     onDone: (results: Response<DBSelector>) => {
       if (results.data && !results.data.canceled && results.data.filePath) {
-        setSelectionMode('create');
+        setSelectionMode(DBInitType.create);
         setSelectedPath(results.data.filePath);
       }
     }
@@ -48,7 +49,7 @@ export const DatabaseChooser: FC<Props> = ({ onDatabaseRead }) => {
     immediate: false,
     onDone: (results: Response<DBSelector>) => {
       if (results.data && !results.data.canceled && results.data.filePath) {
-        setSelectionMode('open');
+        setSelectionMode(DBInitType.open);
         setSelectedPath(results.data.filePath);
       }
     }
@@ -187,7 +188,7 @@ export const DatabaseChooser: FC<Props> = ({ onDatabaseRead }) => {
             >
               <ListItemButton
                 onClick={() => {
-                  setSelectionMode('open');
+                  setSelectionMode(DBInitType.open);
                   setSelectedPath(item);
                 }}
                 sx={{

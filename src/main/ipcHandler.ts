@@ -2,6 +2,8 @@ import { dialog, ipcMain, shell } from 'electron';
 import { join } from 'path';
 import type { Database } from 'sqlite3';
 import { setupDB } from './database';
+import { DBInitType } from './enums/dbInitType';
+import { FilterType } from './enums/filterType';
 import { getAllRows, getFirstRow, runDb } from './functions';
 import type { Business } from './types/business';
 import type { Category } from './types/category';
@@ -61,35 +63,27 @@ const prepareUpdate = (data: UpdateData, id?: number) => {
 };
 
 const getHavingClause = (
-  filter:
-    | 'All'
-    | 'Active'
-    | 'Archived'
-    | 'AtleastOneInvoice'
-    | 'NoInvoices'
-    | 'NoInvoices30'
-    | 'NoInvoices60'
-    | 'NoInvoices90',
+  filter: FilterType,
   invoiceColumn: string,
   invoiceIdColumn: string,
   archivedColumn: string
 ) => {
   switch (filter) {
-    case 'NoInvoices30':
+    case FilterType.noInvoices30:
       return `HAVING MAX(${invoiceColumn}) IS NULL OR MAX(${invoiceColumn}) < datetime('now', '-30 days')`;
-    case 'NoInvoices60':
+    case FilterType.noInvoices60:
       return `HAVING MAX(${invoiceColumn}) IS NULL OR MAX(${invoiceColumn}) < datetime('now', '-60 days')`;
-    case 'NoInvoices90':
+    case FilterType.noInvoices90:
       return `HAVING MAX(${invoiceColumn}) IS NULL OR MAX(${invoiceColumn}) < datetime('now', '-90 days')`;
-    case 'NoInvoices':
+    case FilterType.noInvoices:
       return `HAVING COUNT(${invoiceIdColumn}) = 0`;
-    case 'AtleastOneInvoice':
+    case FilterType.atleastOneInvoice:
       return `HAVING COUNT(${invoiceIdColumn}) > 0`;
-    case 'Active':
+    case FilterType.active:
       return `HAVING ${archivedColumn} = 0`;
-    case 'Archived':
+    case FilterType.archived:
       return `HAVING ${archivedColumn} = 1`;
-    case 'All':
+    case FilterType.all:
     default:
       return '';
   }
@@ -125,17 +119,7 @@ const resolveItemRelations = async (db: Database, data: Item): Promise<Item> => 
 
 const getAllEntities =
   <T extends Record<string, unknown>>(db: Database, table: string, keyFieldName: string) =>
-  async (
-    filter:
-      | 'All'
-      | 'Active'
-      | 'Archived'
-      | 'AtleastOneInvoice'
-      | 'NoInvoices'
-      | 'NoInvoices30'
-      | 'NoInvoices60'
-      | 'NoInvoices90'
-  ) => {
+  async (filter: FilterType) => {
     const havingClause = getHavingClause(filter, 'i.updatedAt', 'i.id', 't.isArchived');
     const sql = `
       SELECT 
@@ -457,6 +441,39 @@ const initIpcHandler = (db: Database, path: string) => {
     return { success: true };
   });
   ipcMain.handle('get-all-currencies', async (_event, filter) => getAllCurrencies(filter));
+
+  ipcMain.handle('get-all-invoices', async (_event, filter) => {
+    const havingClause = getHavingClause(filter, 'i.updatedAt', 'i.id', 'i.isArchived');
+    const invoicesSql = `
+      SELECT
+          i.*,
+          c.format as currencyFormat
+      FROM invoices i
+      INNER JOIN currencies as c on c.id = i.currencyId
+      WHERE i.invoiceType = 'invoice'
+      ${havingClause}
+    `;
+    const invoices = await getAllRows(db, invoicesSql);
+
+    const invoiceIds = invoices.map(i => i.id) as number[];
+    const placeholders = invoiceIds.map(() => '?').join(', ');
+    const paymentsSql = `
+      SELECT ip.*
+      FROM invoice_payments as ip
+      WHERE parentInvoiceId IN (${placeholders})
+    `;
+    const invoicePayments = await getAllRows(db, paymentsSql, invoiceIds);
+
+    const finalInvoices = invoices.map(invoice => ({
+      ...invoice,
+      invoicePayments: invoicePayments.filter(p => p.parentInvoiceId === invoice.id)
+    }));
+
+    return {
+      success: true,
+      data: finalInvoices
+    };
+  });
 };
 
 const initIpcHandlerForDB = (dbName: string) => {
@@ -485,10 +502,10 @@ const initIpcHandlerForDB = (dbName: string) => {
       }
     };
   });
-  ipcMain.handle('initialize-db', async (_event, opts: { fullPath: string; mode?: 'open' | 'create' }) => {
+  ipcMain.handle('initialize-db', async (_event, opts: { fullPath: string; mode?: DBInitType }) => {
     try {
       resetIPCHandlers();
-      const createIfMissing = opts.mode === 'create' || typeof opts.mode === 'undefined';
+      const createIfMissing = opts.mode === DBInitType.create || typeof opts.mode === 'undefined';
       await setupDB({ fullPath: opts.fullPath, createIfMissing });
       return { success: true };
     } catch (error) {
@@ -538,6 +555,8 @@ const resetIPCHandlers = () => {
   ipcMain.removeHandler('delete-currency');
   ipcMain.removeHandler('batch-add-currency');
   ipcMain.removeHandler('get-all-currencies');
+
+  ipcMain.removeHandler('get-all-invoices');
 };
 
 export { initIpcHandler, initIpcHandlerForDB, resetIPCHandlers };

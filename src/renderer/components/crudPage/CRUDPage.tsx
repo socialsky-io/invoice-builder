@@ -34,25 +34,25 @@ import { SearchInput } from '../searchInput/SearchInput';
 
 interface Props<T, TAdd, TUpdate> {
   title: string;
-  useRetrieve: (args: { filter?: FilterType; onDone?: (data: Response<T[]>) => void }) => {
+  useRetrieve?: (args: { filter?: FilterType; onDone?: (data: Response<T[]>) => void }) => {
     items: T[];
     execute: () => void;
   };
-  useAdd: (args: { item?: TAdd; immediate?: boolean; onDone?: (data: Response<TAdd>) => void }) => {
+  useAdd?: (args: { item?: TAdd; immediate?: boolean; onDone?: (data: Response<TAdd>) => void }) => {
     execute: () => void;
   };
-  useAddBatch: (args: { item?: TAdd[]; immediate?: boolean; onDone?: (data: Response<TAdd[]>) => void }) => {
+  useAddBatch?: (args: { item?: TAdd[]; immediate?: boolean; onDone?: (data: Response<TAdd[]>) => void }) => {
     execute: () => void;
   };
-  useUpdate: (args: { item?: TUpdate; immediate?: boolean; onDone?: (data: Response<TUpdate>) => void }) => {
+  useUpdate?: (args: { item?: TUpdate; immediate?: boolean; onDone?: (data: Response<TUpdate>) => void }) => {
     execute: () => void;
   };
-  useDelete: (args: { id: number; immediate?: boolean; onDone?: (data: Response<unknown>) => void }) => {
+  useDelete?: (args: { id: number; immediate?: boolean; onDone?: (data: Response<unknown>) => void }) => {
     execute: () => void;
   };
   searchField: keyof T;
-  validateAndNormalize: (data: unknown) => Promise<TAdd | TUpdate | undefined>;
-  form: (args: {
+  validateAndNormalize?: (data: unknown) => Promise<TAdd | TUpdate | undefined>;
+  form?: (args: {
     item?: T;
     onChange: (data: { changedData: TAdd | TUpdate; isFormValid: boolean }) => void;
   }) => ReactNode;
@@ -60,12 +60,12 @@ interface Props<T, TAdd, TUpdate> {
   noItemButtonText: string;
   noItemText: string;
   leftTitle: string;
-  renderListItem: (item: T, onEdit: (item: T) => void, onDelete: (id: number) => void) => ReactNode;
-  excelColumns: string[];
-  excelFileName: string;
-  excelFormat: 'xlsx' | 'xls';
-  excelTemplateData: Rows;
-  filters: Filter[];
+  renderListItem?: (item: T, onEdit: (item: T) => void, onDelete: (id: number) => void) => ReactNode;
+  excelColumns?: string[];
+  excelFileName?: string;
+  excelFormat?: 'xlsx' | 'xls';
+  excelTemplateData?: Rows;
+  filters?: Filter[];
   itemsPerPage?: number;
 }
 
@@ -74,25 +74,36 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
   const { t } = useTranslation();
   const {
     title,
-    excelColumns,
+    excelColumns = [],
     excelFileName,
     excelFormat,
     excelTemplateData,
     searchField,
     noItemButtonText,
-    useRetrieve,
-    useAdd,
-    useAddBatch,
-    useUpdate,
-    useDelete,
-    renderListItem,
+    useRetrieve = () => ({
+      items: [] as T[],
+      execute: () => {}
+    }),
+    useAdd = () => ({
+      execute: () => {}
+    }),
+    useAddBatch = () => ({
+      execute: () => {}
+    }),
+    useUpdate = () => ({
+      execute: () => {}
+    }),
+    useDelete = () => ({
+      execute: () => {}
+    }),
+    renderListItem = () => null,
     noItemText,
     leftTitle,
-    validateAndNormalize,
+    validateAndNormalize = () => {},
     sortOptions,
-    form,
+    form = () => null,
     itemsPerPage = 20,
-    filters
+    filters = []
   } = props;
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
@@ -284,8 +295,12 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
     [t, validateAndNormalize]
   );
 
+  const showExcelButtons = () => {
+    return excelColumns.length > 0 && excelTemplateData && excelFileName && excelFormat;
+  };
+
   const onDownloadTemplate = useCallback(async () => {
-    exportExcel(excelColumns, excelTemplateData, `${excelFileName}_template.${excelFormat}`);
+    if (showExcelButtons()) exportExcel(excelColumns, excelTemplateData!, `${excelFileName}_template.${excelFormat}`);
   }, [excelColumns, excelTemplateData, excelFileName, excelFormat]);
 
   const onFilter = useCallback((filter: Filter) => {
@@ -370,11 +385,13 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
             {leftTitle}
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
-          <ImportExportButton
-            onExport={onExportToExcel}
-            onImport={onImportExcel}
-            onDownloadTemplate={onDownloadTemplate}
-          />
+          {showExcelButtons() && (
+            <ImportExportButton
+              onExport={onExportToExcel}
+              onImport={onImportExcel}
+              onDownloadTemplate={onDownloadTemplate}
+            />
+          )}
         </Box>
 
         <SearchInput value={searchValue} onChange={onSearchChanged} />
@@ -396,7 +413,10 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
               justifyContent: 'space-between'
             }}
           >
-            <BottomFilterSheet filters={filters} selectedFilter={selectedFilter} onFilter={onFilter} />
+            {filters.length > 0 && (
+              <BottomFilterSheet filters={filters} selectedFilter={selectedFilter} onFilter={onFilter} />
+            )}
+            {filters.length <= 0 && <Box />}
 
             <FilterSortBar<keyof T>
               sortByOptions={sortOptions}

@@ -16,6 +16,7 @@ export const List: FC<Props> = ({ item, onEdit, onDelete }) => {
       getName={c => c.name}
       getInvoiceCount={c => c.invoiceCount}
       getQuotesCount={c => c.quotesCount}
+      getIsArchived={c => c.isArchived}
     />
   );
 };

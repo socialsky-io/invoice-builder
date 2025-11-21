@@ -1,16 +1,17 @@
 import { useCallback } from 'react';
+import { DBInitType } from '../../enums/dbInitType';
 import type { RequestHook } from '../../types/requestHook';
 import type { Response } from '../../types/response';
 import { useAsyncAction } from '../useAsyncAction';
 
 interface UseInitDBParams extends RequestHook<Response<unknown>> {
   fullPath: string;
-  mode?: 'open' | 'create';
+  mode?: DBInitType;
 }
 
 export const useDBInit = ({
   fullPath,
-  mode = 'create',
+  mode = DBInitType.create,
   immediate = true,
   showLoader = true,
   onDone
