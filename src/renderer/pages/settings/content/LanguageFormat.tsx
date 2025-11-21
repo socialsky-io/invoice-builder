@@ -1,10 +1,11 @@
 import { Autocomplete, Box, Grid, TextField } from '@mui/material';
 import { useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PageHeader } from '../../../components/pageHeader/PageHeader';
-import { AmountFormat } from '../../../enums/amountFormat';
-import { DateFormat } from '../../../enums/dateFormat';
-import { Language } from '../../../enums/language';
+import { PageHeader } from '../../../shared/components/pageHeader/PageHeader';
+import { AmountFormat } from '../../../shared/enums/amountFormat';
+import { DateFormat } from '../../../shared/enums/dateFormat';
+import { Language } from '../../../shared/enums/language';
+import type { CustomOption } from '../../../shared/types/customOption';
 import { useAppSelector } from '../../../state/configureStore';
 import {
   AMOUNT_FORMAT_ITEMS,
@@ -15,7 +16,6 @@ import {
   LANGUAGE_ITEMS_ARRAY
 } from '../../../state/constant';
 import { selectSettings } from '../../../state/pageSlice';
-import type { CustomOption } from '../../../types/customOption';
 
 interface Props {
   showBack: boolean;

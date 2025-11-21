@@ -1,6 +1,6 @@
 import { type FC } from 'react';
-import { GenericList } from '../../components/genericList/GenericList';
-import type { Client } from '../../types/client';
+import { GenericList } from '../../shared/components/genericList/GenericList';
+import type { Client } from '../../shared/types/client';
 
 interface Props {
   item: Client;

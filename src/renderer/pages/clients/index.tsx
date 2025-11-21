@@ -1,16 +1,16 @@
 import { type FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CRUDPage } from '../../components/crudPage/CRUDPage';
-import { FilterType } from '../../enums/filterType';
-import { useClientAdd } from '../../hooks/clients/useClientAdd';
-import { useClientAddBatch } from '../../hooks/clients/useClientAddBatch';
-import { useClientDelete } from '../../hooks/clients/useClientDelete';
-import { useClientsRetrieve } from '../../hooks/clients/useClientsRetrieve';
-import { useClientUpdate } from '../../hooks/clients/useClientUpdate';
-import type { Client, ClientAdd, ClientUpdate } from '../../types/client';
-import type { Rows } from '../../types/excel';
-import type { Filter } from '../../types/filter';
-import { isClientFromData } from '../../utils/functions';
+import { CRUDPage } from '../../shared/components/crudPage/CRUDPage';
+import { FilterType } from '../../shared/enums/filterType';
+import { useClientAdd } from '../../shared/hooks/clients/useClientAdd';
+import { useClientAddBatch } from '../../shared/hooks/clients/useClientAddBatch';
+import { useClientDelete } from '../../shared/hooks/clients/useClientDelete';
+import { useClientsRetrieve } from '../../shared/hooks/clients/useClientsRetrieve';
+import { useClientUpdate } from '../../shared/hooks/clients/useClientUpdate';
+import type { Client, ClientAdd, ClientUpdate } from '../../shared/types/client';
+import type { Rows } from '../../shared/types/excel';
+import type { Filter } from '../../shared/types/filter';
+import { isClientFromData } from '../../shared/utils/functions';
 import { Form } from './Form';
 import { List } from './List';
 

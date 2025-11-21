@@ -1,16 +1,16 @@
 import { type FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CRUDPage } from '../../components/crudPage/CRUDPage';
-import { FilterType } from '../../enums/filterType';
-import { useCurrenciesRetrieve } from '../../hooks/currencies/useCurrenciesRetrieve';
-import { useCurrencyAdd } from '../../hooks/currencies/useCurrencyAdd';
-import { useCurrencyAddBatch } from '../../hooks/currencies/useCurrencyAddBatch';
-import { useCurrencyDelete } from '../../hooks/currencies/useCurrencyDelete';
-import { useCurrencyUpdate } from '../../hooks/currencies/useCurrencyUpdate';
-import type { Currency, CurrencyAdd, CurrencyUpdate } from '../../types/currency';
-import type { Rows } from '../../types/excel';
-import type { Filter } from '../../types/filter';
-import { isCurrencyFromData } from '../../utils/functions';
+import { CRUDPage } from '../../shared/components/crudPage/CRUDPage';
+import { FilterType } from '../../shared/enums/filterType';
+import { useCurrenciesRetrieve } from '../../shared/hooks/currencies/useCurrenciesRetrieve';
+import { useCurrencyAdd } from '../../shared/hooks/currencies/useCurrencyAdd';
+import { useCurrencyAddBatch } from '../../shared/hooks/currencies/useCurrencyAddBatch';
+import { useCurrencyDelete } from '../../shared/hooks/currencies/useCurrencyDelete';
+import { useCurrencyUpdate } from '../../shared/hooks/currencies/useCurrencyUpdate';
+import type { Currency, CurrencyAdd, CurrencyUpdate } from '../../shared/types/currency';
+import type { Rows } from '../../shared/types/excel';
+import type { Filter } from '../../shared/types/filter';
+import { isCurrencyFromData } from '../../shared/utils/functions';
 import { Form } from './Form';
 import { List } from './List';
 

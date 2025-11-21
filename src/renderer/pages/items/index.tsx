@@ -1,16 +1,16 @@
 import { type FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CRUDPage } from '../../components/crudPage/CRUDPage';
-import { FilterType } from '../../enums/filterType';
-import { useItemAdd } from '../../hooks/items/useItemAdd';
-import { useItemAddBatch } from '../../hooks/items/useItemAddBatch';
-import { useItemDelete } from '../../hooks/items/useItemDelete';
-import { useItemsRetrieve } from '../../hooks/items/useItemsRetrieve';
-import { useItemUpdate } from '../../hooks/items/useItemUpdate';
-import type { Rows } from '../../types/excel';
-import type { Filter } from '../../types/filter';
-import type { Item, ItemAdd, ItemUpdate } from '../../types/item';
-import { isItemFromData } from '../../utils/functions';
+import { CRUDPage } from '../../shared/components/crudPage/CRUDPage';
+import { FilterType } from '../../shared/enums/filterType';
+import { useItemAdd } from '../../shared/hooks/items/useItemAdd';
+import { useItemAddBatch } from '../../shared/hooks/items/useItemAddBatch';
+import { useItemDelete } from '../../shared/hooks/items/useItemDelete';
+import { useItemsRetrieve } from '../../shared/hooks/items/useItemsRetrieve';
+import { useItemUpdate } from '../../shared/hooks/items/useItemUpdate';
+import type { Rows } from '../../shared/types/excel';
+import type { Filter } from '../../shared/types/filter';
+import type { Item, ItemAdd, ItemUpdate } from '../../shared/types/item';
+import { isItemFromData } from '../../shared/utils/functions';
 import { Form } from './Form';
 import { List } from './List';
 

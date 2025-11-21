@@ -1,10 +1,10 @@
 import { Box, FormControlLabel, Grid, Switch, TextField } from '@mui/material';
 import { useEffect, useRef, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PageHeader } from '../../../components/pageHeader/PageHeader';
+import { PageHeader } from '../../../shared/components/pageHeader/PageHeader';
+import { validateOnlyNumbersLetters } from '../../../shared/utils/functions';
 import { useAppSelector } from '../../../state/configureStore';
 import { selectSettings } from '../../../state/pageSlice';
-import { validateOnlyNumbersLetters } from '../../../utils/functions';
 
 interface Props {
   showBack: boolean;

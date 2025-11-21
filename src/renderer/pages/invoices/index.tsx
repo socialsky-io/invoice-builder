@@ -1,8 +1,8 @@
 import { type FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CRUDPage } from '../../components/crudPage/CRUDPage';
-import { useInvoicesRetrieve } from '../../hooks/invoices/useInvoicesRetrieve';
-import type { Invoice, InvoiceAdd, InvoiceUpdate } from '../../types/invoice';
+import { CRUDPage } from '../../shared/components/crudPage/CRUDPage';
+import { useInvoicesRetrieve } from '../../shared/hooks/invoices/useInvoicesRetrieve';
+import type { Invoice, InvoiceAdd, InvoiceUpdate } from '../../shared/types/invoice';
 import { List } from './List';
 
 export const InvoicesPage: FC = () => {

@@ -3,11 +3,11 @@ import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import { App } from './app/App';
-import { GlobalErrorBoundaryWrapper } from './components/globalErrorBoundaryWrapper/GlobalErrorBoundaryWrapper';
-import { ThemeProviderWrapper } from './components/theme/ThemeProviderWrapper';
 import './globalErrorHandlers';
 import './i18n';
 import reportWebVitals from './reportWebVitals';
+import { GlobalErrorBoundaryWrapper } from './shared/components/globalErrorBoundaryWrapper/GlobalErrorBoundaryWrapper';
+import { ThemeProviderWrapper } from './shared/components/theme/ThemeProviderWrapper';
 import { store } from './state/configureStore';
 
 const mockEnabled = import.meta.env.VITE_ENABLE_MOCKS;

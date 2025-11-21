@@ -1,11 +1,11 @@
 import { FormControlLabel, Grid, Switch, TextField } from '@mui/material';
 import { useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { UploadImage } from '../../components/uploadImage/UploadImage';
-import { useForm } from '../../hooks/useForm';
-import type { Business, BusinessFromData } from '../../types/business';
-import { fromUint8Array, toUint8Array } from '../../utils/functions';
-import { validators } from '../../utils/validators';
+import { UploadImage } from '../../shared/components/uploadImage/UploadImage';
+import { useForm } from '../../shared/hooks/useForm';
+import type { Business, BusinessFromData } from '../../shared/types/business';
+import { fromUint8Array, toUint8Array } from '../../shared/utils/functions';
+import { validators } from '../../shared/utils/validators';
 
 interface Props {
   business?: Business;

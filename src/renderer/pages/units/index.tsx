@@ -1,16 +1,16 @@
 import { type FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CRUDPage } from '../../components/crudPage/CRUDPage';
-import { FilterType } from '../../enums/filterType';
-import { useUnitAdd } from '../../hooks/units/useUnitAdd';
-import { useUnitAddBatch } from '../../hooks/units/useUnitAddBatch';
-import { useUnitDelete } from '../../hooks/units/useUnitDelete';
-import { useUnitsRetrieve } from '../../hooks/units/useUnitsRetrieve';
-import { useUnitUpdate } from '../../hooks/units/useUnitUpdate';
-import type { Rows } from '../../types/excel';
-import type { Filter } from '../../types/filter';
-import type { Unit, UnitAdd, UnitUpdate } from '../../types/unit';
-import { isUnitFromData } from '../../utils/functions';
+import { CRUDPage } from '../../shared/components/crudPage/CRUDPage';
+import { FilterType } from '../../shared/enums/filterType';
+import { useUnitAdd } from '../../shared/hooks/units/useUnitAdd';
+import { useUnitAddBatch } from '../../shared/hooks/units/useUnitAddBatch';
+import { useUnitDelete } from '../../shared/hooks/units/useUnitDelete';
+import { useUnitsRetrieve } from '../../shared/hooks/units/useUnitsRetrieve';
+import { useUnitUpdate } from '../../shared/hooks/units/useUnitUpdate';
+import type { Rows } from '../../shared/types/excel';
+import type { Filter } from '../../shared/types/filter';
+import type { Unit, UnitAdd, UnitUpdate } from '../../shared/types/unit';
+import { isUnitFromData } from '../../shared/utils/functions';
 import { Form } from './Form';
 import { List } from './List';
 

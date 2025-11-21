@@ -1,9 +1,9 @@
 import { type FC } from 'react';
-import { GenericList } from '../../components/genericList/GenericList';
+import { GenericList } from '../../shared/components/genericList/GenericList';
+import type { Item } from '../../shared/types/item';
+import { formatAmount } from '../../shared/utils/functions';
 import { useAppSelector } from '../../state/configureStore';
 import { selectSettings } from '../../state/pageSlice';
-import type { Item } from '../../types/item';
-import { formatAmount } from '../../utils/functions';
 
 interface Props {
   item: Item;

@@ -2,16 +2,16 @@ import { Autocomplete, FormControlLabel, Grid, Switch, TextField } from '@mui/ma
 import { useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Category } from '../../../main/types/category';
-import { AmountInput } from '../../components/amountInput/AmountInput';
-import { useCategoriesRetrieve } from '../../hooks/categories/useCategoriesRetrieve';
-import { useUnitsRetrieve } from '../../hooks/units/useUnitsRetrieve';
-import { useForm } from '../../hooks/useForm';
+import { AmountInput } from '../../shared/components/amountInput/AmountInput';
+import { useCategoriesRetrieve } from '../../shared/hooks/categories/useCategoriesRetrieve';
+import { useUnitsRetrieve } from '../../shared/hooks/units/useUnitsRetrieve';
+import { useForm } from '../../shared/hooks/useForm';
+import type { Item, ItemFromData } from '../../shared/types/item';
+import type { Response } from '../../shared/types/response';
+import type { Unit } from '../../shared/types/unit';
+import { validators } from '../../shared/utils/validators';
 import { useAppDispatch, useAppSelector } from '../../state/configureStore';
 import { addToast, selectCategoriesOptions, selectSettings, selectUnitsOptions } from '../../state/pageSlice';
-import type { Item, ItemFromData } from '../../types/item';
-import type { Response } from '../../types/response';
-import type { Unit } from '../../types/unit';
-import { validators } from '../../utils/validators';
 
 interface Props {
   item?: Item;

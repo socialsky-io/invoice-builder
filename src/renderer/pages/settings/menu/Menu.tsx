@@ -9,10 +9,10 @@ import UploadFileIcon from '@mui/icons-material/UploadFile';
 import { Box, Card, CardContent, Grid, Typography, useTheme } from '@mui/material';
 import { useContext, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MenuList } from '../../../components/menuList/MenuList';
-import { ThemeContext } from '../../../components/theme/ThemeProviderWrapper';
-import { MenuItemSettings } from '../../../enums/menuItemSettings';
-import { Themes } from '../../../enums/themes';
+import { MenuList } from '../../../shared/components/menuList/MenuList';
+import { ThemeContext } from '../../../shared/components/theme/ThemeProviderWrapper';
+import { MenuItemSettings } from '../../../shared/enums/menuItemSettings';
+import { Themes } from '../../../shared/enums/themes';
 import { useAppSelector } from '../../../state/configureStore';
 import { selectSettings } from '../../../state/pageSlice';
 

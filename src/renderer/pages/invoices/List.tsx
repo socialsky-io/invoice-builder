@@ -2,12 +2,12 @@ import { Box, Card, CardActionArea, CardContent, Typography, useTheme } from '@m
 import { differenceInCalendarDays, parseISO } from 'date-fns';
 import { useMemo, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { CurrencyFormat } from '../../enums/currencyFormat';
-import { InvoiceStatus } from '../../enums/invoiceStatus';
+import type { CurrencyFormat } from '../../shared/enums/currencyFormat';
+import { InvoiceStatus } from '../../shared/enums/invoiceStatus';
+import type { Invoice } from '../../shared/types/invoice';
+import { formatDate, getFormattedCurrency } from '../../shared/utils/functions';
 import { useAppSelector } from '../../state/configureStore';
 import { selectSettings } from '../../state/pageSlice';
-import type { Invoice } from '../../types/invoice';
-import { formatDate, getFormattedCurrency } from '../../utils/functions';
 
 interface Props {
   item: Invoice;

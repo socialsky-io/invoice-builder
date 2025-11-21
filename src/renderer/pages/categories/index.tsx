@@ -1,16 +1,16 @@
 import { type FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CRUDPage } from '../../components/crudPage/CRUDPage';
-import { FilterType } from '../../enums/filterType';
-import { useCategoriesRetrieve } from '../../hooks/categories/useCategoriesRetrieve';
-import { useCategoryAdd } from '../../hooks/categories/useCategoryAdd';
-import { useCategoryAddBatch } from '../../hooks/categories/useCategoryAddBatch';
-import { useCategoryDelete } from '../../hooks/categories/useCategoryDelete';
-import { useCategoryUpdate } from '../../hooks/categories/useCategoryUpdate';
-import type { Category, CategoryAdd, CategoryUpdate } from '../../types/category';
-import type { Rows } from '../../types/excel';
-import type { Filter } from '../../types/filter';
-import { isCategoryFromData } from '../../utils/functions';
+import { CRUDPage } from '../../shared/components/crudPage/CRUDPage';
+import { FilterType } from '../../shared/enums/filterType';
+import { useCategoriesRetrieve } from '../../shared/hooks/categories/useCategoriesRetrieve';
+import { useCategoryAdd } from '../../shared/hooks/categories/useCategoryAdd';
+import { useCategoryAddBatch } from '../../shared/hooks/categories/useCategoryAddBatch';
+import { useCategoryDelete } from '../../shared/hooks/categories/useCategoryDelete';
+import { useCategoryUpdate } from '../../shared/hooks/categories/useCategoryUpdate';
+import type { Category, CategoryAdd, CategoryUpdate } from '../../shared/types/category';
+import type { Rows } from '../../shared/types/excel';
+import type { Filter } from '../../shared/types/filter';
+import { isCategoryFromData } from '../../shared/utils/functions';
 import { Form } from './Form';
 import { List } from './List';
 

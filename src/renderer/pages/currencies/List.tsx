@@ -1,6 +1,6 @@
 import { type FC } from 'react';
-import { GenericList } from '../../components/genericList/GenericList';
-import type { Currency } from '../../types/currency';
+import { GenericList } from '../../shared/components/genericList/GenericList';
+import type { Currency } from '../../shared/types/currency';
 
 interface Props {
   item: Currency;

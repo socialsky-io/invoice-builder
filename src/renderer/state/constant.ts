@@ -1,7 +1,7 @@
-import { AmountFormat } from '../enums/amountFormat';
-import { CurrencyFormat } from '../enums/currencyFormat';
-import { DateFormat } from '../enums/dateFormat';
-import { Language } from '../enums/language';
+import { AmountFormat } from '../shared/enums/amountFormat';
+import { CurrencyFormat } from '../shared/enums/currencyFormat';
+import { DateFormat } from '../shared/enums/dateFormat';
+import { Language } from '../shared/enums/language';
 
 export const LANGUAGE_ITEMS = {
   [Language.lt]: { label: 'Lithuanian', value: Language.lt },

@@ -1,15 +1,15 @@
 import { useTranslation } from 'react-i18next';
-import { CRUDPage } from '../../components/crudPage/CRUDPage';
-import { FilterType } from '../../enums/filterType';
-import { useBusinessAdd } from '../../hooks/businesses/useBusinessAdd';
-import { useBusinessAddBatch } from '../../hooks/businesses/useBusinessAddBatch';
-import { useBusinessDelete } from '../../hooks/businesses/useBusinessDelete';
-import { useBusinessesRetrieve } from '../../hooks/businesses/useBusinessesRetrieve';
-import { useBusinessUpdate } from '../../hooks/businesses/useBusinessUpdate';
-import type { Business, BusinessAdd, BusinessUpdate } from '../../types/business';
-import type { Rows } from '../../types/excel';
-import type { Filter } from '../../types/filter';
-import { isBusinessFromData } from '../../utils/functions';
+import { CRUDPage } from '../../shared/components/crudPage/CRUDPage';
+import { FilterType } from '../../shared/enums/filterType';
+import { useBusinessAdd } from '../../shared/hooks/businesses/useBusinessAdd';
+import { useBusinessAddBatch } from '../../shared/hooks/businesses/useBusinessAddBatch';
+import { useBusinessDelete } from '../../shared/hooks/businesses/useBusinessDelete';
+import { useBusinessesRetrieve } from '../../shared/hooks/businesses/useBusinessesRetrieve';
+import { useBusinessUpdate } from '../../shared/hooks/businesses/useBusinessUpdate';
+import type { Business, BusinessAdd, BusinessUpdate } from '../../shared/types/business';
+import type { Rows } from '../../shared/types/excel';
+import type { Filter } from '../../shared/types/filter';
+import { isBusinessFromData } from '../../shared/utils/functions';
 import { Form } from './Form';
 import { List } from './List';
 

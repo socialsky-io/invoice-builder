@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { DatabaseChooser } from '../components/databaseChooser/DatabaseChooser';
-import { SpinnerOverlay } from '../components/spinner/spinner';
-import { ToastContainer } from '../components/toast/toastContainer';
-import { useSettingsRetrieve } from '../hooks/settings/useSettingsRetrieve';
 import i18n from '../i18n';
+import { DatabaseChooser } from '../shared/components/databaseChooser/DatabaseChooser';
+import { SpinnerOverlay } from '../shared/components/spinner/spinner';
+import { ToastContainer } from '../shared/components/toast/toastContainer';
+import { useSettingsRetrieve } from '../shared/hooks/settings/useSettingsRetrieve';
+import type { Response } from '../shared/types/response';
+import type { Settings } from '../shared/types/settings';
 import { useAppDispatch, useAppSelector } from '../state/configureStore';
 import { addToast, removeToast, selectIsLoading, selectToasts, setSettings } from '../state/pageSlice';
-import type { Response } from '../types/response';
-import type { Settings } from '../types/settings';
 import { AppLayout } from './AppLayout';
 
 export const App: FC = () => {

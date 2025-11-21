@@ -1,6 +1,6 @@
 import { type FC } from 'react';
-import { GenericList } from '../../components/genericList/GenericList';
-import type { Unit } from '../../types/unit';
+import { GenericList } from '../../shared/components/genericList/GenericList';
+import type { Unit } from '../../shared/types/unit';
 
 interface Props {
   item: Unit;

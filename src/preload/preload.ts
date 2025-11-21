@@ -1,13 +1,13 @@
 import { contextBridge, ipcRenderer } from 'electron';
-import type { DBInitType } from '../renderer/enums/dbInitType';
-import type { FilterType } from '../renderer/enums/filterType';
-import type { BusinessAdd, BusinessUpdate } from '../renderer/types/business';
-import type { CategoryAdd, CategoryUpdate } from '../renderer/types/category';
-import type { ClientAdd, ClientUpdate } from '../renderer/types/client';
-import type { CurrencyAdd, CurrencyUpdate } from '../renderer/types/currency';
-import type { ItemAdd, ItemUpdate } from '../renderer/types/item';
-import type { SettingsUpdate } from '../renderer/types/settings';
-import type { UnitAdd, UnitUpdate } from '../renderer/types/unit';
+import type { DBInitType } from '../renderer/shared/enums/dbInitType';
+import type { FilterType } from '../renderer/shared/enums/filterType';
+import type { BusinessAdd, BusinessUpdate } from '../renderer/shared/types/business';
+import type { CategoryAdd, CategoryUpdate } from '../renderer/shared/types/category';
+import type { ClientAdd, ClientUpdate } from '../renderer/shared/types/client';
+import type { CurrencyAdd, CurrencyUpdate } from '../renderer/shared/types/currency';
+import type { ItemAdd, ItemUpdate } from '../renderer/shared/types/item';
+import type { SettingsUpdate } from '../renderer/shared/types/settings';
+import type { UnitAdd, UnitUpdate } from '../renderer/shared/types/unit';
 
 contextBridge.exposeInMainWorld('electronAPI', {
   ping: () => console.log('pong'),
