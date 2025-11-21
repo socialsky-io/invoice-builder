@@ -17,7 +17,7 @@ import { List } from './List';
 export const ItemsPage: FC = () => {
   const { t } = useTranslation();
 
-  const excelColumns = ['name', 'amount', 'unitName', 'categoryName', 'description'];
+  const excelColumns = ['name', 'amount', 'unitName', 'categoryName', 'description', 'isArchived'];
   const excelFileName = 'items';
   const excelTemplateData: Rows = [
     {
@@ -25,18 +25,31 @@ export const ItemsPage: FC = () => {
       amount: '5',
       categoryName: 'Goods',
       unitName: 'pack',
-      description: 'Standard white A4 paper'
+      description: 'Standard white A4 paper',
+      isArchived: false
     },
     {
       name: 'Pen Blue',
       amount: '150',
       categoryName: 'Goods',
       unitName: 'pcs',
-      description: 'Blue ballpoint pen'
+      description: 'Blue ballpoint pen',
+      isArchived: false
     }
   ];
   const filters: Filter[] = [
-    { label: t('items.filter.allText'), description: undefined, value: FilterType.all, initial: true },
+    { label: t('items.filter.allText'), description: undefined, value: FilterType.all },
+    {
+      label: t('items.filter.activeText'),
+      description: t('items.filter.activeDesc'),
+      value: FilterType.active,
+      initial: true
+    },
+    {
+      label: t('items.filter.archivedText'),
+      description: t('items.filter.archivedDesc'),
+      value: FilterType.archived
+    },
     {
       label: t('items.filter.atleastOneInvoiceText'),
       description: t('items.filter.atleastOneInvoiceDesc'),

@@ -1,4 +1,4 @@
-import { Autocomplete, Grid, TextField } from '@mui/material';
+import { Autocomplete, FormControlLabel, Grid, Switch, TextField } from '@mui/material';
 import { useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from '../../hooks/useForm';
@@ -19,7 +19,8 @@ export const Form: FC<Props> = ({ handleChange = () => {}, currency }) => {
     code: currency?.code ?? '',
     symbol: currency?.symbol ?? '',
     text: currency?.text ?? '',
-    format: currency?.format ?? ''
+    format: currency?.format ?? '',
+    isArchived: currency?.isArchived ?? false
   });
   const [errors, setErrors] = useState({
     code: false,
@@ -48,7 +49,8 @@ export const Form: FC<Props> = ({ handleChange = () => {}, currency }) => {
       code: currency?.code ?? '',
       symbol: currency?.symbol ?? '',
       text: currency?.text ?? '',
-      format: currency?.format ?? ''
+      format: currency?.format ?? '',
+      isArchived: currency?.isArchived ?? false
     });
   }, [currency]);
 
@@ -137,6 +139,12 @@ export const Form: FC<Props> = ({ handleChange = () => {}, currency }) => {
             update('text', e.target.value);
             validateField('text', e.target.value);
           }}
+        />
+      </Grid>
+      <Grid size={{ xs: 12, md: 12 }}>
+        <FormControlLabel
+          control={<Switch checked={form.isArchived} onChange={e => update('isArchived', e.target.checked)} />}
+          label={t('currenciesModal.isArchived')}
         />
       </Grid>
     </Grid>

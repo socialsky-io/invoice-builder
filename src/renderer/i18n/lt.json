@@ -1,276 +1,306 @@
 {
-  "menuItems": {
-    "invoices": "Sąskaitos",
-    "quotes": "Pasiūlymai",
-    "items": "Prekės",
-    "clients": "Klientai",
-    "reports": "Ataskaitos",
-    "settings": "Nustatymai",
-    "businesses": "Įmonės",
-    "currencies": "Valiutos",
-    "units": "Vienetai",
-    "categories": "Kategorijos"
-  },
   "app": {
+    "noItems": "Pasirinkite elementą, kad peržiūrėtumėte informaciją",
     "title": "Sąskaitų Kūrėjas",
-    "version": "Version",
-    "noItems": "Pasirinkite elementą, kad peržiūrėtumėte informaciją"
+    "version": "Version"
   },
-  "settingsMenuItems": {
-    "titles": {
-      "languageFormat": "Kalba ir formatas",
-      "customizeInvoice": "Valdykite sąskaitą",
-      "darkMode": "Tamsus režimas",
-      "import": "Importuoti",
-      "export": "Eksportuoti",
-      "share": "Bendrinti programą",
-      "support": "Pagalba",
-      "privacyPolicy": "Privatumo politika",
-      "about": "Apie",
-      "turnQuotes": "Pasiūlymai",
-      "turnReports": "Ataskaitos",
-      "tutorial": "Pamoka"
-    },
-    "descriptions": {
-      "languageFormat": "Kalba, sumos formatas, datos formatas.",
-      "customizeInvoice": "Sąskaitos numerio priešdėlis (pvz.: INV), priesagas.",
-      "darkMode": "Perjunkite tarp šviesios ir tamsios temų.",
-      "import": "Importuokite savo duomenis iš kitų šaltinių arba atsarginių kopijų.",
-      "export": "Eksportuokite savo duomenis atsarginei kopijai arba naudoti kitose programose.",
-      "share": "Bendrinkite šią programą su draugais.",
-      "support": "Praneškite apie klaidas arba siūlykite patobulinimus per GitHub.",
-      "privacyPolicy": "Susipažinkite su mūsų privatumo politika apie tai, kaip tvarkome jūsų duomenis.",
-      "about": "Sužinokite daugiau apie šią programą, jos funkcijas.",
-      "turnQuotes": "Įjunkti arba išjungti pasiūlymų kūrimo funkciją",
-      "turnReports": "Įjunkti arba išjungti ataskaitų teikimo funkciją",
-      "tutorial": "Peržiūrėkite gidą, kaip naudotis programa"
-    }
-  },
-  "customizeInvoice": {
-    "invoicePrefix": "Sąskaitos prefiksas",
-    "invoiceSuffix": "Sąskaitos sufiksas",
-    "includeYear": "Įtraukti metus",
-    "includeMonth": "Įtraukti mėnesį",
-    "lettersAndNumbers": "Leidžiamos tik raidės ir skaičiai",
-    "includeBusinessName": "Įtraukti įmonės pavadinimą"
-  },
-  "languageFormat": {
-    "language": "Kalba",
-    "amountFormat": "Sumos formatas",
-    "dateFormat": "Datos formatas"
+  "ariaLabel": {
+    "add": "Pridėti",
+    "ascending": "Didėjimo tvarka",
+    "back": "Grįžti atgal",
+    "clear": "Išvalyti",
+    "crop": "Apkarpyti paveikslėlį",
+    "cropped": "Apkarpytas paveikslėlis",
+    "delete": "Ištrinti",
+    "descending": "Mažėjimo tvarka",
+    "filters": "Filtrai",
+    "menu": "Pagrindinis meniu",
+    "noSort": "Nerikiuoti",
+    "remove": "Pašalinti",
+    "search": "Ieškoti",
+    "uploadImage": "Įkelti paveikslėlį"
   },
   "businesses": {
-    "noItem": "Pasirinkite įmonę, kad peržiūrėtumėte detales.",
     "add": "Pridėti įmonę",
     "filter": {
-      "title": "Įmonė",
+      "activeDesc": "Įmonės, kurios nėra archyvuotos",
+      "activeText": "Aktyvios įmonės",
       "allText": "Visos įmonės",
-      "atleastOneInvoiceText": "Įmonės su bent viena sąskaita",
+      "archivedDesc": "Įmonės, kurios buvo archyvuotos",
+      "archivedText": "Archyvuotos įmonės",
       "atleastOneInvoiceDesc": "Įmonės, turinčios bent vieną sąskaitą",
-      "noInvoicesText": "Įmonės be sąskaitų",
-      "noInvoicesDesc": "Įmonės, neturinčios sąskaitų",
-      "noInvoices30Text": "Neaktyvios įmonės (30 dienų)",
+      "atleastOneInvoiceText": "Įmonės su bent viena sąskaita",
       "noInvoices30Desc": "Nėra sąskaitų per pastarąsias 30 dienų",
-      "noInvoices60Text": "Neaktyvios įmonės (60 dienų)",
+      "noInvoices30Text": "Neaktyvios įmonės (30 dienų)",
       "noInvoices60Desc": "Nėra sąskaitų per pastarąsias 60 dienų",
+      "noInvoices60Text": "Neaktyvios įmonės (60 dienų)",
+      "noInvoices90Desc": "Nėra sąskaitų per pastarąsias 90 dienų",
       "noInvoices90Text": "Neaktyvios įmonės (90 dienų)",
-      "noInvoices90Desc": "Nėra sąskaitų per pastarąsias 90 dienų"
-    }
+      "noInvoicesDesc": "Įmonės, neturinčios sąskaitų",
+      "noInvoicesText": "Įmonės be sąskaitų"
+    },
+    "noItem": "Pasirinkite įmonę, kad peržiūrėtumėte detales.",
+    "title": "Įmonė"
   },
   "businessesModal": {
-    "name": "Pavadinimas",
-    "shortName": "Trumpinys",
+    "additional": "Papildoma informacija",
     "address": "Adresas",
+    "description": "Aprašymas",
+    "email": "El. paštas",
+    "invalidEmail": "Neteisingas el. pašto formatas",
+    "invalidPhone": "Neteisingas telefono numerio formatas",
+    "isArchived": "Archyvuota",
+    "name": "Pavadinimas",
+    "paymentInfo": "Mokėjimo informacija",
+    "phone": "Telefonas",
+    "phoneHelper": "Įveskite telefono numerį tarptautiniu formatu",
     "role": "Vaidmuo",
-    "email": "El. paštas",
-    "phone": "Telefonas",
-    "website": "Svetainė",
-    "description": "Aprašymas",
-    "additional": "Papildoma informacija",
-    "invalidEmail": "Neteisingas el. pašto formatas",
-    "invalidPhone": "Neteisingas telefono numerio formatas",
-    "phoneHelper": "Įveskite telefono numerį tarptautiniu formatu",
-    "shortNameHelper": "Maksimaliai 2 simboliai",
-    "paymentInfo": "Mokėjimo informacija"
-  },
-  "clientsModal": {
-    "name": "Pavadinimas",
     "shortName": "Trumpinys",
-    "address": "Adresas",
-    "code": "Įmonės kodas",
-    "email": "El. paštas",
-    "phone": "Telefonas",
-    "description": "Aprašymas",
-    "additional": "Papildoma informacija",
-    "invalidEmail": "Neteisingas el. pašto formatas",
-    "invalidPhone": "Neteisingas telefono numerio formatas",
-    "phoneHelper": "Įveskite telefono numerį tarptautiniu formatu",
-    "shortNameHelper": "Maksimaliai 2 simboliai"
+    "shortNameHelper": "Maksimaliai 2 simboliai",
+    "website": "Svetainė"
+  },
+  "categories": {
+    "add": "Pridėti kategoriją",
+    "filter": {
+      "activeDesc": "Kategorijos, kurios nėra archyvuotos",
+      "activeText": "Aktyvios kategorijos",
+      "allText": "Visos kategorijos",
+      "archivedDesc": "Kategorijos, kurios buvo archyvuotos",
+      "archivedText": "Archyvuotos kategorijos",
+      "atleastOneInvoiceDesc": "Kategorijos, kurios turi bent vieną sąskaitą",
+      "atleastOneInvoiceText": "Kategorijos su sąskaitomis",
+      "noInvoices30Desc": "Nėra sąskaitų per pastarąsias 30 dienų",
+      "noInvoices30Text": "Neaktyvios kategorijos (30 dienų)",
+      "noInvoices60Desc": "Nėra sąskaitų per pastarąsias 60 dienų",
+      "noInvoices60Text": "Neaktyvios kategorijos (60 dienų)",
+      "noInvoices90Desc": "Nėra sąskaitų per pastarąsias 90 dienų",
+      "noInvoices90Text": "Neaktyvios kategorijos (90 dienų)",
+      "noInvoicesDesc": "Kategorijos, kurioms nėra sukurtų sąskaitų",
+      "noInvoicesText": "Kategorijos be sąskaitų"
+    },
+    "noItem": "Pasirinkite kategoriją, kad pamatytumėte detales.",
+    "title": "Kategorija"
+  },
+  "categoriesModal": {
+    "isArchived": "Archyvuota",
+    "name": "Pavadinimas"
   },
   "clients": {
-    "title": "Klientas",
-    "noItem": "Pasirinkite klientą, kad pamatytumėte detales.",
     "add": "Pridėti klientą",
     "filter": {
+      "activeDesc": "Klientai, kurie nėra archyvuoti",
+      "activeText": "Aktyvūs klientai",
       "allText": "Visi klientai",
-      "atleastOneInvoiceText": "Klientai, turintys sąskaitas",
+      "archivedDesc": "Klientai, kurie buvo archyvuoti",
+      "archivedText": "Archyvuoti klientai",
       "atleastOneInvoiceDesc": "Klientai, turintys bent vieną sąskaitą",
-      "noInvoicesText": "Klientai be sąskaitų",
-      "noInvoicesDesc": "Klientai, neturintys sąskaitų",
-      "noInvoices30Text": "Neaktyvūs klientai (30 dienų)",
+      "atleastOneInvoiceText": "Klientai, turintys sąskaitas",
       "noInvoices30Desc": "Nėra sąskaitų per pastarąsias 30 dienų",
-      "noInvoices60Text": "Neaktyvūs klientai (60 dienų)",
+      "noInvoices30Text": "Neaktyvūs klientai (30 dienų)",
       "noInvoices60Desc": "Nėra sąskaitų per pastarąsias 60 dienų",
+      "noInvoices60Text": "Neaktyvūs klientai (60 dienų)",
+      "noInvoices90Desc": "Nėra sąskaitų per pastarąsias 90 dienų",
       "noInvoices90Text": "Neaktyvūs klientai (90 dienų)",
-      "noInvoices90Desc": "Nėra sąskaitų per pastarąsias 90 dienų"
-    }
+      "noInvoicesDesc": "Klientai, neturintys sąskaitų",
+      "noInvoicesText": "Klientai be sąskaitų"
+    },
+    "noItem": "Pasirinkite klientą, kad pamatytumėte detales.",
+    "title": "Klientas"
+  },
+  "clientsModal": {
+    "additional": "Papildoma informacija",
+    "address": "Adresas",
+    "code": "Įmonės kodas",
+    "description": "Aprašymas",
+    "email": "El. paštas",
+    "invalidEmail": "Neteisingas el. pašto formatas",
+    "invalidPhone": "Neteisingas telefono numerio formatas",
+    "isArchived": "Archyvuota",
+    "name": "Pavadinimas",
+    "phone": "Telefonas",
+    "phoneHelper": "Įveskite telefono numerį tarptautiniu formatu",
+    "shortName": "Trumpinys",
+    "shortNameHelper": "Maksimaliai 2 simboliai"
+  },
+  "common": {
+    "and": "ir",
+    "cancel": "Atšaukti",
+    "downloadTemplate": "Atsisiųsti šabloną",
+    "export": "Eksportuoti",
+    "fieldRequired": "Laukas yra privalomas",
+    "import": "Importuoti",
+    "importExport": "Importuoti / Eksportuoti",
+    "invoice": "Sąskaita",
+    "invoices": "Sąskaitos",
+    "lastUpdate": "Paskutinį kartą atnaujinta",
+    "name": "Pavadinimas",
+    "noData": "Duomenų pagal paieškos kriterijus nėra",
+    "noDataYet": "Duomenų dar nėra. Pradėkite juos pridėti...",
+    "quote": "Pasiūlymas",
+    "quotes": "Pasiūlymai",
+    "save": "Išsaugoti",
+    "search": "Ieškoti...",
+    "selectFilterType": "Pasirinkite filtro tipą",
+    "selectImage": "Pasirinkite vaizdo failą",
+    "sortBy": "Rūšiuoti pagal"
   },
   "currencies": {
-    "title": "Valiuta",
-    "noItem": "Pasirinkite valiutą, kad pamatytumėte jos informaciją.",
     "add": "Pridėti valiutą",
     "filter": {
+      "activeDesc": "Valiutos, kurios nėra archyvuotos",
+      "activeText": "Aktyvios valiutos",
       "allText": "Visos valiutos",
-      "atleastOneInvoiceText": "Valiutos, turinčios sąskaitų",
+      "archivedDesc": "Valiutos, kurios buvo archyvuotos",
+      "archivedText": "Archyvuotos valiutos",
       "atleastOneInvoiceDesc": "Valiutos, kurios turi bent vieną sąskaitą",
-      "noInvoicesText": "Valiutos be sąskaitų",
-      "noInvoicesDesc": "Valiutos, kurioms nėra sukurtų sąskaitų",
-      "noInvoices30Text": "Neaktyvios valiutos (30 dienų)",
+      "atleastOneInvoiceText": "Valiutos, turinčios sąskaitų",
       "noInvoices30Desc": "Nėra sąskaitų per pastarąsias 30 dienų",
-      "noInvoices60Text": "Neaktyvios valiutos (60 dienų)",
+      "noInvoices30Text": "Neaktyvios valiutos (30 dienų)",
       "noInvoices60Desc": "Nėra sąskaitų per pastarąsias 60 dienų",
+      "noInvoices60Text": "Neaktyvios valiutos (60 dienų)",
+      "noInvoices90Desc": "Nėra sąskaitų per pastarąsias 90 dienų",
       "noInvoices90Text": "Neaktyvios valiutos (90 dienų)",
-      "noInvoices90Desc": "Nėra sąskaitų per pastarąsias 90 dienų"
-    }
+      "noInvoicesDesc": "Valiutos, kurioms nėra sukurtų sąskaitų",
+      "noInvoicesText": "Valiutos be sąskaitų"
+    },
+    "noItem": "Pasirinkite valiutą, kad pamatytumėte jos informaciją.",
+    "title": "Valiuta"
   },
   "currenciesModal": {
     "code": "Valiutos trumpinys",
+    "format": "Formatas",
+    "isArchived": "Archyvuota",
     "symbol": "Simbolis",
-    "text": "Pavadinimas",
-    "format": "Formatas"
+    "text": "Pavadinimas"
   },
-  "units": {
-    "title": "Vienetas",
-    "noItem": "Pasirinkite vienetą, kad pamatytumėte detales.",
-    "add": "Pridėti vienetą",
-    "filter": {
-      "allText": "Visi vienetai",
-      "atleastOneInvoiceText": "Vienetai su sąskaitomis",
-      "atleastOneInvoiceDesc": "Vienetai, kurie turi bent vieną sąskaitą",
-      "noInvoicesText": "Vienetai be sąskaitų",
-      "noInvoicesDesc": "Vienetai, kuriems nėra sukurtų sąskaitų",
-      "noInvoices30Text": "Neaktyvūs vienetai (30 dienų)",
-      "noInvoices30Desc": "Nėra sąskaitų per pastarąsias 30 dienų",
-      "noInvoices60Text": "Neaktyvūs vienetai (60 dienų)",
-      "noInvoices60Desc": "Nėra sąskaitų per pastarąsias 60 dienų",
-      "noInvoices90Text": "Neaktyvūs vienetai (90 dienų)",
-      "noInvoices90Desc": "Nėra sąskaitų per pastarąsias 90 dienų"
-    }
-  },
-  "unitsModal": {
-    "name": "Pavadinimas"
-  },
-  "categories": {
-    "title": "Kategorija",
-    "noItem": "Pasirinkite kategoriją, kad pamatytumėte detales.",
-    "add": "Pridėti kategoriją",
-    "filter": {
-      "allText": "Visos kategorijos",
-      "atleastOneInvoiceText": "Kategorijos su sąskaitomis",
-      "atleastOneInvoiceDesc": "Kategorijos, kurios turi bent vieną sąskaitą",
-      "noInvoicesText": "Kategorijos be sąskaitų",
-      "noInvoicesDesc": "Kategorijos, kurioms nėra sukurtų sąskaitų",
-      "noInvoices30Text": "Neaktyvios kategorijos (30 dienų)",
-      "noInvoices30Desc": "Nėra sąskaitų per pastarąsias 30 dienų",
-      "noInvoices60Text": "Neaktyvios kategorijos (60 dienų)",
-      "noInvoices60Desc": "Nėra sąskaitų per pastarąsias 60 dienų",
-      "noInvoices90Text": "Neaktyvios kategorijos (90 dienų)",
-      "noInvoices90Desc": "Nėra sąskaitų per pastarąsias 90 dienų"
-    }
-  },
-  "categoriesModal": {
-    "name": "Pavadinimas"
+  "customizeInvoice": {
+    "includeBusinessName": "Įtraukti įmonės pavadinimą",
+    "includeMonth": "Įtraukti mėnesį",
+    "includeYear": "Įtraukti metus",
+    "invoicePrefix": "Sąskaitos prefiksas",
+    "invoiceSuffix": "Sąskaitos sufiksas",
+    "lettersAndNumbers": "Leidžiamos tik raidės ir skaičiai"
   },
   "databaseChooser": {
-    "title": "Atidaryti arba sukurti duomenų bazę",
+    "button": "Pasirinkti duomenų bazės failą",
     "description": "Pasirinkite esamą duomenų bazę arba sukurkite naują. Galite išsaugoti dažnai naudojamas duomenų bazes greitam priėjimui.",
-    "button": "Pasirinkti duomenų bazės failą"
-  },
-  "items": {
-    "title": "Prekė",
-    "noItem": "Pasirinkite prekę, kad peržiūrėtumėte detales.",
-    "add": "Pridėti prekę",
-    "filter": {
-      "allText": "Visos prekės",
-      "atleastOneInvoiceText": "Prekės su sąskaitomis",
-      "atleastOneInvoiceDesc": "Prekės, kurioms yra bent viena sąskaita",
-      "noInvoicesText": "Prekės be sąskaitų",
-      "noInvoicesDesc": "Prekės, kurioms nėra sukurtų sąskaitų",
-      "noInvoices30Text": "Neaktyvios prekės (30 dienų)",
-      "noInvoices30Desc": "Nėra sąskaitų per pastarąsias 30 dienų",
-      "noInvoices60Text": "Neaktyvios prekės (60 dienų)",
-      "noInvoices60Desc": "Nėra sąskaitų per pastarąsias 60 dienų",
-      "noInvoices90Text": "Neaktyvios prekės (90 dienų)",
-      "noInvoices90Desc": "Nėra sąskaitų per pastarąsias 90 dienų"
-    }
-  },
-  "itemsModal": {
-    "name": "Pavadinimas",
-    "description": "Aprašymas",
-    "amount": "Kiekis",
-    "unit": "Vienetas",
-    "category": "Kategorija"
-  },
-  "ariaLabel": {
-    "menu": "Pagrindinis meniu",
-    "back": "Grįžti atgal",
-    "delete": "Ištrinti",
-    "remove": "Pašalinti",
-    "add": "Pridėti",
-    "uploadImage": "Įkelti paveikslėlį",
-    "crop": "Apkarpyti paveikslėlį",
-    "cropped": "Apkarpytas paveikslėlis",
-    "search": "Ieškoti",
-    "noSort": "Nerikiuoti",
-    "ascending": "Didėjimo tvarka",
-    "descending": "Mažėjimo tvarka",
-    "filters": "Filtrai",
-    "clear": "Išvalyti"
+    "title": "Atidaryti arba sukurti duomenų bazę"
   },
   "error": {
-    "fileTooLarge": "Failas yra per didelis. Maksimalus leidžiamas dydis yra {{maxSizeMB}}MB.",
     "failedNormalizeImportedRows": "Nepavyko apdoroti šių eilučių: {{rowNumber}}. Patikrinkite duomenų formatą.",
-    "unsupportedImage": "Nepalaikomas paveikslėlio tipas",
-    "noWorksheetFound": "Darbalapis nerastas",
+    "failedToLoad": "Nepavyko įkelti išsaugoto DB sąrašo",
+    "failedToSave": "Nepavyko išsaugoti DB sąrašo",
+    "fileTooLarge": "Failas yra per didelis. Maksimalus leidžiamas dydis yra {{maxSizeMB}}MB.",
     "headerRowEmpty": "Antraštės eilutė tuščia arba jos trūksta",
     "importFailed": "Importavimas nepavyko",
-    "invalidLogo": "Neteisingas logotipo tekstas",
-    "invalidConstraintUnique": "Įrašas pažeidžia duomenų bazės unikalumo apribojimą.",
     "invalidConstraintForeign": "Įrašas yra naudojamas kaip nuoroda.",
+    "invalidConstraintUnique": "Įrašas pažeidžia duomenų bazės unikalumo apribojimą.",
+    "invalidLogo": "Neteisingas logotipo tekstas",
+    "noWorksheetFound": "Darbalapis nerastas",
     "unknownError": "Nežinoma duomenų bazės klaida",
-    "failedToLoad": "Nepavyko įkelti išsaugoto DB sąrašo",
-    "failedToSave": "Nepavyko išsaugoti DB sąrašo"
+    "unsupportedImage": "Nepalaikomas paveikslėlio tipas"
   },
-  "common": {
-    "save": "Išsaugoti",
-    "cancel": "Atšaukti",
-    "fieldRequired": "Laukas yra privalomas",
-    "search": "Ieškoti...",
-    "sortBy": "Rūšiuoti pagal",
+  "items": {
+    "add": "Pridėti prekę",
+    "filter": {
+      "activeDesc": "Elementai, kurie nėra archyvuoti",
+      "activeText": "Aktyvūs elementai",
+      "allText": "Visos prekės",
+      "archivedDesc": "Elementai, kurie buvo archyvuoti",
+      "archivedText": "Archyvuoti elementai",
+      "atleastOneInvoiceDesc": "Prekės, kurioms yra bent viena sąskaita",
+      "atleastOneInvoiceText": "Prekės su sąskaitomis",
+      "noInvoices30Desc": "Nėra sąskaitų per pastarąsias 30 dienų",
+      "noInvoices30Text": "Neaktyvios prekės (30 dienų)",
+      "noInvoices60Desc": "Nėra sąskaitų per pastarąsias 60 dienų",
+      "noInvoices60Text": "Neaktyvios prekės (60 dienų)",
+      "noInvoices90Desc": "Nėra sąskaitų per pastarąsias 90 dienų",
+      "noInvoices90Text": "Neaktyvios prekės (90 dienų)",
+      "noInvoicesDesc": "Prekės, kurioms nėra sukurtų sąskaitų",
+      "noInvoicesText": "Prekės be sąskaitų"
+    },
+    "noItem": "Pasirinkite prekę, kad peržiūrėtumėte detales.",
+    "title": "Prekė"
+  },
+  "itemsModal": {
+    "amount": "Kiekis",
+    "category": "Kategorija",
+    "description": "Aprašymas",
+    "isArchived": "Archyvuota",
     "name": "Pavadinimas",
-    "lastUpdate": "Paskutinį kartą atnaujinta",
-    "invoice": "Sąskaita",
+    "unit": "Vienetas"
+  },
+  "languageFormat": {
+    "amountFormat": "Sumos formatas",
+    "dateFormat": "Datos formatas",
+    "language": "Kalba"
+  },
+  "menuItems": {
+    "businesses": "Įmonės",
+    "categories": "Kategorijos",
+    "clients": "Klientai",
+    "currencies": "Valiutos",
     "invoices": "Sąskaitos",
-    "quote": "Pasiūlymas",
+    "items": "Prekės",
     "quotes": "Pasiūlymai",
-    "noData": "Duomenų pagal paieškos kriterijus nėra",
-    "noDataYet": "Duomenų dar nėra. Pradėkite juos pridėti...",
-    "importExport": "Importuoti / Eksportuoti",
-    "import": "Importuoti",
-    "export": "Eksportuoti",
-    "downloadTemplate": "Atsisiųsti šabloną",
-    "and": "ir",
-    "selectFilterType": "Pasirinkite filtro tipą",
-    "selectImage": "Pasirinkite vaizdo failą"
+    "reports": "Ataskaitos",
+    "settings": "Nustatymai",
+    "units": "Vienetai"
+  },
+  "settingsMenuItems": {
+    "descriptions": {
+      "about": "Sužinokite daugiau apie šią programą, jos funkcijas.",
+      "customizeInvoice": "Sąskaitos numerio priešdėlis (pvz.: INV), priesagas.",
+      "darkMode": "Perjunkite tarp šviesios ir tamsios temų.",
+      "export": "Eksportuokite savo duomenis atsarginei kopijai arba naudoti kitose programose.",
+      "import": "Importuokite savo duomenis iš kitų šaltinių arba atsarginių kopijų.",
+      "languageFormat": "Kalba, sumos formatas, datos formatas.",
+      "privacyPolicy": "Susipažinkite su mūsų privatumo politika apie tai, kaip tvarkome jūsų duomenis.",
+      "share": "Bendrinkite šią programą su draugais.",
+      "support": "Praneškite apie klaidas arba siūlykite patobulinimus per GitHub.",
+      "turnQuotes": "Įjunkti arba išjungti pasiūlymų kūrimo funkciją",
+      "turnReports": "Įjunkti arba išjungti ataskaitų teikimo funkciją",
+      "tutorial": "Peržiūrėkite gidą, kaip naudotis programa"
+    },
+    "titles": {
+      "about": "Apie",
+      "customizeInvoice": "Valdykite sąskaitą",
+      "darkMode": "Tamsus režimas",
+      "export": "Eksportuoti",
+      "import": "Importuoti",
+      "languageFormat": "Kalba ir formatas",
+      "privacyPolicy": "Privatumo politika",
+      "share": "Bendrinti programą",
+      "support": "Pagalba",
+      "turnQuotes": "Pasiūlymai",
+      "turnReports": "Ataskaitos",
+      "tutorial": "Pamoka"
+    }
+  },
+  "units": {
+    "add": "Pridėti vienetą",
+    "filter": {
+      "activeDesc": "Vienetai, kurie nėra archyvuoti",
+      "activeText": "Aktyvūs vienetai",
+      "allText": "Visi vienetai",
+      "archivedDesc": "Vienetai, kurie buvo archyvuoti",
+      "archivedText": "Archyvuoti vienetai",
+      "atleastOneInvoiceDesc": "Vienetai, kurie turi bent vieną sąskaitą",
+      "atleastOneInvoiceText": "Vienetai su sąskaitomis",
+      "noInvoices30Desc": "Nėra sąskaitų per pastarąsias 30 dienų",
+      "noInvoices30Text": "Neaktyvūs vienetai (30 dienų)",
+      "noInvoices60Desc": "Nėra sąskaitų per pastarąsias 60 dienų",
+      "noInvoices60Text": "Neaktyvūs vienetai (60 dienų)",
+      "noInvoices90Desc": "Nėra sąskaitų per pastarąsias 90 dienų",
+      "noInvoices90Text": "Neaktyvūs vienetai (90 dienų)",
+      "noInvoicesDesc": "Vienetai, kuriems nėra sukurtų sąskaitų",
+      "noInvoicesText": "Vienetai be sąskaitų"
+    },
+    "noItem": "Pasirinkite vienetą, kad pamatytumėte detales.",
+    "title": "Vienetas"
+  },
+  "unitsModal": {
+    "isArchived": "Archyvuota",
+    "name": "Pavadinimas"
   }
 }

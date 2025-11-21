@@ -1,276 +1,306 @@
 {
-  "menuItems": {
-    "invoices": "Invoices",
-    "quotes": "Quotes",
-    "items": "Items",
-    "clients": "Clients",
-    "reports": "Reports",
-    "settings": "Settings",
-    "businesses": "Businesses",
-    "currencies": "Currencies",
-    "units": "Units",
-    "categories": "Categories"
-  },
   "app": {
+    "noItems": "Selected an item to view details",
     "title": "Invoice Builder",
-    "version": "Version",
-    "noItems": "Selected an item to view details"
+    "version": "Version"
   },
-  "settingsMenuItems": {
-    "titles": {
-      "languageFormat": "Language & Format",
-      "customizeInvoice": "Customize invoice",
-      "darkMode": "Dark Mode",
-      "import": "Import",
-      "export": "Export",
-      "share": "Share App",
-      "support": "Support",
-      "privacyPolicy": "Privacy policy",
-      "about": "About",
-      "turnQuotes": "Quotes",
-      "turnReports": "Reports",
-      "tutorial": "Tutorial"
-    },
-    "descriptions": {
-      "languageFormat": "Language, Amount format, Date format.",
-      "customizeInvoice": "Invoice number prefix e.g.: INV, suffix.",
-      "darkMode": "Switch between light and dark themes.",
-      "import": "Import your data from other sources or backup files.",
-      "export": "Export your data for backup or to use in other applications.",
-      "share": "Share this app with your friends.",
-      "support": "Report bugs or suggest improvements via GitHub.",
-      "privacyPolicy": "Feel free to go through our privacy policy.",
-      "about": "Learn more about this app, its features.",
-      "turnQuotes": "Enable or disable quote creation feature",
-      "turnReports": "Enable or disable reporting feature",
-      "tutorial": "Checkout guide on how to use application"
-    }
-  },
-  "customizeInvoice": {
-    "invoicePrefix": "Invoice prefix",
-    "invoiceSuffix": "Invoice suffix",
-    "includeYear": "Include year",
-    "includeMonth": "Include month",
-    "lettersAndNumbers": "Only letters and numbers allowed",
-    "includeBusinessName": "Include business name"
-  },
-  "languageFormat": {
-    "language": "Language",
-    "amountFormat": "Amount format",
-    "dateFormat": "Date format"
+  "ariaLabel": {
+    "add": "Add",
+    "ascending": "Ascending",
+    "back": "Return back",
+    "clear": "Clear",
+    "crop": "Crop image",
+    "cropped": "Cropped image",
+    "delete": "Delete",
+    "descending": "Descending",
+    "filters": "Filters",
+    "menu": "Main menu",
+    "noSort": "No sort",
+    "remove": "Remove",
+    "search": "Search",
+    "uploadImage": "Upload image"
   },
   "businesses": {
-    "title": "Business",
-    "noItem": "Selected a business to view details.",
     "add": "Add business",
     "filter": {
+      "activeDesc": "Businesses that are not archived",
+      "activeText": "Active businesses",
       "allText": "All businesses",
-      "atleastOneInvoiceText": "Businesses who have invoices",
+      "archivedDesc": "Businesses that have been archived",
+      "archivedText": "Archived businesses",
       "atleastOneInvoiceDesc": "Businesses which has at least one invoice",
-      "noInvoicesText": "Businesses who do not have invoices",
-      "noInvoicesDesc": "Businesses with no invoices",
-      "noInvoices30Text": "Inactive businesses (30 days)",
+      "atleastOneInvoiceText": "Businesses who have invoices",
       "noInvoices30Desc": "No invoices in the last 30 days",
-      "noInvoices60Text": "Inactive businesses (60 days)",
+      "noInvoices30Text": "Inactive businesses (30 days)",
       "noInvoices60Desc": "No invoices in the last 60 days",
+      "noInvoices60Text": "Inactive businesses (60 days)",
+      "noInvoices90Desc": "No invoices in the last 90 days",
       "noInvoices90Text": "Inactive businesses (90 days)",
-      "noInvoices90Desc": "No invoices in the last 90 days"
-    }
+      "noInvoicesDesc": "Businesses with no invoices",
+      "noInvoicesText": "Businesses who do not have invoices"
+    },
+    "noItem": "Selected a business to view details.",
+    "title": "Business"
   },
   "businessesModal": {
-    "name": "Name",
-    "shortName": "Short name",
+    "additional": "Additional",
     "address": "Address",
+    "description": "Description",
+    "email": "Email",
+    "invalidEmail": "Invalid email format",
+    "invalidPhone": "Invalid phone number format",
+    "isArchived": "Archived",
+    "name": "Name",
+    "paymentInfo": "Payment information",
+    "phone": "Phone",
+    "phoneHelper": "Enter phone number in international format",
     "role": "Role",
-    "email": "Email",
-    "phone": "Phone",
-    "website": "Website",
-    "description": "Description",
-    "additional": "Additional",
-    "invalidEmail": "Invalid email format",
-    "invalidPhone": "Invalid phone number format",
-    "phoneHelper": "Enter phone number in international format",
-    "shortNameHelper": "Maximum 2 characters",
-    "paymentInfo": "Payment information"
-  },
-  "clientsModal": {
-    "name": "Name",
     "shortName": "Short name",
-    "address": "Address",
-    "code": "Company code",
-    "email": "Email",
-    "phone": "Phone",
-    "additional": "Additional",
-    "description": "Description",
-    "invalidEmail": "Invalid email format",
-    "invalidPhone": "Invalid phone number format",
-    "phoneHelper": "Enter phone number in international format",
-    "shortNameHelper": "Maximum 2 characters"
+    "shortNameHelper": "Maximum 2 characters",
+    "website": "Website"
+  },
+  "categories": {
+    "add": "Add category",
+    "filter": {
+      "activeDesc": "Categories that are not archived",
+      "activeText": "Active categories",
+      "allText": "All categories",
+      "archivedDesc": "Categories that have been archived",
+      "archivedText": "Archived categories",
+      "atleastOneInvoiceDesc": "Categories which has at least one invoice",
+      "atleastOneInvoiceText": "Categories who have invoices",
+      "noInvoices30Desc": "No invoices in the last 30 days",
+      "noInvoices30Text": "Inactive categories (30 days)",
+      "noInvoices60Desc": "No invoices in the last 60 days",
+      "noInvoices60Text": "Inactive categories (60 days)",
+      "noInvoices90Desc": "No invoices in the last 90 days",
+      "noInvoices90Text": "Inactive categories (90 days)",
+      "noInvoicesDesc": "Categories with no invoices",
+      "noInvoicesText": "Categories who do not have invoices"
+    },
+    "noItem": "Selected a category to view details.",
+    "title": "Category"
+  },
+  "categoriesModal": {
+    "isArchived": "Archived",
+    "name": "Name"
   },
   "clients": {
-    "title": "Client",
-    "noItem": "Selected a client to view details.",
     "add": "Add client",
     "filter": {
+      "activeDesc": "Clients that are not archived",
+      "activeText": "Active clients",
       "allText": "All clients",
-      "atleastOneInvoiceText": "Clients who have invoices",
+      "archivedDesc": "Clients that have been archived",
+      "archivedText": "Archived clients",
       "atleastOneInvoiceDesc": "Clients which has at least one invoice",
-      "noInvoicesText": "Clients who do not have invoices",
-      "noInvoicesDesc": "Clients with no invoices",
-      "noInvoices30Text": "Inactive clients (30 days)",
+      "atleastOneInvoiceText": "Clients who have invoices",
       "noInvoices30Desc": "No invoices in the last 30 days",
-      "noInvoices60Text": "Inactive clients (60 days)",
+      "noInvoices30Text": "Inactive clients (30 days)",
       "noInvoices60Desc": "No invoices in the last 60 days",
+      "noInvoices60Text": "Inactive clients (60 days)",
+      "noInvoices90Desc": "No invoices in the last 90 days",
       "noInvoices90Text": "Inactive clients (90 days)",
-      "noInvoices90Desc": "No invoices in the last 90 days"
-    }
+      "noInvoicesDesc": "Clients with no invoices",
+      "noInvoicesText": "Clients who do not have invoices"
+    },
+    "noItem": "Selected a client to view details.",
+    "title": "Client"
+  },
+  "clientsModal": {
+    "additional": "Additional",
+    "address": "Address",
+    "code": "Company code",
+    "description": "Description",
+    "email": "Email",
+    "invalidEmail": "Invalid email format",
+    "invalidPhone": "Invalid phone number format",
+    "isArchived": "Archived",
+    "name": "Name",
+    "phone": "Phone",
+    "phoneHelper": "Enter phone number in international format",
+    "shortName": "Short name",
+    "shortNameHelper": "Maximum 2 characters"
+  },
+  "common": {
+    "and": "and",
+    "cancel": "Cancel",
+    "downloadTemplate": "Download template",
+    "export": "Export",
+    "fieldRequired": "Field is required",
+    "import": "Import",
+    "importExport": "Import / Export",
+    "invoice": "Invoice",
+    "invoices": "Invoices",
+    "lastUpdate": "Last updated",
+    "name": "Name",
+    "noData": "No data based on search criteria",
+    "noDataYet": "No data yet. Start adding...",
+    "quote": "Quote",
+    "quotes": "Quotes",
+    "save": "Save",
+    "search": "Search...",
+    "selectFilterType": "Select filter type",
+    "selectImage": "Select an image file",
+    "sortBy": "Sort by"
   },
   "currencies": {
-    "title": "Currency",
-    "noItem": "Selected a currency to view details.",
     "add": "Add currency",
     "filter": {
+      "activeDesc": "Currencies that are not archived",
+      "activeText": "Active currencies",
       "allText": "All currencies",
-      "atleastOneInvoiceText": "Currencies who have invoices",
+      "archivedDesc": "Currencies that have been archived",
+      "archivedText": "Archived currencies",
       "atleastOneInvoiceDesc": "Currencies which has at least one invoice",
-      "noInvoicesText": "Currencies who do not have invoices",
-      "noInvoicesDesc": "Currencies with no invoices",
-      "noInvoices30Text": "Inactive currencies (30 days)",
+      "atleastOneInvoiceText": "Currencies who have invoices",
       "noInvoices30Desc": "No invoices in the last 30 days",
-      "noInvoices60Text": "Inactive currencies (60 days)",
+      "noInvoices30Text": "Inactive currencies (30 days)",
       "noInvoices60Desc": "No invoices in the last 60 days",
+      "noInvoices60Text": "Inactive currencies (60 days)",
+      "noInvoices90Desc": "No invoices in the last 90 days",
       "noInvoices90Text": "Inactive currencies (90 days)",
-      "noInvoices90Desc": "No invoices in the last 90 days"
-    }
+      "noInvoicesDesc": "Currencies with no invoices",
+      "noInvoicesText": "Currencies who do not have invoices"
+    },
+    "noItem": "Selected a currency to view details.",
+    "title": "Currency"
   },
   "currenciesModal": {
     "code": "Symbol text",
+    "format": "Format",
+    "isArchived": "Archived",
     "symbol": "Symbol",
-    "text": "Text",
-    "format": "Format"
+    "text": "Text"
   },
-  "units": {
-    "title": "Unit",
-    "noItem": "Selected a unit to view details.",
-    "add": "Add unit",
-    "filter": {
-      "allText": "All units",
-      "atleastOneInvoiceText": "Units who have invoices",
-      "atleastOneInvoiceDesc": "Units which has at least one invoice",
-      "noInvoicesText": "Units who do not have invoices",
-      "noInvoicesDesc": "Units with no invoices",
-      "noInvoices30Text": "Inactive units (30 days)",
-      "noInvoices30Desc": "No invoices in the last 30 days",
-      "noInvoices60Text": "Inactive units (60 days)",
-      "noInvoices60Desc": "No invoices in the last 60 days",
-      "noInvoices90Text": "Inactive units (90 days)",
-      "noInvoices90Desc": "No invoices in the last 90 days"
-    }
-  },
-  "unitsModal": {
-    "name": "Name"
-  },
-  "categories": {
-    "title": "Category",
-    "noItem": "Selected a category to view details.",
-    "add": "Add category",
-    "filter": {
-      "allText": "All categories",
-      "atleastOneInvoiceText": "Categories who have invoices",
-      "atleastOneInvoiceDesc": "Categories which has at least one invoice",
-      "noInvoicesText": "Categories who do not have invoices",
-      "noInvoicesDesc": "Categories with no invoices",
-      "noInvoices30Text": "Inactive categories (30 days)",
-      "noInvoices30Desc": "No invoices in the last 30 days",
-      "noInvoices60Text": "Inactive categories (60 days)",
-      "noInvoices60Desc": "No invoices in the last 60 days",
-      "noInvoices90Text": "Inactive categories (90 days)",
-      "noInvoices90Desc": "No invoices in the last 90 days"
-    }
-  },
-  "categoriesModal": {
-    "name": "Name"
+  "customizeInvoice": {
+    "includeBusinessName": "Include business name",
+    "includeMonth": "Include month",
+    "includeYear": "Include year",
+    "invoicePrefix": "Invoice prefix",
+    "invoiceSuffix": "Invoice suffix",
+    "lettersAndNumbers": "Only letters and numbers allowed"
   },
   "databaseChooser": {
-    "title": "Open or create a database",
+    "button": "Select database file",
     "description": "Choose an existing database or create a new one. You can remember frequently used databases for quick access.",
-    "button": "Select database file"
-  },
-  "items": {
-    "title": "Item",
-    "noItem": "Selected a item to view details.",
-    "add": "Add item",
-    "filter": {
-      "allText": "All items",
-      "atleastOneInvoiceText": "Items who have invoices",
-      "atleastOneInvoiceDesc": "Items which has at least one invoice",
-      "noInvoicesText": "Items who do not have invoices",
-      "noInvoicesDesc": "Items with no invoices",
-      "noInvoices30Text": "Inactive items (30 days)",
-      "noInvoices30Desc": "No invoices in the last 30 days",
-      "noInvoices60Text": "Inactive items (60 days)",
-      "noInvoices60Desc": "No invoices in the last 60 days",
-      "noInvoices90Text": "Inactive items (90 days)",
-      "noInvoices90Desc": "No invoices in the last 90 days"
-    }
-  },
-  "itemsModal": {
-    "name": "Name",
-    "description": "Description",
-    "amount": "Amount",
-    "unit": "Unit",
-    "category": "Category"
-  },
-  "ariaLabel": {
-    "menu": "Main menu",
-    "back": "Return back",
-    "delete": "Delete",
-    "remove": "Remove",
-    "add": "Add",
-    "uploadImage": "Upload image",
-    "crop": "Crop image",
-    "cropped": "Cropped image",
-    "search": "Search",
-    "noSort": "No sort",
-    "ascending": "Ascending",
-    "descending": "Descending",
-    "filters": "Filters",
-    "clear": "Clear"
+    "title": "Open or create a database"
   },
   "error": {
-    "fileTooLarge": "File is too large. Maximum allowed size is {{maxSizeMB}}MB.",
     "failedNormalizeImportedRows": "Failed to process the following rows: {{rowNumber}}. Please check the data format.",
-    "unsupportedImage": "Unsupported image type",
-    "noWorksheetFound": "No worksheet found",
+    "failedToLoad": "Failed to load saved DB list",
+    "failedToSave": "Failed to save DB list",
+    "fileTooLarge": "File is too large. Maximum allowed size is {{maxSizeMB}}MB.",
     "headerRowEmpty": "Header row is empty or missing",
     "importFailed": "Import failed",
-    "invalidLogo": "Invalid logo string",
-    "invalidConstraintUnique": "Record violates a database constraint.",
     "invalidConstraintForeign": "Record is being used as reference.",
+    "invalidConstraintUnique": "Record violates a database constraint.",
+    "invalidLogo": "Invalid logo string",
+    "noWorksheetFound": "No worksheet found",
     "unknownError": "Unknown database error",
-    "failedToLoad": "Failed to load saved DB list",
-    "failedToSave": "Failed to save DB list"
+    "unsupportedImage": "Unsupported image type"
   },
-  "common": {
-    "save": "Save",
-    "cancel": "Cancel",
-    "fieldRequired": "Field is required",
-    "search": "Search...",
-    "sortBy": "Sort by",
+  "items": {
+    "add": "Add item",
+    "filter": {
+      "activeDesc": "Items that are not archived",
+      "activeText": "Active items",
+      "allText": "All items",
+      "archivedDesc": "Items that have been archived",
+      "archivedText": "Archived items",
+      "atleastOneInvoiceDesc": "Items which has at least one invoice",
+      "atleastOneInvoiceText": "Items who have invoices",
+      "noInvoices30Desc": "No invoices in the last 30 days",
+      "noInvoices30Text": "Inactive items (30 days)",
+      "noInvoices60Desc": "No invoices in the last 60 days",
+      "noInvoices60Text": "Inactive items (60 days)",
+      "noInvoices90Desc": "No invoices in the last 90 days",
+      "noInvoices90Text": "Inactive items (90 days)",
+      "noInvoicesDesc": "Items with no invoices",
+      "noInvoicesText": "Items who do not have invoices"
+    },
+    "noItem": "Selected a item to view details.",
+    "title": "Item"
+  },
+  "itemsModal": {
+    "amount": "Amount",
+    "category": "Category",
+    "description": "Description",
+    "isArchived": "Archived",
     "name": "Name",
-    "lastUpdate": "Last updated",
-    "invoice": "Invoice",
+    "unit": "Unit"
+  },
+  "languageFormat": {
+    "amountFormat": "Amount format",
+    "dateFormat": "Date format",
+    "language": "Language"
+  },
+  "menuItems": {
+    "businesses": "Businesses",
+    "categories": "Categories",
+    "clients": "Clients",
+    "currencies": "Currencies",
     "invoices": "Invoices",
-    "quote": "Quote",
+    "items": "Items",
     "quotes": "Quotes",
-    "noData": "No data based on search criteria",
-    "noDataYet": "No data yet. Start adding...",
-    "importExport": "Import / Export",
-    "import": "Import",
-    "export": "Export",
-    "downloadTemplate": "Download template",
-    "and": "and",
-    "selectFilterType": "Select filter type",
-    "selectImage": "Select an image file"
+    "reports": "Reports",
+    "settings": "Settings",
+    "units": "Units"
+  },
+  "settingsMenuItems": {
+    "descriptions": {
+      "about": "Learn more about this app, its features.",
+      "customizeInvoice": "Invoice number prefix e.g.: INV, suffix.",
+      "darkMode": "Switch between light and dark themes.",
+      "export": "Export your data for backup or to use in other applications.",
+      "import": "Import your data from other sources or backup files.",
+      "languageFormat": "Language, Amount format, Date format.",
+      "privacyPolicy": "Feel free to go through our privacy policy.",
+      "share": "Share this app with your friends.",
+      "support": "Report bugs or suggest improvements via GitHub.",
+      "turnQuotes": "Enable or disable quote creation feature",
+      "turnReports": "Enable or disable reporting feature",
+      "tutorial": "Checkout guide on how to use application"
+    },
+    "titles": {
+      "about": "About",
+      "customizeInvoice": "Customize invoice",
+      "darkMode": "Dark Mode",
+      "export": "Export",
+      "import": "Import",
+      "languageFormat": "Language & Format",
+      "privacyPolicy": "Privacy policy",
+      "share": "Share App",
+      "support": "Support",
+      "turnQuotes": "Quotes",
+      "turnReports": "Reports",
+      "tutorial": "Tutorial"
+    }
+  },
+  "units": {
+    "add": "Add unit",
+    "filter": {
+      "activeDesc": "Units that are not archived",
+      "activeText": "Active units",
+      "allText": "All units",
+      "archivedDesc": "Units that have been archived",
+      "archivedText": "Archived units",
+      "atleastOneInvoiceDesc": "Units which has at least one invoice",
+      "atleastOneInvoiceText": "Units who have invoices",
+      "noInvoices30Desc": "No invoices in the last 30 days",
+      "noInvoices30Text": "Inactive units (30 days)",
+      "noInvoices60Desc": "No invoices in the last 60 days",
+      "noInvoices60Text": "Inactive units (60 days)",
+      "noInvoices90Desc": "No invoices in the last 90 days",
+      "noInvoices90Text": "Inactive units (90 days)",
+      "noInvoicesDesc": "Units with no invoices",
+      "noInvoicesText": "Units who do not have invoices"
+    },
+    "noItem": "Selected a unit to view details.",
+    "title": "Unit"
+  },
+  "unitsModal": {
+    "isArchived": "Archived",
+    "name": "Name"
   }
 }

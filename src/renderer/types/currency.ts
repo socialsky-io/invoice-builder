@@ -8,6 +8,7 @@ export interface Currency {
   updatedAt: string;
   invoiceCount: number;
   quotesCount: number;
+  isArchived: boolean;
 }
 
 export interface CurrencyAdd {
@@ -15,6 +16,7 @@ export interface CurrencyAdd {
   symbol: string;
   text: string;
   format: string;
+  isArchived: boolean;
 }
 
 export interface CurrencyUpdate extends CurrencyAdd {
@@ -27,4 +29,5 @@ export interface CurrencyFromData {
   symbol: string;
   text: string;
   format: string;
+  isArchived: boolean;
 }

@@ -16,18 +16,31 @@ import { List } from './List';
 
 export const CategoriesPage: FC = () => {
   const { t } = useTranslation();
-  const excelColumns = ['name'];
+  const excelColumns = ['name', 'isArchived'];
   const excelFileName = 'categories';
   const excelTemplateData: Rows = [
     {
-      name: 'Goods'
+      name: 'Goods',
+      isArchived: false
     },
     {
-      name: 'Services'
+      name: 'Services',
+      isArchived: false
     }
   ];
   const filters: Filter[] = [
-    { label: t('categories.filter.allText'), description: undefined, value: FilterType.all, initial: true },
+    { label: t('categories.filter.allText'), description: undefined, value: FilterType.all },
+    {
+      label: t('categories.filter.activeText'),
+      description: t('categories.filter.activeDesc'),
+      value: FilterType.active,
+      initial: true
+    },
+    {
+      label: t('categories.filter.archivedText'),
+      description: t('categories.filter.archivedDesc'),
+      value: FilterType.archived
+    },
     {
       label: t('categories.filter.atleastOneInvoiceText'),
       description: t('categories.filter.atleastOneInvoiceDesc'),

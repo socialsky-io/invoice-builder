@@ -1,4 +1,4 @@
-import { Grid, TextField } from '@mui/material';
+import { FormControlLabel, Grid, Switch, TextField } from '@mui/material';
 import { useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UploadImage } from '../../components/uploadImage/UploadImage';
@@ -28,7 +28,8 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
     fileSize: business?.fileSize,
     fileType: business?.fileType,
     fileName: business?.fileName,
-    description: business?.description ?? ''
+    description: business?.description ?? '',
+    isArchived: business?.isArchived ?? false
   });
   const [errors, setErrors] = useState({
     email: false,
@@ -79,7 +80,8 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
       website: business?.website ?? '',
       additional: business?.additional ?? '',
       paymentInformation: business?.paymentInformation ?? '',
-      description: business?.description ?? ''
+      description: business?.description ?? '',
+      isArchived: business?.isArchived ?? false
     });
 
     setLogoUrl(fromUint8Array(business?.logo) ?? undefined);
@@ -221,6 +223,12 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
           fullWidth
           value={form.paymentInformation}
           onChange={e => update('paymentInformation', e.target.value)}
+        />
+      </Grid>
+      <Grid size={{ xs: 12, md: 12 }}>
+        <FormControlLabel
+          control={<Switch checked={form.isArchived} onChange={e => update('isArchived', e.target.checked)} />}
+          label={t('businessesModal.isArchived')}
         />
       </Grid>
     </Grid>

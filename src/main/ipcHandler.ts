@@ -58,9 +58,18 @@ const prepareUpdate = (data: UpdateData, id?: number) => {
 };
 
 const getHavingClause = (
-  filter: 'All' | 'AtleastOneInvoice' | 'NoInvoices' | 'NoInvoices30' | 'NoInvoices60' | 'NoInvoices90',
-  invoiceColumn = 'i.updatedAt',
-  invoiceIdColumn = 'i.id'
+  filter:
+    | 'All'
+    | 'Active'
+    | 'Archived'
+    | 'AtleastOneInvoice'
+    | 'NoInvoices'
+    | 'NoInvoices30'
+    | 'NoInvoices60'
+    | 'NoInvoices90',
+  invoiceColumn: string,
+  invoiceIdColumn: string,
+  archivedColumn: string
 ) => {
   switch (filter) {
     case 'NoInvoices30':
@@ -73,6 +82,10 @@ const getHavingClause = (
       return `HAVING COUNT(${invoiceIdColumn}) = 0`;
     case 'AtleastOneInvoice':
       return `HAVING COUNT(${invoiceIdColumn}) > 0`;
+    case 'Active':
+      return `HAVING ${archivedColumn} = 1`;
+    case 'Archived':
+      return `HAVING ${archivedColumn} = 0`;
     case 'All':
     default:
       return '';
@@ -109,8 +122,18 @@ const resolveItemRelations = async (db: Database, data: Item): Promise<Item> => 
 
 const getAllEntities =
   <T extends Record<string, unknown>>(db: Database, table: string, keyFieldName: string) =>
-  async (filter: 'All' | 'AtleastOneInvoice' | 'NoInvoices' | 'NoInvoices30' | 'NoInvoices60' | 'NoInvoices90') => {
-    const havingClause = getHavingClause(filter, 'i.updatedAt', 'i.id');
+  async (
+    filter:
+      | 'All'
+      | 'Active'
+      | 'Archived'
+      | 'AtleastOneInvoice'
+      | 'NoInvoices'
+      | 'NoInvoices30'
+      | 'NoInvoices60'
+      | 'NoInvoices90'
+  ) => {
+    const havingClause = getHavingClause(filter, 'i.updatedAt', 'i.id', 't.isArchived');
     const sql = `
       SELECT 
         t.*,
@@ -168,7 +191,8 @@ const businessFields: (keyof Business)[] = [
   'fileSize',
   'fileType',
   'fileName',
-  'description'
+  'description',
+  'isArchived'
 ];
 const clientFields: (keyof Client)[] = [
   'name',
@@ -178,12 +202,13 @@ const clientFields: (keyof Client)[] = [
   'phone',
   'code',
   'additional',
-  'description'
+  'description',
+  'isArchived'
 ];
-const itemFields: (keyof Item)[] = ['name', 'amountCents', 'unitId', 'categoryId', 'description'];
-const currencyFields: (keyof Currency)[] = ['code', 'symbol', 'text', 'format'];
-const unitFields: (keyof Unit)[] = ['name'];
-const categoryFields: (keyof Category)[] = ['name'];
+const itemFields: (keyof Item)[] = ['name', 'amountCents', 'unitId', 'categoryId', 'description', 'isArchived'];
+const currencyFields: (keyof Currency)[] = ['code', 'symbol', 'text', 'format', 'isArchived'];
+const unitFields: (keyof Unit)[] = ['name', 'isArchived'];
+const categoryFields: (keyof Category)[] = ['name', 'isArchived'];
 
 const initIpcHandler = (db: Database, path: string) => {
   if (!db) throw new Error('Database not initialized');
@@ -312,19 +337,20 @@ const initIpcHandler = (db: Database, path: string) => {
     return { success: true };
   });
   ipcMain.handle('get-all-items', async (_event, filter) => {
-    const havingClause = getHavingClause(filter, 'ii.updatedAt', 'ii.invoiceId');
+    const havingClause = getHavingClause(filter, 'inv.updatedAt', 'inv.id', 'it.isArchived');
 
     const sql = `
     SELECT 
         it.*,
-        COUNT(DISTINCT CASE WHEN ii.invoiceId IS NOT NULL THEN ii.invoiceId END) AS invoiceCount,
-        COUNT(DISTINCT CASE WHEN ii.quoteId IS NOT NULL THEN ii.quoteId END) AS quotesCount,
+        COUNT(DISTINCT CASE WHEN inv.invoiceType = 'invoice' THEN ii.parentInvoiceId END) AS invoiceCount,
+        COUNT(DISTINCT CASE WHEN inv.invoiceType = 'quotation' THEN ii.parentInvoiceId END) AS quotesCount,
         u.name AS unitName,
         c.name AS categoryName
     FROM items it
     LEFT JOIN units u ON it.unitId = u.id
     LEFT JOIN categories c ON it.categoryId = c.id
     LEFT JOIN invoice_items ii ON ii.itemId = it.id
+    LEFT JOIN invoices inv ON ii.parentInvoiceId = inv.id
     GROUP BY it.id
     ${havingClause}
     `;
@@ -352,16 +378,17 @@ const initIpcHandler = (db: Database, path: string) => {
     return { success: true };
   });
   ipcMain.handle('get-all-units', async (_event, filter) => {
-    const havingClause = getHavingClause(filter, 'i.updatedAt', 'i.id');
+    const havingClause = getHavingClause(filter, 'inv.updatedAt', 'inv.id', 'u.isArchived');
 
     const sql = `
       SELECT
           u.*,
-          COUNT(DISTINCT CASE WHEN ii.invoiceId IS NOT NULL THEN ii.invoiceId END) AS invoiceCount,
-          COUNT(DISTINCT CASE WHEN ii.quoteId IS NOT NULL THEN ii.quoteId END) AS quotesCount
+          COUNT(DISTINCT CASE WHEN inv.invoiceType = 'invoice' THEN ii.parentInvoiceId END) AS invoiceCount,
+          COUNT(DISTINCT CASE WHEN inv.invoiceType = 'quotation' THEN ii.parentInvoiceId END) AS quotesCount
       FROM units u
       LEFT JOIN items it ON it.unitId = u.id
       LEFT JOIN invoice_items ii ON ii.itemId = it.id
+      LEFT JOIN invoices inv ON ii.parentInvoiceId = inv.id
       GROUP BY u.id
       ${havingClause}
     `;
@@ -389,15 +416,16 @@ const initIpcHandler = (db: Database, path: string) => {
     return { success: true };
   });
   ipcMain.handle('get-all-categories', async (_event, filter) => {
-    const havingClause = getHavingClause(filter, 'i.updatedAt', 'i.id');
+    const havingClause = getHavingClause(filter, 'inv.updatedAt', 'inv.id', 'c.isArchived');
     const sql = `
       SELECT
           c.*,
-          COUNT(DISTINCT CASE WHEN ii.invoiceId IS NOT NULL THEN ii.invoiceId END) AS invoiceCount,
-          COUNT(DISTINCT CASE WHEN ii.quoteId IS NOT NULL THEN ii.quoteId END) AS quotesCount
+          COUNT(DISTINCT CASE WHEN inv.invoiceType = 'invoice' THEN ii.parentInvoiceId END) AS invoiceCount,
+          COUNT(DISTINCT CASE WHEN inv.invoiceType = 'quotation' THEN ii.parentInvoiceId END) AS quotesCount
       FROM categories c
       LEFT JOIN items it ON it.categoryId = c.id
       LEFT JOIN invoice_items ii ON ii.itemId = it.id
+      LEFT JOIN invoices inv ON ii.parentInvoiceId = inv.id
       GROUP BY c.id
       ${havingClause}
     `;

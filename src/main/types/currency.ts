@@ -4,4 +4,5 @@ export interface Currency {
   symbol: string;
   text: string;
   format: string;
+  isArchived: boolean;
 }

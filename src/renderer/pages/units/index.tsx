@@ -16,18 +16,31 @@ import { List } from './List';
 
 export const UnitsPage: FC = () => {
   const { t } = useTranslation();
-  const excelColumns = ['name'];
+  const excelColumns = ['name', 'isArchived'];
   const excelFileName = 'units';
   const excelTemplateData: Rows = [
     {
-      name: 'pcs'
+      name: 'pcs',
+      isArchived: false
     },
     {
-      name: 'hrs'
+      name: 'hrs',
+      isArchived: false
     }
   ];
   const filters: Filter[] = [
-    { label: t('units.filter.allText'), description: undefined, value: FilterType.all, initial: true },
+    { label: t('units.filter.allText'), description: undefined, value: FilterType.all },
+    {
+      label: t('units.filter.activeText'),
+      description: t('units.filter.activeDesc'),
+      value: FilterType.active,
+      initial: true
+    },
+    {
+      label: t('units.filter.archivedText'),
+      description: t('units.filter.archivedDesc'),
+      value: FilterType.archived
+    },
     {
       label: t('units.filter.atleastOneInvoiceText'),
       description: t('units.filter.atleastOneInvoiceDesc'),

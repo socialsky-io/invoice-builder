@@ -1,5 +1,7 @@
 export enum FilterType {
   all = 'All',
+  active = 'Active',
+  archived = 'Archived',
   atleastOneInvoice = 'AtleastOneInvoice',
   noInvoices = 'NoInvoices',
   noInvoices30 = 'NoInvoices30',

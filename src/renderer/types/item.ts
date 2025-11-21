@@ -12,6 +12,7 @@ export interface Item {
   updatedAt: string;
   invoiceCount: number;
   quotesCount: number;
+  isArchived: boolean;
 }
 
 export interface ItemAdd {
@@ -22,6 +23,7 @@ export interface ItemAdd {
   description?: string;
   categoryName?: string;
   unitName?: string;
+  isArchived: boolean;
 }
 
 export interface ItemUpdate extends ItemAdd {
@@ -36,4 +38,5 @@ export interface ItemFromData {
   unitId?: number;
   categoryId?: number;
   description?: string;
+  isArchived: boolean;
 }

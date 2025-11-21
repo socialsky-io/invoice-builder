@@ -18,6 +18,7 @@ export interface Business {
   fileType?: string;
   fileName?: string;
   description?: string;
+  isArchived: boolean;
 }
 
 export interface BusinessModified {
@@ -40,6 +41,7 @@ export interface BusinessModified {
   fileType?: string;
   fileName?: string;
   description?: string;
+  isArchived: boolean;
 }
 
 export interface BusinessAdd {
@@ -57,6 +59,7 @@ export interface BusinessAdd {
   fileType?: string;
   fileName?: string;
   description?: string;
+  isArchived: boolean;
 }
 
 export interface BusinessUpdate extends BusinessAdd {
@@ -79,4 +82,5 @@ export interface BusinessFromData {
   fileType?: string;
   fileName?: string;
   description?: string;
+  isArchived: boolean;
 }

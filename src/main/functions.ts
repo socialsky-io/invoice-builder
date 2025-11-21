@@ -45,7 +45,15 @@ const getAllRows = <T extends Record<string, unknown>>(
   return new Promise((resolve, reject) => {
     db.all(sql, convertedParams, (err, rows) => {
       if (err) return reject(err);
-      resolve(rows as T[]);
+
+      const transformedRows = (rows as Record<string, unknown>[]).map(row => {
+        if ('isArchived' in row) {
+          return { ...row, isArchived: Boolean(row['isArchived']) } as unknown as T;
+        }
+        return row as unknown as T;
+      });
+
+      resolve(transformedRows as T[]);
     });
   });
 };

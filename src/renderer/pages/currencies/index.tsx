@@ -16,24 +16,37 @@ import { List } from './List';
 
 export const CurrenciesPage: FC = () => {
   const { t } = useTranslation();
-  const excelColumns = ['code', 'symbol', 'text', 'format'];
+  const excelColumns = ['code', 'symbol', 'text', 'format', 'isArchived'];
   const excelFileName = 'currencies';
   const excelTemplateData: Rows = [
     {
       code: 'USD',
       symbol: '$',
       text: 'United States Dollar',
-      format: '{symbol}{amount}'
+      format: '{symbol}{amount}',
+      isArchived: false
     },
     {
       code: 'EUR',
       symbol: '€',
       text: 'Euro',
-      format: '{symbol}{amount}'
+      format: '{symbol}{amount}',
+      isArchived: false
     }
   ];
   const filters: Filter[] = [
-    { label: t('currencies.filter.allText'), description: undefined, value: FilterType.all, initial: true },
+    { label: t('currencies.filter.allText'), description: undefined, value: FilterType.all },
+    {
+      label: t('currencies.filter.activeText'),
+      description: t('currencies.filter.activeDesc'),
+      value: FilterType.active,
+      initial: true
+    },
+    {
+      label: t('currencies.filter.archivedText'),
+      description: t('currencies.filter.archivedDesc'),
+      value: FilterType.archived
+    },
     {
       label: t('currencies.filter.atleastOneInvoiceText'),
       description: t('currencies.filter.atleastOneInvoiceDesc'),

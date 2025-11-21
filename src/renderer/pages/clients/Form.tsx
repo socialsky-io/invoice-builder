@@ -1,4 +1,4 @@
-import { Grid, TextField } from '@mui/material';
+import { FormControlLabel, Grid, Switch, TextField } from '@mui/material';
 import { useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from '../../hooks/useForm';
@@ -20,7 +20,8 @@ export const Form: FC<Props> = ({ handleChange = () => {}, client }) => {
     code: client?.code ?? '',
     address: client?.address ?? '',
     additional: client?.additional ?? '',
-    description: client?.description ?? ''
+    description: client?.description ?? '',
+    isArchived: client?.isArchived ?? false
   });
   const [errors, setErrors] = useState({
     email: false,
@@ -51,7 +52,8 @@ export const Form: FC<Props> = ({ handleChange = () => {}, client }) => {
       code: client?.code ?? '',
       address: client?.address ?? '',
       additional: client?.additional ?? '',
-      description: client?.description ?? ''
+      description: client?.description ?? '',
+      isArchived: client?.isArchived ?? false
     });
   }, [client]);
 
@@ -169,6 +171,12 @@ export const Form: FC<Props> = ({ handleChange = () => {}, client }) => {
           rows={5}
           value={form.additional}
           onChange={e => update('additional', e.target.value)}
+        />
+      </Grid>
+      <Grid size={{ xs: 12, md: 12 }}>
+        <FormControlLabel
+          control={<Switch checked={form.isArchived} onChange={e => update('isArchived', e.target.checked)} />}
+          label={t('clientsModal.isArchived')}
         />
       </Grid>
     </Grid>

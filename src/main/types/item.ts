@@ -8,4 +8,5 @@ export interface Item {
   categoryName?: string;
   unitName?: string;
   description?: string;
+  isArchived: boolean;
 }

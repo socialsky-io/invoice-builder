@@ -1,4 +1,4 @@
-import { Grid, TextField } from '@mui/material';
+import { FormControlLabel, Grid, Switch, TextField } from '@mui/material';
 import { useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from '../../hooks/useForm';
@@ -13,7 +13,8 @@ export const Form: FC<Props> = ({ handleChange = () => {}, unit }) => {
   const { t } = useTranslation();
   const { form, setForm, update } = useForm<UnitFromData>({
     id: unit?.id,
-    name: unit?.name ?? ''
+    name: unit?.name ?? '',
+    isArchived: unit?.isArchived ?? false
   });
   const [errors, setErrors] = useState({
     name: false
@@ -30,7 +31,8 @@ export const Form: FC<Props> = ({ handleChange = () => {}, unit }) => {
   useEffect(() => {
     setForm({
       id: unit?.id,
-      name: unit?.name ?? ''
+      name: unit?.name ?? '',
+      isArchived: unit?.isArchived ?? false
     });
   }, [unit]);
 
@@ -57,6 +59,12 @@ export const Form: FC<Props> = ({ handleChange = () => {}, unit }) => {
             update('name', e.target.value);
             validateField('name', e.target.value);
           }}
+        />
+      </Grid>
+      <Grid size={{ xs: 12, md: 12 }}>
+        <FormControlLabel
+          control={<Switch checked={form.isArchived} onChange={e => update('isArchived', e.target.checked)} />}
+          label={t('unitsModal.isArchived')}
         />
       </Grid>
     </Grid>

@@ -103,6 +103,7 @@ const init = async () => {
       fileType TEXT,
       fileName TEXT,
       description TEXT,
+      isArchived INTEGER NOT NULL DEFAULT 0 CHECK (isArchived IN (0,1)),
       createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
       updatedAt DATETIME NOT NULL DEFAULT (datetime('now'))
     );
@@ -121,6 +122,7 @@ const init = async () => {
       code TEXT,
       additional TEXT,
       description TEXT,
+      isArchived INTEGER NOT NULL DEFAULT 0 CHECK (isArchived IN (0,1)),
       createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
       updatedAt DATETIME NOT NULL DEFAULT (datetime('now'))
     );
@@ -132,6 +134,7 @@ const init = async () => {
     CREATE TABLE IF NOT EXISTS units (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL UNIQUE,
+      isArchived INTEGER NOT NULL DEFAULT 0 CHECK (isArchived IN (0,1)),
       createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
       updatedAt DATETIME NOT NULL DEFAULT (datetime('now'))
     );
@@ -143,6 +146,7 @@ const init = async () => {
     CREATE TABLE IF NOT EXISTS categories (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL UNIQUE,
+      isArchived INTEGER NOT NULL DEFAULT 0 CHECK (isArchived IN (0,1)),
       createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
       updatedAt DATETIME NOT NULL DEFAULT (datetime('now'))
     );
@@ -157,6 +161,7 @@ const init = async () => {
       symbol TEXT NOT NULL,
       text TEXT NOT NULL,
       format TEXT NOT NULL,
+      isArchived INTEGER NOT NULL DEFAULT 0 CHECK (isArchived IN (0,1)),
       createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
       updatedAt DATETIME NOT NULL DEFAULT (datetime('now'))
     );
@@ -172,6 +177,7 @@ const init = async () => {
       unitId INTEGER,
       categoryId INTEGER,
       description TEXT,
+      isArchived INTEGER NOT NULL DEFAULT 0 CHECK (isArchived IN (0,1)),
       createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
       updatedAt DATETIME NOT NULL DEFAULT (datetime('now')),
       FOREIGN KEY (unitId) REFERENCES units(id),
@@ -247,7 +253,7 @@ const init = async () => {
     CREATE TABLE IF NOT EXISTS invoice_items (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         parentInvoiceId INTEGER NOT NULL,    
-        itemId INTEGER,
+        itemId INTEGER NOT NULL,
         itemNameSnapshot TEXT NOT NULL,
         unitPriceCentsSnapshot INTEGER NOT NULL DEFAULT (0), 
         itemDescriptionSnapshot TEXT,

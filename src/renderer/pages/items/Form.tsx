@@ -1,4 +1,4 @@
-import { Autocomplete, Grid, TextField } from '@mui/material';
+import { Autocomplete, FormControlLabel, Grid, Switch, TextField } from '@mui/material';
 import { useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Category } from '../../../main/types/category';
@@ -50,7 +50,8 @@ export const Form: FC<Props> = ({ handleChange = () => {}, item }) => {
     amount: item?.amountCents ? item.amountCents / 100 : 0,
     unitId: item?.unitId,
     categoryId: item?.categoryId,
-    description: item?.description ?? ''
+    description: item?.description ?? '',
+    isArchived: item?.isArchived ?? false
   });
 
   const [errors, setErrors] = useState({
@@ -73,7 +74,8 @@ export const Form: FC<Props> = ({ handleChange = () => {}, item }) => {
       amount: item?.amountCents ? item.amountCents / 100 : 0,
       unitId: item?.unitId,
       categoryId: item?.categoryId,
-      description: item?.description ?? ''
+      description: item?.description ?? '',
+      isArchived: item?.isArchived ?? false
     });
   }, [item]);
 
@@ -88,7 +90,8 @@ export const Form: FC<Props> = ({ handleChange = () => {}, item }) => {
         amountCents: form.amount ? form.amount * 100 : 0,
         unitId: form.unitId,
         categoryId: form.categoryId,
-        description: form.description
+        description: form.description,
+        isArchived: form.isArchived
       },
       isFormValid: valid
     });
@@ -155,6 +158,12 @@ export const Form: FC<Props> = ({ handleChange = () => {}, item }) => {
           }}
           renderInput={params => <TextField {...params} label={t('itemsModal.category')} />}
           freeSolo={false}
+        />
+      </Grid>
+      <Grid size={{ xs: 12, md: 12 }}>
+        <FormControlLabel
+          control={<Switch checked={form.isArchived} onChange={e => update('isArchived', e.target.checked)} />}
+          label={t('itemsModal.isArchived')}
         />
       </Grid>
     </Grid>

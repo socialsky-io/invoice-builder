@@ -93,6 +93,9 @@ export const isBusinessFromData = (data: unknown): data is BusinessFromData => {
 
   if (d.id !== undefined && d.id !== null && d.id !== '' && typeof d.id !== 'number') return false;
 
+  if (d.isArchived !== undefined && d.isArchived !== null && d.isArchived !== '' && typeof d.isArchived !== 'boolean')
+    return false;
+
   if (d.logo !== undefined && d.logo !== '' && d.logo != null) {
     // const isString = typeof d.logo === 'string';
     const isBlob = d.logo instanceof Uint8Array;
@@ -140,6 +143,8 @@ export const isItemFromData = (data: unknown): data is ItemFromData => {
   if (typeof d.name !== 'string') return false;
 
   if (d.id !== undefined && d.id !== null && d.id !== '' && typeof d.id !== 'number') return false;
+  if (d.isArchived !== undefined && d.isArchived !== null && d.isArchived !== '' && typeof d.isArchived !== 'boolean')
+    return false;
 
   if (
     d.amountCents !== undefined &&
@@ -182,6 +187,8 @@ export const isUnitFromData = (data: unknown): data is UnitFromData => {
   if (typeof d.name !== 'string') return false;
 
   if (d.id !== undefined && d.id !== null && d.id !== '' && typeof d.id !== 'number') return false;
+  if (d.isArchived !== undefined && d.isArchived !== null && d.isArchived !== '' && typeof d.isArchived !== 'boolean')
+    return false;
 
   return true;
 };
@@ -194,6 +201,8 @@ export const isCategoryFromData = (data: unknown): data is CategoryFromData => {
   if (typeof d.name !== 'string') return false;
 
   if (d.id !== undefined && d.id !== null && d.id !== '' && typeof d.id !== 'number') return false;
+  if (d.isArchived !== undefined && d.isArchived !== null && d.isArchived !== '' && typeof d.isArchived !== 'boolean')
+    return false;
 
   return true;
 };
@@ -207,6 +216,8 @@ export const isClientFromData = (data: unknown): data is ClientFromData => {
   if (typeof d.shortName !== 'string') return false;
 
   if (d.id !== undefined && d.id !== null && d.id !== '' && typeof d.id !== 'number') return false;
+  if (d.isArchived !== undefined && d.isArchived !== null && d.isArchived !== '' && typeof d.isArchived !== 'boolean')
+    return false;
 
   if (
     d.description !== undefined &&
@@ -241,6 +252,9 @@ export const isCurrencyFromData = (data: unknown): data is CurrencyFromData => {
   if (typeof data !== 'object' || data === null) return false;
 
   const d = data as Record<string, unknown>;
+
+  if (d.isArchived !== undefined && d.isArchived !== null && d.isArchived !== '' && typeof d.isArchived !== 'boolean')
+    return false;
 
   if (typeof d.code !== 'string') return false;
   if (typeof d.symbol !== 'string') return false;

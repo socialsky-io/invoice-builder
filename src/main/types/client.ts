@@ -8,4 +8,5 @@ export interface Client {
   additional?: string;
   code?: string;
   description?: string;
+  isArchived: boolean;
 }

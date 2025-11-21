@@ -36,7 +36,6 @@ export const DatabaseChooser: FC<Props> = ({ onDatabaseRead }) => {
     immediate: false,
     onDone: (results: Response<DBSelector>) => {
       if (results.data && !results.data.canceled && results.data.filePath) {
-        console.log(results);
         setSelectedPath(results.data.filePath);
       }
     }

@@ -16,7 +16,17 @@ import { List } from './List';
 
 export const ClientsPage: FC = () => {
   const { t } = useTranslation();
-  const excelColumns = ['name', 'shortName', 'address', 'email', 'phone', 'code', 'description', 'additional'];
+  const excelColumns = [
+    'name',
+    'shortName',
+    'address',
+    'email',
+    'phone',
+    'code',
+    'description',
+    'additional',
+    'isArchived'
+  ];
   const excelFileName = 'clients';
   const excelTemplateData: Rows = [
     {
@@ -27,7 +37,8 @@ export const ClientsPage: FC = () => {
       phone: '+14155552671',
       code: 'A001',
       description: 'Some description',
-      additional: 'VAT DE123456789'
+      additional: 'VAT DE123456789',
+      isArchived: false
     },
     {
       name: 'Jane Smith',
@@ -35,11 +46,23 @@ export const ClientsPage: FC = () => {
       address: '456 Elm St, Shelbyville',
       email: 'jane.smith@email.com',
       phone: '+14155552671',
-      code: 'B002'
+      code: 'B002',
+      isArchived: false
     }
   ];
   const filters: Filter[] = [
-    { label: t('clients.filter.allText'), description: undefined, value: FilterType.all, initial: true },
+    { label: t('clients.filter.allText'), description: undefined, value: FilterType.all },
+    {
+      label: t('clients.filter.activeText'),
+      description: t('clients.filter.activeDesc'),
+      value: FilterType.active,
+      initial: true
+    },
+    {
+      label: t('clients.filter.archivedText'),
+      description: t('clients.filter.archivedDesc'),
+      value: FilterType.archived
+    },
     {
       label: t('clients.filter.atleastOneInvoiceText'),
       description: t('clients.filter.atleastOneInvoiceDesc'),

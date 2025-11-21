@@ -12,6 +12,7 @@ export interface Client {
   createdAt: string;
   updatedAt: string;
   description?: string;
+  isArchived: boolean;
 }
 
 export interface ClientAdd {
@@ -23,6 +24,7 @@ export interface ClientAdd {
   code?: string;
   additional?: string;
   description?: string;
+  isArchived: boolean;
 }
 
 export interface ClientUpdate extends ClientAdd {
@@ -39,4 +41,5 @@ export interface ClientFromData {
   code?: string;
   additional?: string;
   description?: string;
+  isArchived: boolean;
 }

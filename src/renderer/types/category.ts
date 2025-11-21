@@ -5,10 +5,12 @@ export interface Category {
   updatedAt: string;
   invoiceCount: number;
   quotesCount: number;
+  isArchived: boolean;
 }
 
 export interface CategoryAdd {
   name: string;
+  isArchived: boolean;
 }
 
 export interface CategoryUpdate extends CategoryAdd {
@@ -18,4 +20,5 @@ export interface CategoryUpdate extends CategoryAdd {
 export interface CategoryFromData {
   id?: number;
   name: string;
+  isArchived: boolean;
 }
