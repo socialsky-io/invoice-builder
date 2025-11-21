@@ -167,6 +167,7 @@ const businessFields: (keyof Business)[] = [
   'logo',
   'fileSize',
   'fileType',
+  'fileName',
   'description'
 ];
 const clientFields: (keyof Client)[] = [

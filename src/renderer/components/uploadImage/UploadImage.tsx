@@ -9,7 +9,7 @@ import { addToast } from '../../state/pageSlice';
 import { CropModal } from '../cropModal/CropModal';
 
 interface UploadSquareProps {
-  onUpload?: (file?: Blob) => void;
+  onUpload?: (file?: Blob, filename?: string) => void;
   size?: number;
   maxSizeMB?: number;
   logoUrl?: string;
@@ -19,7 +19,7 @@ export const UploadImage: React.FC<UploadSquareProps> = ({ onUpload, size = 120,
   const inputRef = useRef<HTMLInputElement>(null);
   const theme = useTheme();
   const dispatch = useAppDispatch();
-
+  const [originalFileName, setOriginalFileName] = useState<string | undefined>(undefined);
   const [imageSrc, setImageSrc] = useState<string | undefined>(undefined);
   const [cropDialogOpen, setCropDialogOpen] = useState(false);
   const [croppedImageUrl, setCroppedImageUrl] = useState<string | undefined>(logoUrl);
@@ -31,6 +31,8 @@ export const UploadImage: React.FC<UploadSquareProps> = ({ onUpload, size = 120,
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
+
+    setOriginalFileName(file.name);
 
     const maxSizeBytes = maxSizeMB * 1024 * 1024;
     if (file.size > maxSizeBytes) {
@@ -124,7 +126,7 @@ export const UploadImage: React.FC<UploadSquareProps> = ({ onUpload, size = 120,
         }}
         onSave={(url: string, file: Blob) => {
           setCroppedImageUrl(url);
-          if (onUpload) onUpload(file);
+          if (onUpload) onUpload(file, originalFileName);
           setCropDialogOpen(false);
         }}
       />

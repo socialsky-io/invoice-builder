@@ -101,6 +101,7 @@ const init = async () => {
       logo BLOB,
       fileSize INTEGER,
       fileType TEXT,
+      fileName TEXT,
       description TEXT,
       createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
       updatedAt DATETIME NOT NULL DEFAULT (datetime('now'))
@@ -211,6 +212,7 @@ const init = async () => {
       businessLogoSnapshot BLOB,
       businessFileSizeSnapshot INTEGER,
       businessFileTypeSnapshot TEXT,
+      businessFileNameSnapshot TEXT,
       clientNameSnapshot TEXT NOT NULL,
       clientAddressSnapshot TEXT,
       clientDescriptionSnapshot TEXT,
@@ -313,7 +315,7 @@ const init = async () => {
     CREATE TABLE IF NOT EXISTS attachments (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       parentInvoiceId INTEGER NOT NULL,   
-      filename TEXT NOT NULL,
+      fileName TEXT NOT NULL,
       fileType TEXT NOT NULL,            
       fileSize INTEGER NOT NULL,        
       data BLOB NOT NULL,                

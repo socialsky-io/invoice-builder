@@ -27,6 +27,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
     paymentInformation: business?.paymentInformation ?? '',
     fileSize: business?.fileSize,
     fileType: business?.fileType,
+    fileName: business?.fileName,
     description: business?.description ?? ''
   });
   const [errors, setErrors] = useState({
@@ -37,7 +38,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
   });
   const [logoUrl, setLogoUrl] = useState<string | undefined>(fromUint8Array(business?.logo) ?? undefined);
 
-  const onUpload = async (file?: Blob) => {
+  const onUpload = async (file?: Blob, filename?: string) => {
     if (file) {
       const fileUnitArray = await toUint8Array(t, file);
       if (fileUnitArray)
@@ -45,10 +46,11 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
           ...prev,
           logo: fileUnitArray,
           fileSize: file.size,
-          fileType: file.type
+          fileType: file.type,
+          fileName: filename
         }));
     } else {
-      setForm(prev => ({ ...prev, logo: undefined, fileSize: undefined, fileType: undefined }));
+      setForm(prev => ({ ...prev, logo: undefined, fileSize: undefined, fileType: undefined, fileName: undefined }));
     }
   };
 

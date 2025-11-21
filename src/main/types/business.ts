@@ -12,5 +12,6 @@ export interface Business {
   paymentInformation?: string;
   fileSize?: number;
   fileType?: string;
+  fileName?: string;
   description?: string;
 }
