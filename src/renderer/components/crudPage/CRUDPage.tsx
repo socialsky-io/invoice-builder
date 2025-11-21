@@ -1,6 +1,18 @@
 import AddIcon from '@mui/icons-material/Add';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
-import { Box, Button, Fab, Grid, Pagination, Stack, Tooltip, Typography, useMediaQuery, useTheme } from '@mui/material';
+import {
+  Box,
+  Button,
+  Chip,
+  Fab,
+  Grid,
+  Pagination,
+  Stack,
+  Tooltip,
+  Typography,
+  useMediaQuery,
+  useTheme
+} from '@mui/material';
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FilterType } from '../../enums/filterType';
@@ -368,16 +380,51 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
         <SearchInput value={searchValue} onChange={onSearchChanged} />
 
         <Box
-          sx={{ display: 'flex', flexDirection: 'row', gap: 3, alignItems: 'center', justifyContent: 'space-between' }}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 1,
+            justifyContent: 'space-between'
+          }}
         >
-          <BottomFilterSheet filters={filters} selectedFilter={selectedFilter} onFilter={onFilter} />
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              gap: 3,
+              alignItems: 'center',
+              justifyContent: 'space-between'
+            }}
+          >
+            <BottomFilterSheet filters={filters} selectedFilter={selectedFilter} onFilter={onFilter} />
 
-          <FilterSortBar<keyof T>
-            sortByOptions={sortOptions}
-            activeSort={sortType}
-            activeSortBy={sortBy}
-            onChange={onFilterSortChange}
-          />
+            <FilterSortBar<keyof T>
+              sortByOptions={sortOptions}
+              activeSort={sortType}
+              activeSortBy={sortBy}
+              onChange={onFilterSortChange}
+            />
+          </Box>
+          {selectedFilter && selectedFilter.value !== FilterType.all && (
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                gap: 3,
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}
+            >
+              <Chip
+                label={selectedFilter.label}
+                color="primary"
+                onDelete={() => {
+                  const allFilter = filters.find(item => item.value === FilterType.all);
+                  if (allFilter) onFilter(allFilter);
+                }}
+              />
+            </Box>
+          )}
         </Box>
 
         {filteredItems.length <= 0 && (
