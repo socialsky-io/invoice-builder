@@ -16,7 +16,8 @@ declare global {
 
       openUrl: (url: string) => Promise<void>;
       selectDatabase: () => Promise<Response<DBSelector>>;
-      initializeDatabase: (data: { fullPath: string }) => Promise<Response<unknown>>;
+      openDatabase: () => Promise<Response<DBSelector>>;
+      initializeDatabase: (data: { fullPath: string; mode?: 'open' | 'create' }) => Promise<Response<unknown>>;
 
       getAllSettings: () => Promise<Response<Settings>>;
       updateSettings: (data: SettingsUpdate) => Promise<Response<SettingsUpdate>>;

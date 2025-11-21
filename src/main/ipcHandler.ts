@@ -30,7 +30,10 @@ const mapSqliteError = (error: unknown): { message?: string; key?: string } => {
     }
     return { message: error.message };
   }
-  return { key: 'error.invalidConstraint' };
+  if ((error as Error).message.indexOf('Database file does not exist') > -1) {
+    return { key: 'error.databaseFileMissing' };
+  }
+  return { key: 'error.unknownError' };
 };
 
 const prepareUpdate = (data: UpdateData, id?: number) => {
@@ -83,9 +86,9 @@ const getHavingClause = (
     case 'AtleastOneInvoice':
       return `HAVING COUNT(${invoiceIdColumn}) > 0`;
     case 'Active':
-      return `HAVING ${archivedColumn} = 1`;
-    case 'Archived':
       return `HAVING ${archivedColumn} = 0`;
+    case 'Archived':
+      return `HAVING ${archivedColumn} = 1`;
     case 'All':
     default:
       return '';
@@ -460,19 +463,36 @@ const initIpcHandlerForDB = (dbName: string) => {
   ipcMain.handle('show-save-db-dialog', async () => {
     const defaultPath = join(process.env.USERPROFILE || process.cwd(), dbName);
     const result = await dialog.showSaveDialog({
-      title: 'Select database file',
+      title: 'Select a path and database file name',
       defaultPath,
       filters: [{ name: 'SQLite DB', extensions: ['db'] }]
     });
     return { success: true, data: { canceled: result.canceled, filePath: result.filePath } };
   });
-  ipcMain.handle('initialize-db', async (_event, opts: { fullPath: string }) => {
+  ipcMain.handle('show-open-db-dialog', async () => {
+    const defaultPath = join(process.env.USERPROFILE || process.cwd(), dbName);
+    const result = await dialog.showOpenDialog({
+      title: 'Open existing database file',
+      defaultPath,
+      filters: [{ name: 'SQLite DB', extensions: ['db'] }],
+      properties: ['openFile']
+    });
+    return {
+      success: true,
+      data: {
+        canceled: result.canceled,
+        filePath: Array.isArray(result.filePaths) && result.filePaths.length ? result.filePaths[0] : undefined
+      }
+    };
+  });
+  ipcMain.handle('initialize-db', async (_event, opts: { fullPath: string; mode?: 'open' | 'create' }) => {
     try {
       resetIPCHandlers();
-      await setupDB({ fullPath: opts.fullPath });
+      const createIfMissing = opts.mode === 'create' || typeof opts.mode === 'undefined';
+      await setupDB({ fullPath: opts.fullPath, createIfMissing });
       return { success: true };
     } catch (error) {
-      return { success: false, message: error instanceof Error ? error.message : String(error) };
+      return { success: false, ...mapSqliteError(error) };
     }
   });
 };

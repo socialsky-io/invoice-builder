@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import { useCallback, useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
+import { usDBOpener } from '../../hooks/dbSelector/usDBOpener';
 import { usDBSelector } from '../../hooks/dbSelector/usDBSelector';
 import { useDBInit } from '../../hooks/dbSelector/useDBInit';
 import i18n from '../../i18n';
@@ -30,12 +31,24 @@ export const DatabaseChooser: FC<Props> = ({ onDatabaseRead }) => {
   const { t } = useTranslation();
   const [selectedPath, setSelectedPath] = useState<string | null>(null);
   const [savedDbs, setSavedDbs] = useState<string[]>([]);
+  const [selectionMode, setSelectionMode] = useState<'open' | 'create' | undefined>(undefined);
   const [isInitializing, setIsInitializing] = useState(false);
 
   const { execute: selectDB } = usDBSelector({
     immediate: false,
     onDone: (results: Response<DBSelector>) => {
       if (results.data && !results.data.canceled && results.data.filePath) {
+        setSelectionMode('create');
+        setSelectedPath(results.data.filePath);
+      }
+    }
+  });
+
+  const { execute: openDB } = usDBOpener({
+    immediate: false,
+    onDone: (results: Response<DBSelector>) => {
+      if (results.data && !results.data.canceled && results.data.filePath) {
+        setSelectionMode('open');
         setSelectedPath(results.data.filePath);
       }
     }
@@ -43,6 +56,7 @@ export const DatabaseChooser: FC<Props> = ({ onDatabaseRead }) => {
 
   const { execute: initDB } = useDBInit({
     fullPath: selectedPath ?? '',
+    mode: selectionMode,
     immediate: false,
     onDone: (data: Response<unknown>) => {
       if (!data.success) {
@@ -79,6 +93,10 @@ export const DatabaseChooser: FC<Props> = ({ onDatabaseRead }) => {
     selectDB();
   };
 
+  const handleOpenPath = async () => {
+    openDB();
+  };
+
   const handleForget = (fullPath: string) => {
     const updated = savedDbs.filter(p => p !== fullPath);
     saveDbList(updated);
@@ -87,8 +105,8 @@ export const DatabaseChooser: FC<Props> = ({ onDatabaseRead }) => {
   const getFileName = (fullPath: string) => fullPath.split(/[/\\]/).pop() ?? fullPath;
 
   useEffect(() => {
-    if (selectedPath) handleOpenSaved(selectedPath);
-  }, [selectedPath]);
+    if (selectedPath && selectionMode) handleOpenSaved(selectedPath);
+  }, [selectedPath, selectionMode]);
 
   useEffect(() => {
     try {
@@ -123,19 +141,33 @@ export const DatabaseChooser: FC<Props> = ({ onDatabaseRead }) => {
         {t('databaseChooser.description')}
       </Typography>
 
-      <Button variant="contained" onClick={handleSelectPath} disabled={isInitializing}>
-        {t('databaseChooser.button')}
-      </Button>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 3
+        }}
+      >
+        <Button variant="contained" onClick={handleSelectPath} disabled={isInitializing}>
+          {t('databaseChooser.createNew')}
+        </Button>
+        <Button variant="contained" onClick={handleOpenPath} disabled={isInitializing}>
+          {t('databaseChooser.openExisting')}
+        </Button>
+      </Box>
 
       {savedDbs.length > 0 && (
         <Box
-          style={{
-            display: 'flex',
-            gap: 10,
-            flexDirection: 'row',
-            flexWrap: 'wrap',
+          sx={{
+            display: 'grid',
+            gap: 2,
+            gridTemplateColumns: 'repeat(auto-fit, 300px)',
+            justifyContent: 'center',
+            justifyItems: 'center',
             alignItems: 'center',
-            justifyContent: 'center'
+            width: '100%'
           }}
         >
           {savedDbs.map(item => (
@@ -154,7 +186,10 @@ export const DatabaseChooser: FC<Props> = ({ onDatabaseRead }) => {
               }}
             >
               <ListItemButton
-                onClick={() => setSelectedPath(item)}
+                onClick={() => {
+                  setSelectionMode('open');
+                  setSelectedPath(item);
+                }}
                 sx={{
                   pt: 2,
                   pb: 2,

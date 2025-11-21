@@ -182,11 +182,13 @@
     "lettersAndNumbers": "Only letters and numbers allowed"
   },
   "databaseChooser": {
-    "button": "Select database file",
+    "createNew": "Create new database",
     "description": "Choose an existing database or create a new one. You can remember frequently used databases for quick access.",
+    "openExisting": "Open existing database",
     "title": "Open or create a database"
   },
   "error": {
+    "databaseFileMissing": "Database file does not exist",
     "failedNormalizeImportedRows": "Failed to process the following rows: {{rowNumber}}. Please check the data format.",
     "failedToLoad": "Failed to load saved DB list",
     "failedToSave": "Failed to save DB list",

@@ -361,14 +361,30 @@ const initDatabase = async () => {
   });
 };
 
-const setupDB = async (data: { fullPath: string }) => {
-  const folder = path.dirname(data.fullPath);
+const setupDB = async (opts: { fullPath: string; createIfMissing?: boolean }) => {
+  const { fullPath, createIfMissing = true } = opts;
+  const folder = path.dirname(fullPath);
   fs.mkdirSync(folder, { recursive: true });
-  dbPath = data.fullPath;
+
+  if (createIfMissing) {
+    try {
+      if (fs.existsSync(fullPath)) fs.unlinkSync(fullPath);
+    } catch (err) {}
+  } else {
+    if (!fs.existsSync(fullPath)) {
+      throw new Error('Database file does not exist');
+    }
+  }
+
+  dbPath = fullPath;
 
   await initDatabase();
-  await init();
-  await initInitialData();
+
+  if (createIfMissing) {
+    await init();
+    await initInitialData();
+  }
+
   initIpcHandler(db, dbPath);
 };
 

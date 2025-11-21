@@ -50,13 +50,9 @@ export const App: FC = () => {
   return (
     <>
       {!dbReady && <DatabaseChooser onDatabaseRead={onDatabaseRead} />}
-      {dbReady && (
-        <>
-          <AppLayout />
-          <ToastContainer toasts={toasts} onClose={handleClose} />
-          {isLoading && <SpinnerOverlay />}
-        </>
-      )}
+      {dbReady && <AppLayout />}
+      <ToastContainer toasts={toasts} onClose={handleClose} />
+      {isLoading && <SpinnerOverlay />}
     </>
   );
 };

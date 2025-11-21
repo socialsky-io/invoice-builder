@@ -182,11 +182,13 @@
     "lettersAndNumbers": "Leidžiamos tik raidės ir skaičiai"
   },
   "databaseChooser": {
-    "button": "Pasirinkti duomenų bazės failą",
+    "createNew": "Sukurti duomenų bazę",
     "description": "Pasirinkite esamą duomenų bazę arba sukurkite naują. Galite išsaugoti dažnai naudojamas duomenų bazes greitam priėjimui.",
+    "openExisting": "Atidaryti duomenų bazę",
     "title": "Atidaryti arba sukurti duomenų bazę"
   },
   "error": {
+    "databaseFileMissing": "Duomenų bazės failas neegzistuoja",
     "failedNormalizeImportedRows": "Nepavyko apdoroti šių eilučių: {{rowNumber}}. Patikrinkite duomenų formatą.",
     "failedToLoad": "Nepavyko įkelti išsaugoto DB sąrašo",
     "failedToSave": "Nepavyko išsaugoti DB sąrašo",

@@ -12,7 +12,9 @@ contextBridge.exposeInMainWorld('electronAPI', {
   ping: () => console.log('pong'),
 
   selectDatabase: () => ipcRenderer.invoke('show-save-db-dialog'),
-  initializeDatabase: (data: { fullPath: string }) => ipcRenderer.invoke('initialize-db', data),
+  openDatabase: () => ipcRenderer.invoke('show-open-db-dialog'),
+  initializeDatabase: (data: { fullPath: string; mode?: 'open' | 'create' }) =>
+    ipcRenderer.invoke('initialize-db', data),
 
   openUrl: (url: string) => ipcRenderer.invoke('open-url', url),
 
