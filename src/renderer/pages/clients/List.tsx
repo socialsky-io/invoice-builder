@@ -4,13 +4,15 @@ import type { Client } from '../../shared/types/client';
 
 interface Props {
   item: Client;
+  selectedItem?: Client;
   onEdit: (item: Client) => void;
   onDelete: (id: number) => void;
 }
-export const List: FC<Props> = ({ item, onEdit, onDelete }) => {
+export const List: FC<Props> = ({ item, selectedItem, onEdit, onDelete }) => {
   return (
     <GenericList
       item={item}
+      selectedItem={selectedItem}
       onEdit={onEdit}
       onDelete={onDelete}
       getShortName={c => c.shortName}

@@ -114,10 +114,11 @@ export const ItemsPage: FC = () => {
 
         return data;
       }}
-      renderListItem={(item, onEdit, onDelete) => (
+      renderListItem={(item, selectedItem, onEdit, onDelete) => (
         <List
           key={item.id}
           item={item}
+          selectedItem={selectedItem}
           onEdit={(editItem: Item) => onEdit(editItem)}
           onDelete={(id: number) => onDelete(id)}
         />

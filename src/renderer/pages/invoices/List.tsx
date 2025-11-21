@@ -1,9 +1,10 @@
-import { Box, Card, CardActionArea, CardContent, Typography, useTheme } from '@mui/material';
+import { Box, Card, CardActionArea, CardContent, darken, lighten, Typography, useTheme } from '@mui/material';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
 import { useMemo, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CurrencyFormat } from '../../shared/enums/currencyFormat';
 import { InvoiceStatus } from '../../shared/enums/invoiceStatus';
+import { Themes } from '../../shared/enums/themes';
 import type { Invoice } from '../../shared/types/invoice';
 import { formatDate, getFormattedCurrency } from '../../shared/utils/functions';
 import { useAppSelector } from '../../state/configureStore';
@@ -11,10 +12,11 @@ import { selectSettings } from '../../state/pageSlice';
 
 interface Props {
   item: Invoice;
+  selectedItem?: Invoice;
   onEdit: (item: Invoice) => void;
   onDelete: (id: number) => void;
 }
-export const List: FC<Props> = ({ item, onEdit, onDelete }) => {
+export const List: FC<Props> = ({ item, selectedItem, onEdit, onDelete }) => {
   const settings = useAppSelector(selectSettings);
   const theme = useTheme();
   const { t } = useTranslation();
@@ -78,6 +80,12 @@ export const List: FC<Props> = ({ item, onEdit, onDelete }) => {
           borderLeft: '3px solid',
           boxShadow: 1,
           borderLeftColor: getColor(),
+          bgcolor:
+            item.id === selectedItem?.id
+              ? theme.palette.mode === Themes.dark
+                ? darken(theme.palette.primary.main, 0.9)
+                : lighten(theme.palette.primary.main, 0.9)
+              : theme.palette.background.paper,
           transition: '0.25s',
           overflow: 'unset'
         }}

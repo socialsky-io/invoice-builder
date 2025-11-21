@@ -102,10 +102,11 @@ export const CurrenciesPage: FC = () => {
         if (!isCurrencyFromData(data)) return;
         return data;
       }}
-      renderListItem={(item, onEdit, onDelete) => (
+      renderListItem={(item, selectedItem, onEdit, onDelete) => (
         <List
           key={item.id}
           item={item}
+          selectedItem={selectedItem}
           onEdit={(editItem: Currency) => onEdit(editItem)}
           onDelete={(id: number) => onDelete(id)}
         />

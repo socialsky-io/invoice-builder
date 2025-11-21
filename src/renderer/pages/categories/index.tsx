@@ -96,10 +96,11 @@ export const CategoriesPage: FC = () => {
         if (!isCategoryFromData(data)) return;
         return data;
       }}
-      renderListItem={(item, onEdit, onDelete) => (
+      renderListItem={(item, selectedItem, onEdit, onDelete) => (
         <List
           key={item.id}
           item={item}
+          selectedItem={selectedItem}
           onEdit={(editItem: Category) => onEdit(editItem)}
           onDelete={(id: number) => onDelete(id)}
         />

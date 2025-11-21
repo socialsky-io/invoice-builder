@@ -118,10 +118,11 @@ export const ClientsPage: FC = () => {
         if (!isClientFromData(data)) return;
         return data;
       }}
-      renderListItem={(item, onEdit, onDelete) => (
+      renderListItem={(item, selectedItem, onEdit, onDelete) => (
         <List
           key={item.id}
           item={item}
+          selectedItem={selectedItem}
           onEdit={(editItem: Client) => onEdit(editItem)}
           onDelete={(id: number) => onDelete(id)}
         />

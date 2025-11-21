@@ -60,7 +60,12 @@ interface Props<T, TAdd, TUpdate> {
   noItemButtonText: string;
   noItemText: string;
   leftTitle: string;
-  renderListItem?: (item: T, onEdit: (item: T) => void, onDelete: (id: number) => void) => ReactNode;
+  renderListItem?: (
+    item: T,
+    selectedItem: T | undefined,
+    onEdit: (item: T) => void,
+    onDelete: (id: number) => void
+  ) => ReactNode;
   excelColumns?: string[];
   excelFileName?: string;
   excelFormat?: 'xlsx' | 'xls';
@@ -456,7 +461,7 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
           />
         )}
 
-        {paginatedItems.map(item => renderListItem(item, onEdit, onDelete))}
+        {paginatedItems.map(item => renderListItem(item, selectedItem, onEdit, onDelete))}
 
         <Box sx={{ flexGrow: 1 }} />
 
@@ -484,7 +489,7 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
           sx={{
             position: 'absolute',
             bottom: 20,
-            right: 10,
+            right: 20,
             zIndex: 1000
           }}
         >

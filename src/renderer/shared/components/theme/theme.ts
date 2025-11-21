@@ -40,19 +40,12 @@ const commonSettings: ThemeOptions = {
             height: '10px'
           },
           '&::-webkit-scrollbar-track': {
-            background: '#2c2c2c',
             borderRadius: '5px'
           },
           '&::-webkit-scrollbar-thumb': {
-            backgroundColor: '#1976d2',
-            borderRadius: '5px',
-            border: '2px solid #2c2c2c'
+            borderRadius: '5px'
           },
-          '&::-webkit-scrollbar-thumb:hover': {
-            backgroundColor: '#115293'
-          },
-          scrollbarWidth: 'thin',
-          scrollbarColor: '#1976d2 #2c2c2c'
+          scrollbarWidth: 'thin'
         }
       }
     }
@@ -61,6 +54,22 @@ const commonSettings: ThemeOptions = {
 
 export const lightTheme = createTheme({
   ...commonSettings,
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          '&::-webkit-scrollbar-track': {
+            background: '#e5e5e5'
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: '#1976d2',
+            border: '2px solid #e5e5e5'
+          },
+          scrollbarColor: '#1976d2 #e5e5e5'
+        }
+      }
+    }
+  },
   palette: {
     mode: 'light',
     primary: { main: '#1976d2' },
@@ -79,6 +88,22 @@ export const lightTheme = createTheme({
 
 export const darkTheme = createTheme({
   ...commonSettings,
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          '&::-webkit-scrollbar-track': {
+            background: '#2c2c2c'
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: '#1976d2',
+            border: '2px solid #2c2c2c'
+          },
+          scrollbarColor: '#1976d2 #2c2c2c'
+        }
+      }
+    }
+  },
   palette: {
     mode: 'dark',
     primary: { main: '#90caf9' },

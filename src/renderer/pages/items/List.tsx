@@ -7,15 +7,17 @@ import { selectSettings } from '../../state/pageSlice';
 
 interface Props {
   item: Item;
+  selectedItem?: Item;
   onEdit: (item: Item) => void;
   onDelete: (id: number) => void;
 }
-export const List: FC<Props> = ({ item, onEdit, onDelete }) => {
+export const List: FC<Props> = ({ item, selectedItem, onEdit, onDelete }) => {
   const settings = useAppSelector(selectSettings);
 
   return (
     <GenericList
       item={item}
+      selectedItem={selectedItem}
       onEdit={onEdit}
       onDelete={onDelete}
       getName={c => c.name}

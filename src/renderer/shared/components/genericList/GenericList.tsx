@@ -12,6 +12,7 @@ import {
   useMediaQuery,
   useTheme
 } from '@mui/material';
+import { darken, lighten } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 import { useAppSelector } from '../../../state/configureStore';
 import { selectSettings } from '../../../state/pageSlice';
@@ -19,6 +20,7 @@ import { Themes } from '../../enums/themes';
 
 interface GenericListProps<T extends { id: number }> {
   item: T;
+  selectedItem?: T;
   onEdit: (item: T) => void;
   onDelete: (id: number) => void;
   getShortName?: (item: T) => string;
@@ -32,6 +34,7 @@ interface GenericListProps<T extends { id: number }> {
 }
 export const GenericList = <T extends { id: number }>({
   item,
+  selectedItem,
   onEdit,
   onDelete,
   getShortName,
@@ -62,7 +65,12 @@ export const GenericList = <T extends { id: number }>({
       elevation={2}
       sx={{
         borderRadius: 1,
-        bgcolor: theme.palette.background.paper,
+        bgcolor:
+          item.id === selectedItem?.id
+            ? theme.palette.mode === Themes.dark
+              ? darken(theme.palette.primary.main, 0.9)
+              : lighten(theme.palette.primary.main, 0.9)
+            : theme.palette.background.paper,
         color: theme.palette.text.primary,
         transition: 'all 0.2s ease-in-out',
         minWidth: '250px'
