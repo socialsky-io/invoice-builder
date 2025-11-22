@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -22,6 +22,11 @@ export const UTCDateRangePicker: React.FC<Props> = ({ label, value, format, onCh
     value ? (value.split(',') as [string?, string?]) : [undefined, undefined]
   );
 
+  const clearRange = () => {
+    setRange([undefined, undefined]);
+    onChange(undefined);
+  };
+
   useEffect(() => {
     if (range[0] && range[1]) {
       onChange(range.join(','));
@@ -42,21 +47,44 @@ export const UTCDateRangePicker: React.FC<Props> = ({ label, value, format, onCh
         <DatePicker
           label={`${t('common.from')} ${label}`}
           value={range[0] ? dayjs.utc(range[0]) : null}
-          format={format}
+          format={format.toUpperCase()}
           onChange={newValue => {
             const utcValue = newValue ? newValue.utc() : null;
             setRange([utcValue?.toISOString(), range[1]]);
+          }}
+          slotProps={{
+            textField: {
+              onKeyDown: (e: React.KeyboardEvent) => {
+                e.preventDefault();
+              },
+              InputProps: {
+                readOnly: true
+              }
+            }
           }}
         />
         <DatePicker
           label={`${t('common.to')} ${label}`}
           value={range[1] ? dayjs.utc(range[1]) : null}
-          format={format}
+          format={format.toUpperCase()}
           onChange={newValue => {
             const utcValue = newValue ? newValue.utc() : null;
             setRange([range[0], utcValue?.toISOString()]);
           }}
+          slotProps={{
+            textField: {
+              onKeyDown: (e: React.KeyboardEvent) => {
+                e.preventDefault();
+              },
+              InputProps: {
+                readOnly: true
+              }
+            }
+          }}
         />
+        <Button variant="outlined" onClick={clearRange}>
+          {t('ariaLabel.clear')}
+        </Button>
       </Box>
     </LocalizationProvider>
   );
