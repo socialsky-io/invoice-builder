@@ -1,0 +1,217 @@
+import { CloseOutlined } from '@mui/icons-material';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import {
+  Autocomplete,
+  Box,
+  Chip,
+  FormControlLabel,
+  Grid,
+  IconButton,
+  Radio,
+  RadioGroup,
+  SwipeableDrawer,
+  TextField,
+  Tooltip,
+  Typography,
+  useTheme
+} from '@mui/material';
+import { useMemo, useState, type ChangeEvent, type FC } from 'react';
+import { useTranslation } from 'react-i18next';
+import { useAppSelector } from '../../../state/configureStore';
+import { selectSettings } from '../../../state/pageSlice';
+import { FilterType } from '../../enums/filterType';
+import type { CustomOption } from '../../types/customOption';
+import type { Filter } from '../../types/filter';
+import { UTCDateRangePicker } from '../utcDateRangePicker/UTCDateRangePicker';
+
+interface Props {
+  filters: Filter[];
+  selectedFilter: Filter[];
+  onFilter?: (filter: Filter[]) => void;
+}
+export const BottomFilterSheet: FC<Props> = ({ filters, onFilter = () => {}, selectedFilter }) => {
+  const { t } = useTranslation();
+  const theme = useTheme();
+  const [isOpen, setIsOpen] = useState(false);
+  const storeSettings = useAppSelector(selectSettings);
+  const radioFilters = useMemo(() => filters.filter(f => f.isGroup), [filters]);
+  const remainingFilters = useMemo(() => filters.filter(f => !f.isGroup), [filters]);
+
+  const updateFilter = (type: FilterType, value?: string) => {
+    const sf = [...selectedFilter];
+    const filter = sf.find(f => f.type === type);
+    const specificFilter = remainingFilters.find(f => f.type === type);
+
+    if (filter) {
+      filter.value = value ?? '';
+    } else if (specificFilter) {
+      sf.push({ ...specificFilter, value: value ?? '' });
+    }
+
+    onFilter(sf);
+  };
+
+  const handleChipClick = (type: FilterType, value: string) => updateFilter(type, value);
+  const handleDateChange = (type: FilterType, value?: string) => updateFilter(type, value);
+  const handleAutocompleteChange =
+    <T extends string | number | symbol>(type: FilterType) =>
+    (_event: React.SyntheticEvent, newValue: CustomOption<T> | null) =>
+      updateFilter(type, newValue?.value as string);
+
+  const filterValue = (type: FilterType) => selectedFilter.find(f => f.type === type)?.value;
+
+  const onOpen = () => setIsOpen(true);
+  const onClose = () => setIsOpen(false);
+
+  const onSelectedFilter = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const filter = selectedFilter.filter(item => !item.isGroup);
+    const specificValue = filters.find(item => item.value === value);
+    if (specificValue) {
+      filter.push(specificValue);
+      onFilter(filter);
+    }
+    onClose();
+  };
+
+  const dropdownValue = useMemo(() => {
+    const map = new Map<FilterType, CustomOption<string | number> | undefined>();
+    remainingFilters.forEach(item => {
+      const filter = selectedFilter.find(f => f.type === item.type);
+      const option = filter?.options?.find(o => (o.value as string | number) === filter.value) as
+        | CustomOption<string | number>
+        | undefined;
+
+      map.set(item.type, option);
+    });
+    return map;
+  }, [selectedFilter, remainingFilters]);
+
+  const renderFilterField = (item: Filter) => {
+    switch (item.type) {
+      case FilterType.client:
+      case FilterType.business:
+        return (
+          <Autocomplete
+            fullWidth
+            options={item.options ?? []}
+            getOptionLabel={option => option.label}
+            disableClearable={false}
+            value={dropdownValue.get(item.type) ?? null}
+            onChange={handleAutocompleteChange(item.type)}
+            renderInput={params => <TextField {...params} label={item.label} />}
+            freeSolo={false}
+          />
+        );
+      case FilterType.date:
+        return storeSettings ? (
+          <UTCDateRangePicker
+            value={filterValue(item.type)}
+            label={item.label}
+            format={storeSettings.dateFormat}
+            onChange={d => handleDateChange(item.type, d)}
+          />
+        ) : null;
+      case FilterType.status:
+        return (
+          <Box sx={{ display: 'flex', flexDirection: 'row', gap: 1, alignItems: 'center' }}>
+            {item.options?.map(o => (
+              <Chip
+                key={o.value as string}
+                label={o.label}
+                color={dropdownValue.get(item.type)?.value === o.value ? 'secondary' : 'primary'}
+                onClick={() => handleChipClick(item.type, o.value as string)}
+              />
+            ))}
+          </Box>
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <>
+      <Tooltip title={t('ariaLabel.filters')}>
+        <IconButton color="primary" onClick={onOpen} aria-label={t('ariaLabel.filters')}>
+          <FilterListIcon />
+        </IconButton>
+      </Tooltip>
+
+      <SwipeableDrawer
+        anchor="bottom"
+        open={isOpen}
+        onClose={onClose}
+        onOpen={onOpen}
+        slotProps={{
+          paper: {
+            sx: {
+              maxWidth: '40%',
+              mx: 'auto',
+              borderTopLeftRadius: 16,
+              borderTopRightRadius: 16,
+              borderBottomLeftRadius: 0,
+              borderBottomRightRadius: 0,
+              p: 3
+            }
+          }
+        }}
+      >
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'row', gap: 2, alignItems: 'center' }}>
+            <Typography variant="h6" gutterBottom>
+              {t('common.selectFilterType')}
+            </Typography>
+
+            <Box sx={{ flexGrow: 1 }} />
+
+            <Tooltip title={t('ariaLabel.back')}>
+              <IconButton
+                onClick={onClose}
+                aria-label={t('ariaLabel.back')}
+                sx={{
+                  color: theme.palette.secondary.main
+                }}
+              >
+                <CloseOutlined fontSize="medium" />
+              </IconButton>
+            </Tooltip>
+          </Box>
+
+          {radioFilters.length > 0 && (
+            <RadioGroup
+              value={selectedFilter?.find(sf => sf.isGroup)?.value ?? ''}
+              onChange={onSelectedFilter}
+              sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
+            >
+              {radioFilters.map(item => (
+                <FormControlLabel
+                  key={item.type}
+                  value={item.value}
+                  control={<Radio />}
+                  label={
+                    <Box>
+                      <Typography variant="body1">{item.label}</Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {item.description}
+                      </Typography>
+                    </Box>
+                  }
+                />
+              ))}
+            </RadioGroup>
+          )}
+          {remainingFilters.length > 0 && (
+            <Grid container spacing={2}>
+              {remainingFilters.map(item => (
+                <Grid key={item.type} size={{ xs: 12, md: 12 }}>
+                  {renderFilterField(item)}
+                </Grid>
+              ))}
+            </Grid>
+          )}
+        </Box>
+      </SwipeableDrawer>
+    </>
+  );
+};

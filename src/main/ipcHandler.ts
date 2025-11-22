@@ -10,6 +10,7 @@ import type { Category } from './types/category';
 import type { Client } from './types/client';
 import type { Currency } from './types/currency';
 import type { EntityWithId } from './types/entityWithId';
+import type { FilterData } from './types/invoiceFilter';
 import type { Item } from './types/item';
 import type { Unit } from './types/unit';
 import type { UpdateData } from './types/updateData';
@@ -62,32 +63,142 @@ const prepareUpdate = (data: UpdateData, id?: number) => {
   return { fields, params };
 };
 
-const getHavingClause = (
-  filter: FilterType,
-  invoiceColumn: string,
-  invoiceIdColumn: string,
-  archivedColumn: string
-) => {
-  switch (filter) {
-    case FilterType.noInvoices30:
-      return `HAVING MAX(${invoiceColumn}) IS NULL OR MAX(${invoiceColumn}) < datetime('now', '-30 days')`;
-    case FilterType.noInvoices60:
-      return `HAVING MAX(${invoiceColumn}) IS NULL OR MAX(${invoiceColumn}) < datetime('now', '-60 days')`;
-    case FilterType.noInvoices90:
-      return `HAVING MAX(${invoiceColumn}) IS NULL OR MAX(${invoiceColumn}) < datetime('now', '-90 days')`;
-    case FilterType.noInvoices:
-      return `HAVING COUNT(${invoiceIdColumn}) = 0`;
-    case FilterType.atleastOneInvoice:
-      return `HAVING COUNT(${invoiceIdColumn}) > 0`;
-    case FilterType.active:
-      return `HAVING ${archivedColumn} = 0`;
-    case FilterType.archived:
-      return `HAVING ${archivedColumn} = 1`;
-    case FilterType.all:
-    default:
-      return '';
-  }
+export const getWhereClauseFromFilters = (data: {
+  filters: FilterData[];
+  archivedColumn?: string;
+  clientNameSnapshotColumn?: string;
+  businessNameSnapshotColumn?: string;
+  issuedAtColumn?: string;
+  statusColumn?: string;
+}): string => {
+  const {
+    filters,
+    archivedColumn,
+    clientNameSnapshotColumn,
+    businessNameSnapshotColumn,
+    issuedAtColumn,
+    statusColumn
+  } = data;
+
+  const clauses: string[] = [];
+
+  filters.forEach(({ type, value }) => {
+    switch (type) {
+      case FilterType.active:
+        if (archivedColumn) clauses.push(`${archivedColumn} = 0`);
+        break;
+      case FilterType.archived:
+        if (archivedColumn) clauses.push(`${archivedColumn} = 1`);
+        break;
+      case FilterType.client:
+        if (clientNameSnapshotColumn && value)
+          clauses.push(`${clientNameSnapshotColumn} = '${value.replace(/'/g, "''")}'`);
+        break;
+      case FilterType.business:
+        if (businessNameSnapshotColumn && value)
+          clauses.push(`${businessNameSnapshotColumn} = '${value.replace(/'/g, "''")}'`);
+        break;
+      case FilterType.date:
+        if (issuedAtColumn && value) {
+          const dates = value.split(',');
+          if (dates.length === 2) clauses.push(`${issuedAtColumn} BETWEEN '${dates[0]}' AND '${dates[1]}'`);
+        }
+        break;
+      case FilterType.status:
+        if (statusColumn && value) clauses.push(`${statusColumn} = '${value.replace(/'/g, "''")}'`);
+        break;
+      case FilterType.all:
+      default:
+        break;
+    }
+  });
+
+  return clauses.length ? clauses.join(' AND ') : '1=1';
 };
+
+export const getHavingClauseFromFilters = (data: {
+  filters: FilterData[];
+  invoiceUpdatedAtColumn?: string;
+  invoiceIdColumn?: string;
+  archivedColumn?: string;
+  clientNameSnapshotColumn?: string;
+  businessNameSnapshotColumn?: string;
+  issuedAtColumn?: string;
+  statusColumn?: string;
+}): string => {
+  const {
+    filters,
+    invoiceUpdatedAtColumn,
+    issuedAtColumn,
+    invoiceIdColumn,
+    archivedColumn,
+    businessNameSnapshotColumn,
+    clientNameSnapshotColumn,
+    statusColumn
+  } = data;
+
+  if (!filters?.length) return '';
+
+  const clauses: string[] = [];
+
+  filters.forEach(({ type, value }) => {
+    switch (type) {
+      case FilterType.noInvoices30:
+        if (invoiceUpdatedAtColumn)
+          clauses.push(
+            `(MAX(${invoiceUpdatedAtColumn}) IS NULL OR MAX(${invoiceUpdatedAtColumn}) < datetime('now', '-30 days'))`
+          );
+        break;
+      case FilterType.noInvoices60:
+        if (invoiceUpdatedAtColumn)
+          clauses.push(
+            `(MAX(${invoiceUpdatedAtColumn}) IS NULL OR MAX(${invoiceUpdatedAtColumn}) < datetime('now', '-60 days'))`
+          );
+        break;
+      case FilterType.noInvoices90:
+        if (invoiceUpdatedAtColumn)
+          clauses.push(
+            `(MAX(${invoiceUpdatedAtColumn}) IS NULL OR MAX(${invoiceUpdatedAtColumn}) < datetime('now', '-90 days'))`
+          );
+        break;
+      case FilterType.noInvoices:
+        if (invoiceIdColumn) clauses.push(`(COUNT(${invoiceIdColumn}) = 0)`);
+        break;
+      case FilterType.atleastOneInvoice:
+        if (invoiceIdColumn) clauses.push(`(COUNT(${invoiceIdColumn}) > 0)`);
+        break;
+      case FilterType.active:
+        if (archivedColumn) clauses.push(`(${archivedColumn} = 0)`);
+        break;
+      case FilterType.archived:
+        if (archivedColumn) clauses.push(`(${archivedColumn} = 1)`);
+        break;
+      case FilterType.client:
+        if (clientNameSnapshotColumn) clauses.push(`${clientNameSnapshotColumn} = '${value.replace(/'/g, "''")}'`);
+        break;
+      case FilterType.business:
+        if (businessNameSnapshotColumn) clauses.push(`${businessNameSnapshotColumn} = '${value.replace(/'/g, "''")}'`);
+        break;
+      case FilterType.date:
+        const dates = value.split(',');
+        if (dates.length === 2 && issuedAtColumn) {
+          clauses.push(`${issuedAtColumn} BETWEEN '${dates[0]}' AND '${dates[1]}'`);
+        }
+        break;
+      case FilterType.status:
+        if (statusColumn) clauses.push(`${statusColumn} = '${value.replace(/'/g, "''")}'`);
+        break;
+      case FilterType.all:
+      default:
+        break;
+    }
+  });
+
+  if (!clauses.length) return '';
+
+  return `HAVING ${clauses.join(' AND ')}`;
+};
+
 const getOrCreateByName = async (
   db: Database,
   table: 'units' | 'categories',
@@ -119,8 +230,13 @@ const resolveItemRelations = async (db: Database, data: Item): Promise<Item> => 
 
 const getAllEntities =
   <T extends Record<string, unknown>>(db: Database, table: string, keyFieldName: string) =>
-  async (filter: FilterType) => {
-    const havingClause = getHavingClause(filter, 'i.updatedAt', 'i.id', 't.isArchived');
+  async (filter: FilterData[]) => {
+    const havingClause = getHavingClauseFromFilters({
+      filters: filter,
+      invoiceUpdatedAtColumn: 'i.updatedAt',
+      invoiceIdColumn: 'i.id',
+      archivedColumn: 't.isArchived'
+    });
     const sql = `
       SELECT 
         t.*,
@@ -129,7 +245,7 @@ const getAllEntities =
       FROM ${table} t
       LEFT JOIN invoices i ON i.${keyFieldName} = t.id
       GROUP BY t.id
-      ${havingClause}
+      ${havingClause ? havingClause : ''}
     `;
 
     const data = await getAllRows<T & { invoiceCount: number; quotesCount: number }>(db, sql);
@@ -324,7 +440,12 @@ const initIpcHandler = (db: Database, path: string) => {
     return { success: true };
   });
   ipcMain.handle('get-all-items', async (_event, filter) => {
-    const havingClause = getHavingClause(filter, 'inv.updatedAt', 'inv.id', 'it.isArchived');
+    const havingClause = getHavingClauseFromFilters({
+      filters: filter,
+      invoiceUpdatedAtColumn: 'inv.updatedAt',
+      invoiceIdColumn: 'inv.id',
+      archivedColumn: 'it.isArchived'
+    });
 
     const sql = `
     SELECT 
@@ -339,8 +460,9 @@ const initIpcHandler = (db: Database, path: string) => {
     LEFT JOIN invoice_items ii ON ii.itemId = it.id
     LEFT JOIN invoices inv ON ii.parentInvoiceId = inv.id
     GROUP BY it.id
-    ${havingClause}
+    ${havingClause ? havingClause : ''}
     `;
+
     return {
       success: true,
       data: await getAllRows(db, sql)
@@ -365,7 +487,12 @@ const initIpcHandler = (db: Database, path: string) => {
     return { success: true };
   });
   ipcMain.handle('get-all-units', async (_event, filter) => {
-    const havingClause = getHavingClause(filter, 'inv.updatedAt', 'inv.id', 'u.isArchived');
+    const havingClause = getHavingClauseFromFilters({
+      filters: filter,
+      invoiceUpdatedAtColumn: 'inv.updatedAt',
+      invoiceIdColumn: 'inv.id',
+      archivedColumn: 'u.isArchived'
+    });
 
     const sql = `
       SELECT
@@ -377,7 +504,7 @@ const initIpcHandler = (db: Database, path: string) => {
       LEFT JOIN invoice_items ii ON ii.itemId = it.id
       LEFT JOIN invoices inv ON ii.parentInvoiceId = inv.id
       GROUP BY u.id
-      ${havingClause}
+      ${havingClause ? havingClause : ''}
     `;
     return {
       success: true,
@@ -403,7 +530,13 @@ const initIpcHandler = (db: Database, path: string) => {
     return { success: true };
   });
   ipcMain.handle('get-all-categories', async (_event, filter) => {
-    const havingClause = getHavingClause(filter, 'inv.updatedAt', 'inv.id', 'c.isArchived');
+    const havingClause = getHavingClauseFromFilters({
+      filters: filter,
+      invoiceUpdatedAtColumn: 'inv.updatedAt',
+      invoiceIdColumn: 'inv.id',
+      archivedColumn: 'c.isArchived'
+    });
+
     const sql = `
       SELECT
           c.*,
@@ -414,7 +547,7 @@ const initIpcHandler = (db: Database, path: string) => {
       LEFT JOIN invoice_items ii ON ii.itemId = it.id
       LEFT JOIN invoices inv ON ii.parentInvoiceId = inv.id
       GROUP BY c.id
-      ${havingClause}
+      ${havingClause ? havingClause : ''}
     `;
 
     return {
@@ -443,15 +576,22 @@ const initIpcHandler = (db: Database, path: string) => {
   ipcMain.handle('get-all-currencies', async (_event, filter) => getAllCurrencies(filter));
 
   ipcMain.handle('get-all-invoices', async (_event, filter) => {
-    const havingClause = getHavingClause(filter, 'i.updatedAt', 'i.id', 'i.isArchived');
+    const whereClause = getWhereClauseFromFilters({
+      filters: filter,
+      businessNameSnapshotColumn: 'i.businessNameSnapshot',
+      clientNameSnapshotColumn: 'i.clientNameSnapshot',
+      archivedColumn: 'i.isArchived',
+      issuedAtColumn: 'i.issuedAt',
+      statusColumn: 'i.status'
+    });
+
     const invoicesSql = `
       SELECT
           i.*,
           c.format as currencyFormat
       FROM invoices i
       INNER JOIN currencies as c on c.id = i.currencyId
-      WHERE i.invoiceType = 'invoice'
-      ${havingClause}
+      WHERE i.invoiceType = 'invoice' AND ${whereClause}
     `;
     const invoices = await getAllRows(db, invoicesSql);
 

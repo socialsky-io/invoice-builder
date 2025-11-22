@@ -15,7 +15,7 @@ export interface Invoice {
   dueDate?: string | null;
   invoiceNumber: string;
   isArchived?: boolean;
-  state: InvoiceStatus;
+  status: InvoiceStatus;
   customerNotes?: string | null;
   thanksNotes?: string | null;
   termsConditionNotes?: string | null;

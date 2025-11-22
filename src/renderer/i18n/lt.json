@@ -129,6 +129,7 @@
     "downloadTemplate": "Atsisiųsti šabloną",
     "export": "Eksportuoti",
     "fieldRequired": "Laukas yra privalomas",
+    "from": "Nuo",
     "import": "Importuoti",
     "importExport": "Importuoti / Eksportuoti",
     "invoice": "Sąskaita",
@@ -146,8 +147,9 @@
     "selectFilterType": "Pasirinkite filtro tipą",
     "selectImage": "Pasirinkite vaizdo failą",
     "sortBy": "Rūšiuoti pagal",
-    "state": "Statusas",
-    "text": "Tekstas"
+    "status": "Statusas",
+    "text": "Tekstas",
+    "to": "Iki"
   },
   "currencies": {
     "add": "Pridėti valiutą",
@@ -175,9 +177,9 @@
     "code": "Valiutos trumpinys",
     "format": "Formatas",
     "isArchived": "Archyvuota",
+    "subunit": "Subvienetas",
     "symbol": "Simbolis",
-    "text": "Pavadinimas",
-    "subunit": "Subvienetas"
+    "text": "Pavadinimas"
   },
   "customizeInvoice": {
     "includeBusinessName": "Įtraukti įmonės pavadinimą",
@@ -212,6 +214,17 @@
     "add": "Pridėti sąskaitą",
     "dueDate": "Apmokėti per {{days}} d.: {{date}}",
     "dueToday": "Terminas šiandien: {{date}}",
+    "filter": {
+      "activeDesc": "Sąskaitos, kurios nėra archyvuotos",
+      "activeText": "Aktyvios sąskaitos",
+      "allText": "Visos sąskaitos",
+      "archivedDesc": "Sąskaitos, kurios buvo archyvuotos",
+      "archivedText": "Archyvuotos sąskaitos",
+      "business": "Verslas",
+      "client": "Klientas",
+      "date": "Data",
+      "status": "Statusas"
+    },
     "markedAsPaid": "Pažymėta kaip apmokėta: {{date}}",
     "noItem": "Pasirinkite sąskaitą, kad matytumėte detales.",
     "overdue": "Vėluojama {{days}} d.",

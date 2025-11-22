@@ -14,9 +14,8 @@ interface Props {
   item: Invoice;
   selectedItem?: Invoice;
   onEdit: (item: Invoice) => void;
-  onDelete: (id: number) => void;
 }
-export const List: FC<Props> = ({ item, selectedItem, onEdit, onDelete }) => {
+export const List: FC<Props> = ({ item, selectedItem, onEdit }) => {
   const settings = useAppSelector(selectSettings);
   const theme = useTheme();
   const { t } = useTranslation();
@@ -55,10 +54,11 @@ export const List: FC<Props> = ({ item, selectedItem, onEdit, onDelete }) => {
   };
 
   const getColor = () => {
-    if (item.state === InvoiceStatus.partiallyPaid) return theme.palette.warning.main;
-    if (item.state === InvoiceStatus.paid) return theme.palette.success.main;
-    if (item.state === InvoiceStatus.unpaid) return theme.palette.error.main;
-    if (item.state === InvoiceStatus.canceled || item.isArchived) return theme.palette.grey[700];
+    if (item.status === InvoiceStatus.partiallyPaid) return theme.palette.warning.main;
+    if (item.status === InvoiceStatus.paid) return theme.palette.success.main;
+    if (item.status === InvoiceStatus.unpaid) return theme.palette.error.main;
+    if (item.isArchived || item.status === InvoiceStatus.closed) return theme.palette.grey[700];
+    if (item.status === InvoiceStatus.open) return theme.palette.primary.main;
 
     return theme.palette.divider;
   };
@@ -74,6 +74,9 @@ export const List: FC<Props> = ({ item, selectedItem, onEdit, onDelete }) => {
   return (
     <>
       <Card
+        onClick={() => {
+          onEdit(item);
+        }}
         variant="outlined"
         sx={{
           position: 'relative',
@@ -132,7 +135,7 @@ export const List: FC<Props> = ({ item, selectedItem, onEdit, onDelete }) => {
                     variant="body1"
                     sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
                   >
-                    {item.isArchived ? t('common.archived').toUpperCase() : item.state?.toUpperCase()}
+                    {item.isArchived ? t('common.archived').toUpperCase() : item.status?.toUpperCase()}
                   </Typography>
                 </Box>
               </Box>
@@ -213,7 +216,7 @@ export const List: FC<Props> = ({ item, selectedItem, onEdit, onDelete }) => {
                   )}
                 </>
               )}
-              {item.state === InvoiceStatus.paid && latestPaidAt && settings && (
+              {item.status === InvoiceStatus.paid && latestPaidAt && settings && (
                 <>
                   <Typography
                     color={theme.palette.success.main}
@@ -247,7 +250,7 @@ export const List: FC<Props> = ({ item, selectedItem, onEdit, onDelete }) => {
                   )}
                 </>
               )}
-              {item.state === InvoiceStatus.partiallyPaid && latestPaidAt && settings && (
+              {item.status === InvoiceStatus.partiallyPaid && latestPaidAt && settings && (
                 <Typography
                   color={theme.palette.info.main}
                   component="div"

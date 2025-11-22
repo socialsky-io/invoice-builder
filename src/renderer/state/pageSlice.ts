@@ -159,6 +159,14 @@ export const selectCategoriesOptions = createSelector(selectState, state =>
     return { label: c.name, value: c.id };
   })
 );
+export const selectClientsSnapshotsOptions = createSelector(selectState, state => {
+  const uniqueSnapshots = [...new Set(state.invoices.map(c => c.clientNameSnapshot))];
+  return uniqueSnapshots.map(name => ({ label: name, value: name }));
+});
+export const selectBusinessesSnapshotsOptions = createSelector(selectState, state => {
+  const uniqueSnapshots = [...new Set(state.invoices.map(c => c.businessNameSnapshot))];
+  return uniqueSnapshots.map(name => ({ label: name, value: name }));
+});
 
 export const {
   enableLoading,

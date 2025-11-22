@@ -51,42 +51,62 @@ export const ClientsPage: FC = () => {
     }
   ];
   const filters: Filter[] = [
-    { label: t('clients.filter.allText'), description: undefined, value: FilterType.all },
+    {
+      label: t('clients.filter.allText'),
+      description: undefined,
+      value: FilterType.all,
+      type: FilterType.all,
+      isGroup: true
+    },
     {
       label: t('clients.filter.activeText'),
       description: t('clients.filter.activeDesc'),
       value: FilterType.active,
-      initial: true
+      initial: true,
+      type: FilterType.active,
+      isGroup: true
     },
     {
       label: t('clients.filter.archivedText'),
       description: t('clients.filter.archivedDesc'),
-      value: FilterType.archived
+      value: FilterType.archived,
+      type: FilterType.archived,
+      isGroup: true
     },
     {
       label: t('clients.filter.atleastOneInvoiceText'),
       description: t('clients.filter.atleastOneInvoiceDesc'),
-      value: FilterType.atleastOneInvoice
+      value: FilterType.atleastOneInvoice,
+      type: FilterType.atleastOneInvoice,
+      isGroup: true
     },
     {
       label: t('clients.filter.noInvoicesText'),
       description: t('clients.filter.noInvoicesDesc'),
-      value: FilterType.noInvoices
+      value: FilterType.noInvoices,
+      type: FilterType.noInvoices,
+      isGroup: true
     },
     {
       label: t('clients.filter.noInvoices30Text'),
       description: t('clients.filter.noInvoices30Desc'),
-      value: FilterType.noInvoices30
+      value: FilterType.noInvoices30,
+      type: FilterType.noInvoices30,
+      isGroup: true
     },
     {
       label: t('clients.filter.noInvoices60Text'),
       description: t('clients.filter.noInvoices60Desc'),
-      value: FilterType.noInvoices60
+      value: FilterType.noInvoices60,
+      type: FilterType.noInvoices60,
+      isGroup: true
     },
     {
       label: t('clients.filter.noInvoices90Text'),
       description: t('clients.filter.noInvoices90Desc'),
-      value: FilterType.noInvoices90
+      value: FilterType.noInvoices90,
+      type: FilterType.noInvoices90,
+      isGroup: true
     }
   ];
 

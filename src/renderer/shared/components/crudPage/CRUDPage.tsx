@@ -21,11 +21,11 @@ import { FilterType } from '../../enums/filterType';
 import { SortType } from '../../enums/sortType';
 import type { CustomOption } from '../../types/customOption';
 import type { Rows } from '../../types/excel';
-import type { Filter } from '../../types/filter';
+import type { Filter, FilterData } from '../../types/filter';
 import type { Response } from '../../types/response';
 import { exportExcel, filterAndSortArray, importExcel } from '../../utils/functions';
+import { BottomFilterSheet } from '../bottomFilterSheet/BottomFilterSheet';
 import { Content } from '../content/Content';
-import { BottomFilterSheet } from '../filters/Filters';
 import { FilterSortBar } from '../filterSortBar/FilterSortBar';
 import ImportExportButton from '../importExportButton/ImportExportButton';
 import { NoItem } from '../noItem/NoItem';
@@ -34,7 +34,7 @@ import { SearchInput } from '../searchInput/SearchInput';
 
 interface Props<T, TAdd, TUpdate> {
   title: string;
-  useRetrieve?: (args: { filter?: FilterType; onDone?: (data: Response<T[]>) => void }) => {
+  useRetrieve?: (args: { filter?: FilterData[]; onDone?: (data: Response<T[]>) => void }) => {
     items: T[];
     execute: () => void;
   };
@@ -112,7 +112,7 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
   } = props;
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
-  const [selectedFilter, setSelectedFilter] = useState<Filter | undefined>(filters.find(item => item.initial));
+  const [selectedFilter, setSelectedFilter] = useState<Filter[]>(filters.filter(item => item.initial));
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<T | undefined>(undefined);
@@ -125,7 +125,7 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
   const [changedItem, setChangedItem] = useState<TUpdate | undefined>(undefined);
 
   const { items, execute: reload } = useRetrieve({
-    filter: selectedFilter?.value,
+    filter: selectedFilter,
     onDone: (data: Response<T[]>) => {
       if (!data.success) {
         if (data.message) dispatch(addToast({ message: data.message, severity: 'error' }));
@@ -308,7 +308,7 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
     if (showExcelButtons()) exportExcel(excelColumns, excelTemplateData!, `${excelFileName}_template.${excelFormat}`);
   }, [excelColumns, excelTemplateData, excelFileName, excelFormat]);
 
-  const onFilter = useCallback((filter: Filter) => {
+  const onFilter = useCallback((filter: Filter[]) => {
     setSelectedFilter(filter);
   }, []);
 
@@ -430,24 +430,37 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
               onChange={onFilterSortChange}
             />
           </Box>
-          {selectedFilter && selectedFilter.value !== FilterType.all && (
+          {selectedFilter.length > 0 && (
             <Box
               sx={{
                 display: 'flex',
                 flexDirection: 'row',
-                gap: 3,
-                alignItems: 'center',
-                justifyContent: 'space-between'
+                gap: 1,
+                alignItems: 'center'
               }}
             >
-              <Chip
-                label={selectedFilter.label}
-                color="primary"
-                onDelete={() => {
-                  const allFilter = filters.find(item => item.value === FilterType.all);
-                  if (allFilter) onFilter(allFilter);
-                }}
-              />
+              {selectedFilter
+                .filter(filterItem => filterItem.value !== FilterType.all)
+                .map(filterItem => {
+                  return (
+                    <Chip
+                      key={filterItem.type}
+                      label={filterItem.label}
+                      color="primary"
+                      onDelete={() => {
+                        const newFilter = selectedFilter.filter(
+                          newFilterItem => newFilterItem.value !== filterItem.value
+                        );
+                        const allFilter = filters.find(fi => fi.value === FilterType.all);
+                        if (!newFilter.some(f => f.isGroup) && allFilter) {
+                          newFilter.push(allFilter);
+                        }
+
+                        onFilter(newFilter);
+                      }}
+                    />
+                  );
+                })}
             </Box>
           )}
         </Box>

@@ -90,7 +90,7 @@ const init = async () => {
     CREATE TABLE IF NOT EXISTS businesses (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
-      shortName TEXT NOT NULL CHECK (length(shortName) = 2),
+      shortName TEXT NOT NULL CHECK (length(shortName) <= 2),
       address TEXT,
       role TEXT,
       email TEXT,
@@ -115,7 +115,7 @@ const init = async () => {
     CREATE TABLE IF NOT EXISTS clients (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
-      shortName TEXT NOT NULL CHECK (length(shortName) = 2),
+      shortName TEXT NOT NULL CHECK (length(shortName) <= 2),
       address TEXT,
       email TEXT,
       phone TEXT,
@@ -202,7 +202,7 @@ const init = async () => {
       dueDate DATETIME,
       invoiceNumber TEXT NOT NULL,
       isArchived INTEGER NOT NULL DEFAULT 0 CHECK (isArchived IN (0,1)),
-      state TEXT NOT NULL DEFAULT 'unpaid' CHECK (state IN ('unpaid','partially','paid','canceled')),
+      status TEXT NOT NULL DEFAULT 'unpaid' CHECK (status IN ('unpaid','open','closed','partially','paid')),
       customerNotes TEXT,
       thanksNotes TEXT,
       termsConditionNotes TEXT,

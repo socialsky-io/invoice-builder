@@ -1,8 +1,8 @@
-import type { FilterType } from '../enums/filterType';
+import type { FilterData } from './filter';
 
 export interface RequestHook<T> {
   immediate?: boolean;
   showLoader?: boolean;
-  filter?: FilterType;
+  filter?: FilterData[];
   onDone?: (data: T) => void;
 }

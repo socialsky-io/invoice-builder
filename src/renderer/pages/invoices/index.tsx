@@ -1,12 +1,21 @@
 import { type FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CRUDPage } from '../../shared/components/crudPage/CRUDPage';
+import { InvoiceStatus } from '../../shared/enums/invoiceStatus';
 import { useInvoicesRetrieve } from '../../shared/hooks/invoices/useInvoicesRetrieve';
+
+import { CRUDPage } from '../../shared/components/crudPage/CRUDPage';
+import { FilterType } from '../../shared/enums/filterType';
+import type { Filter } from '../../shared/types/filter';
 import type { Invoice, InvoiceAdd, InvoiceUpdate } from '../../shared/types/invoice';
+import { useAppSelector } from '../../state/configureStore';
+import { selectBusinessesSnapshotsOptions, selectClientsSnapshotsOptions } from '../../state/pageSlice';
 import { List } from './List';
 
 export const InvoicesPage: FC = () => {
   const { t } = useTranslation();
+  const clientsOptions = useAppSelector(selectClientsSnapshotsOptions);
+  const businessesOptions = useAppSelector(selectBusinessesSnapshotsOptions);
+
   // const excelColumns = ['code', 'symbol', 'text', 'format', 'isArchived'];
   // const excelFileName = 'currencies';
   // const excelTemplateData: Rows = [
@@ -25,50 +34,60 @@ export const InvoicesPage: FC = () => {
   //     isArchived: false
   //   }
   // ];
-  // const filters: Filter[] = [
-  //   { label: t('currencies.filter.allText'), description: undefined, value: FilterType.all },
-  //   {
-  //     label: t('currencies.filter.activeText'),
-  //     description: t('currencies.filter.activeDesc'),
-  //     value: FilterType.active,
-  //     initial: true
-  //   },
-  //   {
-  //     label: t('currencies.filter.archivedText'),
-  //     description: t('currencies.filter.archivedDesc'),
-  //     value: FilterType.archived
-  //   },
-  //   {
-  //     label: t('currencies.filter.atleastOneInvoiceText'),
-  //     description: t('currencies.filter.atleastOneInvoiceDesc'),
-  //     value: FilterType.atleastOneInvoice
-  //   },
-  //   {
-  //     label: t('currencies.filter.noInvoicesText'),
-  //     description: t('currencies.filter.noInvoicesDesc'),
-  //     value: FilterType.noInvoices
-  //   },
-  //   {
-  //     label: t('currencies.filter.noInvoices30Text'),
-  //     description: t('currencies.filter.noInvoices30Desc'),
-  //     value: FilterType.noInvoices30
-  //   },
-  //   {
-  //     label: t('currencies.filter.noInvoices60Text'),
-  //     description: t('currencies.filter.noInvoices60Desc'),
-  //     value: FilterType.noInvoices60
-  //   },
-  //   {
-  //     label: t('currencies.filter.noInvoices90Text'),
-  //     description: t('currencies.filter.noInvoices90Desc'),
-  //     value: FilterType.noInvoices90
-  //   }
-  // ];
+  const filters: Filter[] = [
+    {
+      label: t('invoices.filter.allText'),
+      description: undefined,
+      value: FilterType.all,
+      type: FilterType.all,
+      isGroup: true
+    },
+    {
+      label: t('invoices.filter.activeText'),
+      description: t('invoices.filter.activeDesc'),
+      value: FilterType.active,
+      type: FilterType.active,
+      initial: true,
+      isGroup: true
+    },
+    {
+      label: t('invoices.filter.archivedText'),
+      description: t('invoices.filter.archivedDesc'),
+      value: FilterType.archived,
+      type: FilterType.archived,
+      isGroup: true
+    },
+    {
+      label: t('invoices.filter.client'),
+      type: FilterType.client,
+      options: clientsOptions
+    },
+    {
+      label: t('invoices.filter.business'),
+      type: FilterType.business,
+      options: businessesOptions
+    },
+    {
+      label: t('invoices.filter.date'),
+      type: FilterType.date
+    },
+    {
+      type: FilterType.status,
+      label: t('invoices.filter.status'),
+      value: FilterType.status,
+      options: [
+        { label: InvoiceStatus.unpaid, value: InvoiceStatus.unpaid },
+        { label: InvoiceStatus.partiallyPaid, value: InvoiceStatus.partiallyPaid },
+        { label: InvoiceStatus.paid, value: InvoiceStatus.paid },
+        { label: InvoiceStatus.closed, value: InvoiceStatus.closed }
+      ]
+    }
+  ];
 
   return (
     <CRUDPage<Invoice, InvoiceAdd, InvoiceUpdate>
       title={t('invoices.title')}
-      // filters={filters}
+      filters={filters}
       // excelColumns={excelColumns}
       // excelFileName={excelFileName}
       // excelFormat={'xlsx'}
@@ -83,7 +102,7 @@ export const InvoicesPage: FC = () => {
       // useDelete={useCurrencyDelete}
       searchField={'invoiceNumber'}
       sortOptions={[
-        { label: t('common.state'), value: 'state' },
+        { label: t('common.status'), value: 'status' },
         { label: t('common.issuedAt'), value: 'issuedAt' },
         { label: t('common.invoiceNumber'), value: 'invoiceNumber' },
         { label: t('common.lastUpdate'), value: 'updatedAt' }
@@ -95,14 +114,8 @@ export const InvoicesPage: FC = () => {
       //   if (!isCurrencyFromData(data)) return;
       //   return data;
       // }}
-      renderListItem={(item, selectedItem, onEdit, onDelete) => (
-        <List
-          key={item.id}
-          item={item}
-          selectedItem={selectedItem}
-          onEdit={(editItem: Invoice) => onEdit(editItem)}
-          onDelete={(id: number) => onDelete(id)}
-        />
+      renderListItem={(item, selectedItem, onEdit) => (
+        <List key={item.id} item={item} selectedItem={selectedItem} onEdit={(editItem: Invoice) => onEdit(editItem)} />
       )}
       // form={({ item, onChange }) => (
       //   <Form

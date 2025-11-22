@@ -129,6 +129,7 @@
     "downloadTemplate": "Download template",
     "export": "Export",
     "fieldRequired": "Field is required",
+    "from": "From",
     "import": "Import",
     "importExport": "Import / Export",
     "invoice": "Invoice",
@@ -146,8 +147,9 @@
     "selectFilterType": "Select filter type",
     "selectImage": "Select an image file",
     "sortBy": "Sort by",
-    "state": "Status",
-    "text": "Text"
+    "status": "Status",
+    "text": "Text",
+    "to": "To"
   },
   "currencies": {
     "add": "Add currency",
@@ -175,9 +177,9 @@
     "code": "Symbol text",
     "format": "Format",
     "isArchived": "Archived",
+    "subunit": "Sub unit",
     "symbol": "Symbol",
-    "text": "Text",
-    "subunit": "Sub unit"
+    "text": "Text"
   },
   "customizeInvoice": {
     "includeBusinessName": "Include business name",
@@ -212,6 +214,17 @@
     "add": "Add invoice",
     "dueDate": "Due in {{days}} day(s): {{date}}",
     "dueToday": "Due in today: {{date}}",
+    "filter": {
+      "activeDesc": "Invoices that are not archived",
+      "activeText": "Active invoices",
+      "allText": "All invoices",
+      "archivedDesc": "Invoices that have been archived",
+      "archivedText": "Archived invoices",
+      "business": "Businesses",
+      "client": "Client",
+      "date": "date",
+      "status": "Status"
+    },
     "markedAsPaid": "Marked as paid: {{date}}",
     "noItem": "Selected a invoice to view details.",
     "overdue": "Overdue {{days}} day(s)",
