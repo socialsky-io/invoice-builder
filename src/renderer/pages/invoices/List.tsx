@@ -66,10 +66,10 @@ export const List: FC<Props> = ({ item, selectedItem, onEdit, onDelete }) => {
   const latestPaidAt = useMemo(() => getLastPaymentDate(), [item.invoicePayments]);
   const overdueDaysLeft = useMemo(() => daysLeft(), [item]);
   const amountPaidCents = useMemo(() => getTotalAmountPaid(), [item.invoicePayments]);
-  const totalAmountCents = useMemo(() => 200, [item]);
+  const totalAmountCents = useMemo(() => 200 * item.currencySubunitSnapshot, [item]);
   const remainingCents = useMemo(() => totalAmountCents - amountPaidCents, [amountPaidCents, totalAmountCents]);
-  const remainingAmount = useMemo(() => remainingCents / 100, [remainingCents]);
-  const totalAmount = useMemo(() => totalAmountCents / 100, [totalAmountCents]);
+  const remainingAmount = useMemo(() => remainingCents / item.currencySubunitSnapshot, [remainingCents]);
+  const totalAmount = useMemo(() => totalAmountCents / item.currencySubunitSnapshot, [totalAmountCents]);
 
   return (
     <>

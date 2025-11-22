@@ -176,7 +176,8 @@
     "format": "Formatas",
     "isArchived": "Archyvuota",
     "symbol": "Simbolis",
-    "text": "Pavadinimas"
+    "text": "Pavadinimas",
+    "subunit": "Subvienetas"
   },
   "customizeInvoice": {
     "includeBusinessName": "Įtraukti įmonės pavadinimą",

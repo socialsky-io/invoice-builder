@@ -9,6 +9,7 @@ export interface Currency {
   invoiceCount: number;
   quotesCount: number;
   isArchived: boolean;
+  subunit: number;
 }
 
 export interface CurrencyAdd {
@@ -17,6 +18,7 @@ export interface CurrencyAdd {
   text: string;
   format: string;
   isArchived: boolean;
+  subunit: number;
 }
 
 export interface CurrencyUpdate extends CurrencyAdd {
@@ -30,4 +32,5 @@ export interface CurrencyFromData {
   text: string;
   format: string;
   isArchived: boolean;
+  subunit: number;
 }

@@ -13,7 +13,6 @@ interface Props {
 }
 export const List: FC<Props> = ({ item, selectedItem, onEdit, onDelete }) => {
   const settings = useAppSelector(selectSettings);
-
   return (
     <GenericList
       item={item}
@@ -21,7 +20,7 @@ export const List: FC<Props> = ({ item, selectedItem, onEdit, onDelete }) => {
       onEdit={onEdit}
       onDelete={onDelete}
       getName={c => c.name}
-      getAdditional={c => `${formatAmount(c.amountCents ? c.amountCents / 100 : 0, settings?.amountFormat)}`}
+      getAdditional={c => `${formatAmount(c.amount ?? 0, settings?.amountFormat)}`}
       getInvoiceCount={c => c.invoiceCount}
       getQuotesCount={c => c.quotesCount}
       getIsArchived={c => c.isArchived}

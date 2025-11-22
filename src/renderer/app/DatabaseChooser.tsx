@@ -13,15 +13,15 @@ import {
 } from '@mui/material';
 import { useCallback, useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import i18n from '../../../i18n';
-import { useAppDispatch } from '../../../state/configureStore';
-import { addToast } from '../../../state/pageSlice';
-import { DBInitType } from '../../enums/dbInitType';
-import { usDBOpener } from '../../hooks/dbSelector/usDBOpener';
-import { usDBSelector } from '../../hooks/dbSelector/usDBSelector';
-import { useDBInit } from '../../hooks/dbSelector/useDBInit';
-import type { DBSelector } from '../../types/dbSelector';
-import type { Response } from '../../types/response';
+import i18n from '../i18n';
+import { DBInitType } from '../shared/enums/dbInitType';
+import { usDBOpener } from '../shared/hooks/dbSelector/usDBOpener';
+import { usDBSelector } from '../shared/hooks/dbSelector/usDBSelector';
+import { useDBInit } from '../shared/hooks/dbSelector/useDBInit';
+import type { DBSelector } from '../shared/types/dbSelector';
+import type { Response } from '../shared/types/response';
+import { useAppDispatch } from '../state/configureStore';
+import { addToast } from '../state/pageSlice';
 
 interface Props {
   onDatabaseRead?: () => void;

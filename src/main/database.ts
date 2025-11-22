@@ -16,18 +16,18 @@ const initInitialData = async () => {
   await runAsync(
     db,
     `
-      INSERT OR IGNORE INTO currencies (code, symbol, text, format)
+      INSERT OR IGNORE INTO currencies (code, symbol, text, format, subunit)
       VALUES
-        ('USD', '$', 'United States Dollar', '{symbol}{amount}'),
-        ('EUR', '€', 'Euro', '{symbol}{amount}'),
-        ('SEK', 'kr', 'Swedish Krona', '{symbol} {amount}'),
-        ('GBP', '£', 'British Pound', '{symbol}{amount}'),
-        ('JPY', '¥', 'Japanese Yen', '{symbol}{amount}'),
-        ('AUD', 'A$', 'Australian Dollar', '{symbol}{amount}'),
-        ('CAD', 'CA$', 'Canadian Dollar', '{symbol}{amount}'),
-        ('CHF', 'CHF', 'Swiss Franc', '{symbol} {amount}'),
-        ('CNY', '¥', 'Chinese Yuan', '{symbol}{amount}'),
-        ('INR', '₹', 'Indian Rupee', '{symbol}{amount}');
+        ('USD', '$', 'United States Dollar', '{symbol}{amount}', 100),
+        ('EUR', '€', 'Euro', '{symbol}{amount}', 100),
+        ('SEK', 'kr', 'Swedish Krona', '{symbol} {amount}', 100),
+        ('GBP', '£', 'British Pound', '{symbol}{amount}', 100),
+        ('JPY', '¥', 'Japanese Yen', '{symbol}{amount}', 1),
+        ('AUD', 'A$', 'Australian Dollar', '{symbol}{amount}', 100),
+        ('CAD', 'CA$', 'Canadian Dollar', '{symbol}{amount}', 100),
+        ('CHF', 'CHF', 'Swiss Franc', '{symbol} {amount}', 100),
+        ('CNY', '¥', 'Chinese Yuan', '{symbol}{amount}', 100),
+        ('INR', '₹', 'Indian Rupee', '{symbol}{amount}', 100);
     `
   );
   await runAsync(
@@ -161,6 +161,7 @@ const init = async () => {
       symbol TEXT NOT NULL,
       text TEXT NOT NULL,
       format TEXT NOT NULL,
+      subunit INTEGER NOT NULL DEFAULT 100,
       isArchived INTEGER NOT NULL DEFAULT 0 CHECK (isArchived IN (0,1)),
       createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
       updatedAt DATETIME NOT NULL DEFAULT (datetime('now'))
@@ -173,7 +174,7 @@ const init = async () => {
     CREATE TABLE IF NOT EXISTS items (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
-      amountCents INTEGER DEFAULT (0), 
+      amount DECIMAL(20, 6) DEFAULT (0), 
       unitId INTEGER,
       categoryId INTEGER,
       description TEXT,
@@ -228,6 +229,7 @@ const init = async () => {
       clientAdditionalSnapshot TEXT,
       currencyCodeSnapshot TEXT NOT NULL,
       currencySymbolSnapshot TEXT NOT NULL,
+      currencySubunitSnapshot INTEGER NOT NULL,
       discountType TEXT CHECK(discountType IN ('fixed','percentage') OR discountType IS NULL),
       discountAmountCents INTEGER NOT NULL DEFAULT 0,
       discountPercent REAL NOT NULL DEFAULT 0,

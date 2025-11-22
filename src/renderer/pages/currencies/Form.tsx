@@ -20,13 +20,15 @@ export const Form: FC<Props> = ({ handleChange = () => {}, currency }) => {
     symbol: currency?.symbol ?? '',
     text: currency?.text ?? '',
     format: currency?.format ?? '',
-    isArchived: currency?.isArchived ?? false
+    isArchived: currency?.isArchived ?? false,
+    subunit: currency?.subunit ?? 0
   });
   const [errors, setErrors] = useState({
     code: false,
     symbol: false,
     text: false,
-    format: false
+    format: false,
+    subunit: false
   });
 
   const isFormatDisabled = form.code.trim() === '' || form.symbol.trim() === '';
@@ -35,7 +37,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, currency }) => {
   const validateField = (field: keyof typeof errors, value: string) => {
     if (
       !validators.required(value) &&
-      (field === 'code' || field === 'symbol' || field === 'text' || field === 'format')
+      (field === 'code' || field === 'symbol' || field === 'text' || field === 'format' || field === 'subunit')
     ) {
       setErrors(e => ({ ...e, [field]: true }));
     } else {
@@ -50,13 +52,18 @@ export const Form: FC<Props> = ({ handleChange = () => {}, currency }) => {
       symbol: currency?.symbol ?? '',
       text: currency?.text ?? '',
       format: currency?.format ?? '',
-      isArchived: currency?.isArchived ?? false
+      isArchived: currency?.isArchived ?? false,
+      subunit: currency?.subunit ?? 0
     });
   }, [currency]);
 
   useEffect(() => {
     const valid =
-      form.code.trim() !== '' && form.symbol.trim() !== '' && form.text.trim() !== '' && form.format.trim() !== '';
+      form.code.trim() !== '' &&
+      form.symbol.trim() !== '' &&
+      form.text.trim() !== '' &&
+      form.format.trim() !== '' &&
+      form.subunit.toString().trim() !== '';
 
     handleChange({
       currency: form,
@@ -125,6 +132,21 @@ export const Form: FC<Props> = ({ handleChange = () => {}, currency }) => {
             />
           )}
           freeSolo={false}
+        />
+      </Grid>
+      <Grid size={{ xs: 12, md: 4 }}>
+        <TextField
+          label={t('currenciesModal.subunit')}
+          fullWidth
+          required
+          type="number"
+          value={form.subunit}
+          error={errors.subunit}
+          helperText={errors.subunit ? t('common.fieldRequired') : ''}
+          onChange={e => {
+            update('subunit', Number(e.target.value));
+            validateField('subunit', e.target.value);
+          }}
         />
       </Grid>
       <Grid size={{ xs: 12, md: 12 }}>

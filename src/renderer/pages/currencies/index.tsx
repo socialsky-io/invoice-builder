@@ -16,7 +16,7 @@ import { List } from './List';
 
 export const CurrenciesPage: FC = () => {
   const { t } = useTranslation();
-  const excelColumns = ['code', 'symbol', 'text', 'format', 'isArchived'];
+  const excelColumns = ['code', 'symbol', 'text', 'format', 'subunit', 'isArchived'];
   const excelFileName = 'currencies';
   const excelTemplateData: Rows = [
     {
@@ -24,12 +24,14 @@ export const CurrenciesPage: FC = () => {
       symbol: '$',
       text: 'United States Dollar',
       format: '{symbol}{amount}',
+      subunit: 100,
       isArchived: false
     },
     {
       code: 'EUR',
       symbol: '€',
       text: 'Euro',
+      subunit: 100,
       format: '{symbol}{amount}',
       isArchived: false
     }

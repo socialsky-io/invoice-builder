@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useAppDispatch } from '../../../state/configureStore';
 import { setItems } from '../../../state/pageSlice';
 import type { Item } from '../../types/item';
@@ -10,19 +10,12 @@ export const useItemsRetrieve = ({ showLoader = true, filter, onDone }: RequestH
   const dispatch = useAppDispatch();
   const asyncFn = useCallback(() => window.electronAPI.getAllItems(filter), [filter]);
   const { data: items, execute } = useAsyncAction<Response<Item[]>>(asyncFn, { showLoader, onDone });
-  const [finalItems, setFinalItems] = useState<Item[]>([]);
 
   useEffect(() => {
     if (!items || !items.data) return;
 
-    const modifiedItems = items.data.map(i => ({
-      ...i,
-      amount: i.amountCents ? i.amountCents / 100 : undefined
-    }));
-
-    dispatch(setItems(modifiedItems));
-    setFinalItems(modifiedItems);
+    dispatch(setItems(items.data));
   }, [items, dispatch]);
 
-  return { items: finalItems ?? [], execute };
+  return { items: items?.data ?? [], execute };
 };

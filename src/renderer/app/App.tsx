@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import i18n from '../i18n';
-import { DatabaseChooser } from '../shared/components/databaseChooser/DatabaseChooser';
 import { SpinnerOverlay } from '../shared/components/spinner/spinner';
 import { ToastContainer } from '../shared/components/toast/toastContainer';
 import { useSettingsRetrieve } from '../shared/hooks/settings/useSettingsRetrieve';
@@ -10,6 +9,7 @@ import type { Settings } from '../shared/types/settings';
 import { useAppDispatch, useAppSelector } from '../state/configureStore';
 import { addToast, removeToast, selectIsLoading, selectToasts, setSettings } from '../state/pageSlice';
 import { AppLayout } from './AppLayout';
+import { DatabaseChooser } from './DatabaseChooser';
 
 export const App: FC = () => {
   const [dbReady, setDbReady] = useState<boolean>(false);

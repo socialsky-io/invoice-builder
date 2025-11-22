@@ -42,6 +42,7 @@ export interface Invoice {
   clientAdditionalSnapshot?: string | null;
   currencyCodeSnapshot: string;
   currencySymbolSnapshot: string;
+  currencySubunitSnapshot: number;
   discountType?: DiscountType | null;
   discountAmountCents?: number;
   discountPercent?: number;

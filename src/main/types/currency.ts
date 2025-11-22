@@ -4,5 +4,6 @@ export interface Currency {
   symbol: string;
   text: string;
   format: string;
+  subunit: number;
   isArchived: boolean;
 }

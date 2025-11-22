@@ -53,6 +53,7 @@ export interface Invoice {
   clientAdditionalSnapshot?: string | null;
   currencyCodeSnapshot: string;
   currencySymbolSnapshot: string;
+  currencySubunitSnapshot: number;
   discountType?: DiscountType | null;
   discountAmountCents?: number;
   discountPercent?: number;
@@ -100,6 +101,7 @@ export interface InvoiceAdd {
   clientAdditionalSnapshot?: string | null;
   currencyCodeSnapshot: string;
   currencySymbolSnapshot: string;
+  currencySubunitSnapshot: number;
   discountType?: DiscountType | null;
   discountAmountCents?: number;
   discountPercent?: number;
@@ -150,6 +152,7 @@ export interface InvoiceFromData {
   clientAdditionalSnapshot?: string | null;
   currencyCodeSnapshot: string;
   currencySymbolSnapshot: string;
+  currencySubunitSnapshot: number;
   discountType?: DiscountType | null;
   discountAmountCents?: number;
   discountPercent?: number;
@@ -196,6 +199,7 @@ export interface InvoicesModified {
   clientAdditionalSnapshot?: string | null;
   currencyCodeSnapshot: string;
   currencySymbolSnapshot: string;
+  currencySubunitSnapshot: number;
   discountType?: DiscountType | null;
   discountAmountCents?: number;
   discountPercent?: number;

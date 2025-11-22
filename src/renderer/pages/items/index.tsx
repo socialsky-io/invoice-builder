@@ -104,14 +104,6 @@ export const ItemsPage: FC = () => {
       validateAndNormalize={async data => {
         if (!isItemFromData(data)) return;
 
-        if (data.amount !== undefined && data.amount !== null) {
-          const raw = data.amount;
-          const parsed = typeof raw === 'number' ? raw : Number(String(raw).replace(/,/g, ''));
-          if (!Number.isNaN(parsed)) {
-            data.amountCents = parsed * 100;
-          }
-        }
-
         return data;
       }}
       renderListItem={(item, selectedItem, onEdit, onDelete) => (

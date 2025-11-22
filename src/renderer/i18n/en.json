@@ -176,7 +176,8 @@
     "format": "Format",
     "isArchived": "Archived",
     "symbol": "Symbol",
-    "text": "Text"
+    "text": "Text",
+    "subunit": "Sub unit"
   },
   "customizeInvoice": {
     "includeBusinessName": "Include business name",

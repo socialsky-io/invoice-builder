@@ -192,8 +192,8 @@ const clientFields: (keyof Client)[] = [
   'description',
   'isArchived'
 ];
-const itemFields: (keyof Item)[] = ['name', 'amountCents', 'unitId', 'categoryId', 'description', 'isArchived'];
-const currencyFields: (keyof Currency)[] = ['code', 'symbol', 'text', 'format', 'isArchived'];
+const itemFields: (keyof Item)[] = ['name', 'amount', 'unitId', 'categoryId', 'description', 'isArchived'];
+const currencyFields: (keyof Currency)[] = ['code', 'symbol', 'text', 'format', 'isArchived', 'subunit'];
 const unitFields: (keyof Unit)[] = ['name', 'isArchived'];
 const categoryFields: (keyof Category)[] = ['name', 'isArchived'];
 

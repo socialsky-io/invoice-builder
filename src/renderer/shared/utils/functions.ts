@@ -158,13 +158,6 @@ export const isItemFromData = (data: unknown): data is ItemFromData => {
   if (d.isArchived !== undefined && d.isArchived !== null && d.isArchived !== '' && typeof d.isArchived !== 'boolean')
     return false;
 
-  if (
-    d.amountCents !== undefined &&
-    d.amountCents !== null &&
-    d.amountCents !== '' &&
-    typeof d.amountCents !== 'number'
-  )
-    return false;
   if (d.amount !== undefined && d.amount !== null && d.amount !== '' && typeof d.amount !== 'number') return false;
   if (
     d.description !== undefined &&
@@ -268,6 +261,7 @@ export const isCurrencyFromData = (data: unknown): data is CurrencyFromData => {
   if (d.isArchived !== undefined && d.isArchived !== null && d.isArchived !== '' && typeof d.isArchived !== 'boolean')
     return false;
 
+  if (typeof d.subunit !== 'number') return false;
   if (typeof d.code !== 'string') return false;
   if (typeof d.symbol !== 'string') return false;
   if (typeof d.text !== 'string') return false;
