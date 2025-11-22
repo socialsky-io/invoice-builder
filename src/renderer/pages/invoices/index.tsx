@@ -7,6 +7,7 @@ import { CRUDPage } from '../../shared/components/crudPage/CRUDPage';
 import { FilterType } from '../../shared/enums/filterType';
 import type { Filter } from '../../shared/types/filter';
 import type { Invoice, InvoiceAdd, InvoiceUpdate } from '../../shared/types/invoice';
+import { createCommonFilters } from '../../shared/utils/functions';
 import { useAppSelector } from '../../state/configureStore';
 import { selectBusinessesSnapshotsOptions, selectClientsSnapshotsOptions } from '../../state/pageSlice';
 import { List } from './List';
@@ -35,28 +36,7 @@ export const InvoicesPage: FC = () => {
   //   }
   // ];
   const filters: Filter[] = [
-    {
-      label: t('invoices.filter.allText'),
-      description: undefined,
-      value: FilterType.all,
-      type: FilterType.all,
-      isGroup: true
-    },
-    {
-      label: t('invoices.filter.activeText'),
-      description: t('invoices.filter.activeDesc'),
-      value: FilterType.active,
-      type: FilterType.active,
-      initial: true,
-      isGroup: true
-    },
-    {
-      label: t('invoices.filter.archivedText'),
-      description: t('invoices.filter.archivedDesc'),
-      value: FilterType.archived,
-      type: FilterType.archived,
-      isGroup: true
-    },
+    ...createCommonFilters({ t, namespace: 'invoices', initial: FilterType.active, shouldCloseOnClick: false }),
     {
       label: t('invoices.filter.client'),
       type: FilterType.client,

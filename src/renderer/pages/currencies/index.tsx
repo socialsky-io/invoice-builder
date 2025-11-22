@@ -10,7 +10,7 @@ import { useCurrencyUpdate } from '../../shared/hooks/currencies/useCurrencyUpda
 import type { Currency, CurrencyAdd, CurrencyUpdate } from '../../shared/types/currency';
 import type { Rows } from '../../shared/types/excel';
 import type { Filter } from '../../shared/types/filter';
-import { isCurrencyFromData } from '../../shared/utils/functions';
+import { createCommonFilters, createInvoiceFilters, isCurrencyFromData } from '../../shared/utils/functions';
 import { Form } from './Form';
 import { List } from './List';
 
@@ -37,63 +37,8 @@ export const CurrenciesPage: FC = () => {
     }
   ];
   const filters: Filter[] = [
-    {
-      label: t('currencies.filter.allText'),
-      description: undefined,
-      value: FilterType.all,
-      type: FilterType.all,
-      isGroup: true
-    },
-    {
-      label: t('currencies.filter.activeText'),
-      description: t('currencies.filter.activeDesc'),
-      value: FilterType.active,
-      initial: true,
-      type: FilterType.active,
-      isGroup: true
-    },
-    {
-      label: t('currencies.filter.archivedText'),
-      description: t('currencies.filter.archivedDesc'),
-      value: FilterType.archived,
-      type: FilterType.archived,
-      isGroup: true
-    },
-    {
-      label: t('currencies.filter.atleastOneInvoiceText'),
-      description: t('currencies.filter.atleastOneInvoiceDesc'),
-      value: FilterType.atleastOneInvoice,
-      type: FilterType.atleastOneInvoice,
-      isGroup: true
-    },
-    {
-      label: t('currencies.filter.noInvoicesText'),
-      description: t('currencies.filter.noInvoicesDesc'),
-      value: FilterType.noInvoices,
-      type: FilterType.noInvoices,
-      isGroup: true
-    },
-    {
-      label: t('currencies.filter.noInvoices30Text'),
-      description: t('currencies.filter.noInvoices30Desc'),
-      value: FilterType.noInvoices30,
-      type: FilterType.noInvoices30,
-      isGroup: true
-    },
-    {
-      label: t('currencies.filter.noInvoices60Text'),
-      description: t('currencies.filter.noInvoices60Desc'),
-      value: FilterType.noInvoices60,
-      type: FilterType.noInvoices60,
-      isGroup: true
-    },
-    {
-      label: t('currencies.filter.noInvoices90Text'),
-      description: t('currencies.filter.noInvoices90Desc'),
-      value: FilterType.noInvoices90,
-      type: FilterType.noInvoices90,
-      isGroup: true
-    }
+    ...createCommonFilters({ t, namespace: 'currencies', initial: FilterType.active }),
+    ...createInvoiceFilters({ t, namespace: 'currencies' })
   ];
 
   return (

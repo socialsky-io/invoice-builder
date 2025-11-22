@@ -10,7 +10,7 @@ import { useCategoryUpdate } from '../../shared/hooks/categories/useCategoryUpda
 import type { Category, CategoryAdd, CategoryUpdate } from '../../shared/types/category';
 import type { Rows } from '../../shared/types/excel';
 import type { Filter } from '../../shared/types/filter';
-import { isCategoryFromData } from '../../shared/utils/functions';
+import { createCommonFilters, createInvoiceFilters, isCategoryFromData } from '../../shared/utils/functions';
 import { Form } from './Form';
 import { List } from './List';
 
@@ -29,63 +29,8 @@ export const CategoriesPage: FC = () => {
     }
   ];
   const filters: Filter[] = [
-    {
-      label: t('categories.filter.allText'),
-      description: undefined,
-      value: FilterType.all,
-      type: FilterType.all,
-      isGroup: true
-    },
-    {
-      label: t('categories.filter.activeText'),
-      description: t('categories.filter.activeDesc'),
-      value: FilterType.active,
-      initial: true,
-      type: FilterType.active,
-      isGroup: true
-    },
-    {
-      label: t('categories.filter.archivedText'),
-      description: t('categories.filter.archivedDesc'),
-      value: FilterType.archived,
-      type: FilterType.archived,
-      isGroup: true
-    },
-    {
-      label: t('categories.filter.atleastOneInvoiceText'),
-      description: t('categories.filter.atleastOneInvoiceDesc'),
-      value: FilterType.atleastOneInvoice,
-      type: FilterType.atleastOneInvoice,
-      isGroup: true
-    },
-    {
-      label: t('categories.filter.noInvoicesText'),
-      description: t('categories.filter.noInvoicesDesc'),
-      value: FilterType.noInvoices,
-      type: FilterType.noInvoices,
-      isGroup: true
-    },
-    {
-      label: t('categories.filter.noInvoices30Text'),
-      description: t('categories.filter.noInvoices30Desc'),
-      value: FilterType.noInvoices30,
-      type: FilterType.noInvoices30,
-      isGroup: true
-    },
-    {
-      label: t('categories.filter.noInvoices60Text'),
-      description: t('categories.filter.noInvoices60Desc'),
-      value: FilterType.noInvoices60,
-      type: FilterType.noInvoices60,
-      isGroup: true
-    },
-    {
-      label: t('categories.filter.noInvoices90Text'),
-      description: t('categories.filter.noInvoices90Desc'),
-      value: FilterType.noInvoices90,
-      type: FilterType.noInvoices90,
-      isGroup: true
-    }
+    ...createCommonFilters({ t, namespace: 'categories', initial: FilterType.active }),
+    ...createInvoiceFilters({ t, namespace: 'categories' })
   ];
 
   return (

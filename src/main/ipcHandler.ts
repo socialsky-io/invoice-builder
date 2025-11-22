@@ -35,6 +35,8 @@ const mapSqliteError = (error: unknown): { message?: string; key?: string } => {
   }
   if ((error as Error).message.indexOf('Database file does not exist') > -1) {
     return { key: 'error.databaseFileMissing' };
+  } else if ((error as Error).message.indexOf('EBUSY') > -1) {
+    return { key: 'error.databaseIsBusy' };
   }
   return { key: 'error.unknownError' };
 };

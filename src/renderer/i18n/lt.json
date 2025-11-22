@@ -197,6 +197,7 @@
   },
   "error": {
     "databaseFileMissing": "Duomenų bazės failas neegzistuoja",
+    "databaseIsBusy": "Negalima sukurti duomenų bazės failo iš naujo – jis šiuo metu naudojamas",
     "failedNormalizeImportedRows": "Nepavyko apdoroti šių eilučių: {{rowNumber}}. Patikrinkite duomenų formatą.",
     "failedToLoad": "Nepavyko įkelti išsaugoto DB sąrašo",
     "failedToSave": "Nepavyko išsaugoti DB sąrašo",

@@ -10,7 +10,7 @@ import { useClientUpdate } from '../../shared/hooks/clients/useClientUpdate';
 import type { Client, ClientAdd, ClientUpdate } from '../../shared/types/client';
 import type { Rows } from '../../shared/types/excel';
 import type { Filter } from '../../shared/types/filter';
-import { isClientFromData } from '../../shared/utils/functions';
+import { createCommonFilters, createInvoiceFilters, isClientFromData } from '../../shared/utils/functions';
 import { Form } from './Form';
 import { List } from './List';
 
@@ -51,63 +51,8 @@ export const ClientsPage: FC = () => {
     }
   ];
   const filters: Filter[] = [
-    {
-      label: t('clients.filter.allText'),
-      description: undefined,
-      value: FilterType.all,
-      type: FilterType.all,
-      isGroup: true
-    },
-    {
-      label: t('clients.filter.activeText'),
-      description: t('clients.filter.activeDesc'),
-      value: FilterType.active,
-      initial: true,
-      type: FilterType.active,
-      isGroup: true
-    },
-    {
-      label: t('clients.filter.archivedText'),
-      description: t('clients.filter.archivedDesc'),
-      value: FilterType.archived,
-      type: FilterType.archived,
-      isGroup: true
-    },
-    {
-      label: t('clients.filter.atleastOneInvoiceText'),
-      description: t('clients.filter.atleastOneInvoiceDesc'),
-      value: FilterType.atleastOneInvoice,
-      type: FilterType.atleastOneInvoice,
-      isGroup: true
-    },
-    {
-      label: t('clients.filter.noInvoicesText'),
-      description: t('clients.filter.noInvoicesDesc'),
-      value: FilterType.noInvoices,
-      type: FilterType.noInvoices,
-      isGroup: true
-    },
-    {
-      label: t('clients.filter.noInvoices30Text'),
-      description: t('clients.filter.noInvoices30Desc'),
-      value: FilterType.noInvoices30,
-      type: FilterType.noInvoices30,
-      isGroup: true
-    },
-    {
-      label: t('clients.filter.noInvoices60Text'),
-      description: t('clients.filter.noInvoices60Desc'),
-      value: FilterType.noInvoices60,
-      type: FilterType.noInvoices60,
-      isGroup: true
-    },
-    {
-      label: t('clients.filter.noInvoices90Text'),
-      description: t('clients.filter.noInvoices90Desc'),
-      value: FilterType.noInvoices90,
-      type: FilterType.noInvoices90,
-      isGroup: true
-    }
+    ...createCommonFilters({ t, namespace: 'clients', initial: FilterType.active }),
+    ...createInvoiceFilters({ t, namespace: 'clients' })
   ];
 
   return (

@@ -9,7 +9,7 @@ import { useBusinessUpdate } from '../../shared/hooks/businesses/useBusinessUpda
 import type { Business, BusinessAdd, BusinessUpdate } from '../../shared/types/business';
 import type { Rows } from '../../shared/types/excel';
 import type { Filter } from '../../shared/types/filter';
-import { isBusinessFromData } from '../../shared/utils/functions';
+import { createCommonFilters, createInvoiceFilters, isBusinessFromData } from '../../shared/utils/functions';
 import { Form } from './Form';
 import { List } from './List';
 
@@ -62,63 +62,8 @@ export const BusinessesPage = () => {
     }
   ];
   const filters: Filter[] = [
-    {
-      label: t('businesses.filter.allText'),
-      description: undefined,
-      value: FilterType.all,
-      type: FilterType.all,
-      isGroup: true
-    },
-    {
-      label: t('businesses.filter.activeText'),
-      description: t('businesses.filter.activeDesc'),
-      value: FilterType.active,
-      initial: true,
-      type: FilterType.active,
-      isGroup: true
-    },
-    {
-      label: t('businesses.filter.archivedText'),
-      description: t('businesses.filter.archivedDesc'),
-      value: FilterType.archived,
-      type: FilterType.archived,
-      isGroup: true
-    },
-    {
-      label: t('businesses.filter.atleastOneInvoiceText'),
-      description: t('businesses.filter.atleastOneInvoiceDesc'),
-      value: FilterType.atleastOneInvoice,
-      type: FilterType.atleastOneInvoice,
-      isGroup: true
-    },
-    {
-      label: t('businesses.filter.noInvoicesText'),
-      description: t('businesses.filter.noInvoicesDesc'),
-      value: FilterType.noInvoices,
-      type: FilterType.noInvoices,
-      isGroup: true
-    },
-    {
-      label: t('businesses.filter.noInvoices30Text'),
-      description: t('businesses.filter.noInvoices30Desc'),
-      value: FilterType.noInvoices30,
-      type: FilterType.noInvoices30,
-      isGroup: true
-    },
-    {
-      label: t('businesses.filter.noInvoices60Text'),
-      description: t('businesses.filter.noInvoices60Desc'),
-      value: FilterType.noInvoices60,
-      type: FilterType.noInvoices60,
-      isGroup: true
-    },
-    {
-      label: t('businesses.filter.noInvoices90Text'),
-      description: t('businesses.filter.noInvoices90Desc'),
-      value: FilterType.noInvoices90,
-      type: FilterType.noInvoices90,
-      isGroup: true
-    }
+    ...createCommonFilters({ t, namespace: 'businesses', initial: FilterType.active }),
+    ...createInvoiceFilters({ t, namespace: 'businesses' })
   ];
 
   return (

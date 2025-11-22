@@ -1,3 +1,4 @@
+import type { TFunction } from 'i18next';
 import type { FilterType } from '../enums/filterType';
 import type { CustomOption } from './customOption';
 
@@ -15,4 +16,12 @@ export interface Filter {
   isGroup?: boolean;
   type: FilterType;
   options?: Options<string | number | symbol>;
+  shouldCloseOnClick?: boolean;
+}
+
+export interface FilterConfig {
+  t: TFunction;
+  namespace: string;
+  initial?: FilterType;
+  shouldCloseOnClick?: boolean;
 }

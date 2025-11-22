@@ -197,6 +197,7 @@
   },
   "error": {
     "databaseFileMissing": "Database file does not exist",
+    "databaseIsBusy": "Cannot recreate database file because it is currently in use",
     "failedNormalizeImportedRows": "Failed to process the following rows: {{rowNumber}}. Please check the data format.",
     "failedToLoad": "Failed to load saved DB list",
     "failedToSave": "Failed to save DB list",

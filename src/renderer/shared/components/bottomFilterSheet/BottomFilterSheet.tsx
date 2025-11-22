@@ -38,17 +38,29 @@ export const BottomFilterSheet: FC<Props> = ({ filters, onFilter = () => {}, sel
   const remainingFilters = useMemo(() => filters.filter(f => !f.isGroup), [filters]);
 
   const updateFilter = (type: FilterType, value?: string) => {
-    const sf = [...selectedFilter];
+    let sf = [...selectedFilter];
     const filter = sf.find(f => f.type === type);
     const specificFilter = remainingFilters.find(f => f.type === type);
+    let close = false;
 
     if (filter) {
-      filter.value = value ?? '';
+      if (value) {
+        if (type === FilterType.status) {
+          if (filter.value !== value) filter.value = value ?? '';
+          else sf = sf.filter(item => item.type !== type);
+        } else filter.value = value ?? '';
+      } else sf = sf.filter(item => item.type !== type);
+
+      if (filter.shouldCloseOnClick) close = true;
     } else if (specificFilter) {
       sf.push({ ...specificFilter, value: value ?? '' });
+
+      if (specificFilter.shouldCloseOnClick) close = true;
     }
 
     onFilter(sf);
+
+    if (close) onClose();
   };
 
   const handleChipClick = (type: FilterType, value: string) => updateFilter(type, value);
@@ -70,8 +82,8 @@ export const BottomFilterSheet: FC<Props> = ({ filters, onFilter = () => {}, sel
     if (specificValue) {
       filter.push(specificValue);
       onFilter(filter);
+      if (specificValue.shouldCloseOnClick) onClose();
     }
-    onClose();
   };
 
   const dropdownValue = useMemo(() => {

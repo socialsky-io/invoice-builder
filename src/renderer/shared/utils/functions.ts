@@ -5,12 +5,14 @@ import type { TFunction } from 'i18next';
 import { AmountFormat } from '../enums/amountFormat';
 import { CurrencyFormat } from '../enums/currencyFormat';
 import type { DateFormat } from '../enums/dateFormat';
+import { FilterType } from '../enums/filterType';
 import { SortType } from '../enums/sortType';
 import type { BusinessFromData } from '../types/business';
 import type { CategoryFromData } from '../types/category';
 import type { ClientFromData } from '../types/client';
 import type { CurrencyFromData } from '../types/currency';
 import type { Columns, Row, Rows, RowValue } from '../types/excel';
+import type { Filter, FilterConfig } from '../types/filter';
 import type { ItemFromData } from '../types/item';
 import type { UnitFromData } from '../types/unit';
 import { validators } from './validators';
@@ -418,4 +420,40 @@ export const formatAmount = (amount: number, amountFormat: AmountFormat = Amount
   };
 
   return new Intl.NumberFormat(baseLocale, options).format(amount);
+};
+
+export const createCommonFilters = ({ t, namespace, initial, shouldCloseOnClick = true }: FilterConfig): Filter[] => {
+  const commonTypes: { key: string; type: FilterType }[] = [
+    { key: 'allText', type: FilterType.all },
+    { key: 'activeText', type: FilterType.active },
+    { key: 'archivedText', type: FilterType.archived }
+  ];
+
+  return commonTypes.map(({ key, type }) => ({
+    label: t(`${namespace}.filter.${key}`),
+    description: key === 'allText' ? undefined : t(`${namespace}.filter.${key.replace('Text', 'Desc')}`),
+    value: type,
+    type,
+    isGroup: true,
+    shouldCloseOnClick,
+    ...(type === initial ? { initial: true } : {})
+  }));
+};
+
+export const createInvoiceFilters = ({ t, namespace }: FilterConfig): Filter[] => {
+  const invoiceTypes: { key: string; type: FilterType }[] = [
+    { key: 'atleastOneInvoiceText', type: FilterType.atleastOneInvoice },
+    { key: 'noInvoicesText', type: FilterType.noInvoices },
+    { key: 'noInvoices30Text', type: FilterType.noInvoices30 },
+    { key: 'noInvoices60Text', type: FilterType.noInvoices60 },
+    { key: 'noInvoices90Text', type: FilterType.noInvoices90 }
+  ];
+  return invoiceTypes.map(({ key, type }) => ({
+    label: t(`${namespace}.filter.${key}`),
+    description: t(`${namespace}.filter.${key.replace('Text', 'Desc')}`),
+    value: type,
+    type,
+    isGroup: true,
+    shouldCloseOnClick: true
+  }));
 };
