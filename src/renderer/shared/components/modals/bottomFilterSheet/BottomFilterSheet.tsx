@@ -37,6 +37,14 @@ export const BottomFilterSheet: FC<Props> = ({ filters, onFilter = () => {}, sel
   const radioFilters = useMemo(() => filters.filter(f => f.isGroup), [filters]);
   const remainingFilters = useMemo(() => filters.filter(f => !f.isGroup), [filters]);
 
+  const getDateRange = (type: FilterType): [string | undefined, string | undefined] => {
+    const value = selectedFilter.find(f => f.type === type)?.value;
+
+    if (!value) return [undefined, undefined];
+
+    return value.split(',') as [string, string];
+  };
+
   const updateFilter = (type: FilterType, value?: string) => {
     let sf = [...selectedFilter];
     const filter = sf.find(f => f.type === type);
@@ -69,8 +77,6 @@ export const BottomFilterSheet: FC<Props> = ({ filters, onFilter = () => {}, sel
     <T extends string | number | symbol>(type: FilterType) =>
     (_event: React.SyntheticEvent, newValue: CustomOption<T> | null) =>
       updateFilter(type, newValue?.value as string);
-
-  const filterValue = (type: FilterType) => selectedFilter.find(f => f.type === type)?.value;
 
   const onOpen = () => setIsOpen(true);
   const onClose = () => setIsOpen(false);
@@ -116,12 +122,15 @@ export const BottomFilterSheet: FC<Props> = ({ filters, onFilter = () => {}, sel
           />
         );
       case FilterType.date:
+        const [from, to] = getDateRange(item.type);
+
         return storeSettings ? (
           <UTCDateRangePicker
-            value={filterValue(item.type)}
+            valueFrom={from}
+            valueTo={to}
             label={item.label}
             format={storeSettings.dateFormat}
-            onChange={d => handleDateChange(item.type, d)}
+            onChange={(valueFrom, valueTo) => handleDateChange(item.type, `${valueFrom},${valueTo}`)}
           />
         ) : null;
       case FilterType.status:

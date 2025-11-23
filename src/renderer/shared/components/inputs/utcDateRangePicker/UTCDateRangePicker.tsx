@@ -12,15 +12,14 @@ dayjs.extend(utc);
 
 interface Props {
   label: string;
-  value?: string;
+  valueFrom?: string;
+  valueTo?: string;
   format: DateFormat;
-  onChange?: (value?: string) => void;
+  onChange?: (valueFrom?: string, valueTo?: string) => void;
 }
-export const UTCDateRangePicker: React.FC<Props> = ({ label, value, format, onChange = () => {} }) => {
+export const UTCDateRangePicker: React.FC<Props> = ({ label, valueFrom, valueTo, format, onChange = () => {} }) => {
   const { t } = useTranslation();
-  const [range, setRange] = useState<[string?, string?]>(
-    value ? (value.split(',') as [string?, string?]) : [undefined, undefined]
-  );
+  const [range, setRange] = useState<[string?, string?]>([valueFrom, valueTo]);
 
   const clearRange = () => {
     setRange([undefined, undefined]);
@@ -29,7 +28,7 @@ export const UTCDateRangePicker: React.FC<Props> = ({ label, value, format, onCh
 
   useEffect(() => {
     if (range[0] && range[1]) {
-      onChange(range.join(','));
+      onChange(range[0], range[1]);
     }
   }, range);
 
