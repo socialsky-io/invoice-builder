@@ -1,6 +1,7 @@
 import type { DiscountType } from '../enums/discountType';
 import type { InvoiceStatus } from '../enums/invoiceStatus';
 import type { InvoiceType } from '../enums/invoiceType';
+import type { InvoiceItemTaxType, InvoiceTaxType } from '../enums/taxType';
 
 export interface InvoicePayment {
   id: number;
@@ -8,57 +9,78 @@ export interface InvoicePayment {
   amountCents: number;
   paidAt: string;
   paymentMethod: string;
-  notes?: string | null;
+  notes?: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface InvoiceItem {
+  id: number;
+  parentInvoiceId: number;
+  itemId: number;
+  itemNameSnapshot: string;
+  unitPriceCentsSnapshot: number;
+  itemDescriptionSnapshot?: string;
+  unitNameSnapshot?: string;
+  categoryNameSnapshot?: string;
+  quantity: number;
+  createdAt: string;
+  updatedAt: string;
+  taxName?: string;
+  taxRate: number;
+  taxType?: InvoiceItemTaxType;
 }
 
 export interface Invoice {
   id: number;
   invoiceType: InvoiceType;
-  convertedFromQuotationId?: number | null;
+  convertedFromQuotationId?: number;
   businessId: number;
   clientId: number;
   currencyId: number;
-  createdAt?: string;
-  updatedAt?: string;
+  createdAt: string;
+  updatedAt: string;
   issuedAt: string;
-  dueDate?: string | null;
+  dueDate?: string;
   invoiceNumber: string;
-  isArchived?: boolean;
+  isArchived: boolean;
   status: InvoiceStatus;
-  customerNotes?: string | null;
-  thanksNotes?: string | null;
-  termsConditionNotes?: string | null;
-  discountName?: string | null;
+  customerNotes?: string;
+  thanksNotes?: string;
+  termsConditionNotes?: string;
+  discountName?: string;
   businessNameSnapshot: string;
-  businessDescriptionSnapshot?: string | null;
-  businessAddressSnapshot?: string | null;
-  businessRoleSnapshot?: string | null;
-  businessEmailSnapshot?: string | null;
-  businessPhoneSnapshot?: string | null;
-  businessWebsiteSnapshot?: string | null;
-  businessAdditionalSnapshot?: string | null;
-  businessPaymentInformationSnapshot?: string | null;
-  businessLogoSnapshot?: Uint8Array | null;
-  businessFileSizeSnapshot?: number | null;
-  businessFileTypeSnapshot?: string | null;
-  businessFileNameSnapshot?: string | null;
+  businessDescriptionSnapshot?: string;
+  businessAddressSnapshot?: string;
+  businessRoleSnapshot?: string;
+  businessEmailSnapshot?: string;
+  businessPhoneSnapshot?: string;
+  businessWebsiteSnapshot?: string;
+  businessAdditionalSnapshot?: string;
+  businessPaymentInformationSnapshot?: string;
+  businessLogoSnapshot?: Uint8Array;
+  businessFileSizeSnapshot?: number;
+  businessFileTypeSnapshot?: string;
+  businessFileNameSnapshot?: string;
   clientNameSnapshot: string;
-  clientAddressSnapshot?: string | null;
-  clientDescriptionSnapshot?: string | null;
-  clientEmailSnapshot?: string | null;
-  clientPhoneSnapshot?: string | null;
-  clientCodeSnapshot?: string | null;
-  clientAdditionalSnapshot?: string | null;
+  clientAddressSnapshot?: string;
+  clientDescriptionSnapshot?: string;
+  clientEmailSnapshot?: string;
+  clientPhoneSnapshot?: string;
+  clientCodeSnapshot?: string;
+  clientAdditionalSnapshot?: string;
   currencyCodeSnapshot: string;
   currencySymbolSnapshot: string;
   currencySubunitSnapshot: number;
-  discountType?: DiscountType | null;
-  discountAmountCents?: number;
-  discountPercent?: number;
-  shippingFeeCents?: number;
+  discountType?: DiscountType;
+  discountAmountCents: number;
+  discountPercent: number;
+  shippingFeeCents: number;
+  taxName?: string;
+  taxRate: number;
+  taxType?: InvoiceTaxType;
   invoicePayments: InvoicePayment[];
+  invoiceItems: InvoiceItem[];
   currencyFormat: string;
 }
 
@@ -106,6 +128,9 @@ export interface InvoiceAdd {
   discountAmountCents?: number;
   discountPercent?: number;
   shippingFeeCents?: number;
+  taxName?: string;
+  taxRate: number;
+  taxType?: InvoiceTaxType;
 }
 
 export interface InvoiceUpdate extends InvoiceAdd {
@@ -157,6 +182,9 @@ export interface InvoiceFromData {
   discountAmountCents?: number;
   discountPercent?: number;
   shippingFeeCents?: number;
+  taxName?: string;
+  taxRate: number;
+  taxType?: InvoiceTaxType;
 }
 
 export interface InvoicesModified {
@@ -204,6 +232,10 @@ export interface InvoicesModified {
   discountAmountCents?: number;
   discountPercent?: number;
   shippingFeeCents?: number;
+  taxName?: string;
+  taxRate: number;
+  taxType?: InvoiceTaxType;
   invoicePayments: InvoicePayment[];
+  invoiceItems: InvoiceItem[];
   currencyFormat: string;
 }

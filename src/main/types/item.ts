@@ -8,4 +8,6 @@ export interface Item {
   unitName?: string;
   description?: string;
   isArchived: boolean;
+  createdAt: string;
+  updatedAt: string;
 }

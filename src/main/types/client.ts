@@ -9,4 +9,6 @@ export interface Client {
   code?: string;
   description?: string;
   isArchived: boolean;
+  createdAt: string;
+  updatedAt: string;
 }

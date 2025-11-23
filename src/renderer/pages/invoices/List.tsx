@@ -7,6 +7,7 @@ import { InvoiceStatus } from '../../shared/enums/invoiceStatus';
 import { Themes } from '../../shared/enums/themes';
 import type { Invoice } from '../../shared/types/invoice';
 import { formatDate, getFormattedCurrency } from '../../shared/utils/formatFunctions';
+import { getBalanceDueCents, getTotalAmountCents } from '../../shared/utils/invoiceFunctions';
 import { useAppSelector } from '../../state/configureStore';
 import { selectSettings } from '../../state/pageSlice';
 
@@ -19,15 +20,6 @@ export const List: FC<Props> = ({ item, selectedItem, onEdit }) => {
   const settings = useAppSelector(selectSettings);
   const theme = useTheme();
   const { t } = useTranslation();
-
-  const getTotalAmountPaid = (): number => {
-    if (!item.invoicePayments || item.invoicePayments.length === 0) {
-      return 0;
-    }
-
-    const totalCents = item.invoicePayments.reduce((sum, p) => sum + p.amountCents, 0);
-    return totalCents;
-  };
 
   const getLastPaymentDate = (): string | null => {
     if (!item.invoicePayments || item.invoicePayments.length === 0) {
@@ -65,9 +57,8 @@ export const List: FC<Props> = ({ item, selectedItem, onEdit }) => {
 
   const latestPaidAt = useMemo(() => getLastPaymentDate(), [item.invoicePayments]);
   const overdueDaysLeft = useMemo(() => daysLeft(), [item]);
-  const amountPaidCents = useMemo(() => getTotalAmountPaid(), [item.invoicePayments]);
-  const totalAmountCents = useMemo(() => 200 * item.currencySubunitSnapshot, [item]);
-  const remainingCents = useMemo(() => totalAmountCents - amountPaidCents, [amountPaidCents, totalAmountCents]);
+  const totalAmountCents = useMemo(() => getTotalAmountCents(item), [item]);
+  const remainingCents = useMemo(() => getBalanceDueCents(item), [item]);
   const remainingAmount = useMemo(() => remainingCents / item.currencySubunitSnapshot, [remainingCents]);
   const totalAmount = useMemo(() => totalAmountCents / item.currencySubunitSnapshot, [totalAmountCents]);
 

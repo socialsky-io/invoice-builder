@@ -606,9 +606,17 @@ const initIpcHandler = (db: Database, path: string) => {
     `;
     const invoicePayments = await getAllRows(db, paymentsSql, invoiceIds);
 
+    const invoiceItemsSql = `
+      SELECT ii.*
+      FROM invoice_items as ii
+      WHERE parentInvoiceId IN (${placeholders})
+    `;
+    const invoiceItems = await getAllRows(db, invoiceItemsSql, invoiceIds);
+
     const finalInvoices = invoices.map(invoice => ({
       ...invoice,
-      invoicePayments: invoicePayments.filter(p => p.parentInvoiceId === invoice.id)
+      invoicePayments: invoicePayments.filter(p => p.parentInvoiceId === invoice.id),
+      invoiceItems: invoiceItems.filter(p => p.parentInvoiceId === invoice.id)
     }));
 
     return {

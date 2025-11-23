@@ -15,4 +15,6 @@ export interface Business {
   fileType?: string;
   fileName?: string;
   description?: string;
+  createdAt: string;
+  updatedAt: string;
 }

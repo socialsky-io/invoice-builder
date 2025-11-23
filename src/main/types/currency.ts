@@ -6,4 +6,6 @@ export interface Currency {
   format: string;
   subunit: number;
   isArchived: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
