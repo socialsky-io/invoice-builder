@@ -1,7 +1,7 @@
 import { useEffect, type FC, type ReactNode } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import { useAppDispatch } from '../../../state/configureStore';
-import { addToast } from '../../../state/pageSlice';
+import { useAppDispatch } from '../../../../state/configureStore';
+import { addToast } from '../../../../state/pageSlice';
 
 const ErrorFallback: FC<{ error: Error }> = ({ error }) => {
   const dispatch = useAppDispatch();

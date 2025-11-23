@@ -14,9 +14,9 @@ import {
 } from '@mui/material';
 import { darken, lighten } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
-import { useAppSelector } from '../../../state/configureStore';
-import { selectSettings } from '../../../state/pageSlice';
-import { Themes } from '../../enums/themes';
+import { useAppSelector } from '../../../../state/configureStore';
+import { selectSettings } from '../../../../state/pageSlice';
+import { Themes } from '../../../enums/themes';
 
 interface GenericListProps<T extends { id: number }> {
   item: T;

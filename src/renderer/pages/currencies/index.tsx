@@ -1,6 +1,6 @@
 import { type FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CRUDPage } from '../../shared/components/crudPage/CRUDPage';
+import { CRUDPage } from '../../shared/components/layout/crudPage/CRUDPage';
 import { FilterType } from '../../shared/enums/filterType';
 import { useCurrenciesRetrieve } from '../../shared/hooks/currencies/useCurrenciesRetrieve';
 import { useCurrencyAdd } from '../../shared/hooks/currencies/useCurrencyAdd';

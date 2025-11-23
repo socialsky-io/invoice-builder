@@ -1,5 +1,5 @@
 import { type FC } from 'react';
-import { GenericList } from '../../shared/components/genericList/GenericList';
+import { GenericList } from '../../shared/components/lists/genericList/GenericList';
 import type { Item } from '../../shared/types/item';
 import { formatAmount } from '../../shared/utils/functions';
 import { useAppSelector } from '../../state/configureStore';

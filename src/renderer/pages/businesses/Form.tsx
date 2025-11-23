@@ -1,7 +1,7 @@
 import { FormControlLabel, Grid, Switch, TextField } from '@mui/material';
 import { useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { UploadImage } from '../../shared/components/uploadImage/UploadImage';
+import { UploadImage } from '../../shared/components/inputs/uploadImage/UploadImage';
 import { useForm } from '../../shared/hooks/useForm';
 import type { Business, BusinessFromData } from '../../shared/types/business';
 import { fromUint8Array, toUint8Array } from '../../shared/utils/functions';

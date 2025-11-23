@@ -1,6 +1,6 @@
 import { type FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CRUDPage } from '../../shared/components/crudPage/CRUDPage';
+import { CRUDPage } from '../../shared/components/layout/crudPage/CRUDPage';
 import { FilterType } from '../../shared/enums/filterType';
 import { useItemAdd } from '../../shared/hooks/items/useItemAdd';
 import { useItemAddBatch } from '../../shared/hooks/items/useItemAddBatch';

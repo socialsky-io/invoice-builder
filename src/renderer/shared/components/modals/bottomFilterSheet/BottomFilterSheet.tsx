@@ -17,12 +17,12 @@ import {
 } from '@mui/material';
 import { useMemo, useState, type ChangeEvent, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAppSelector } from '../../../state/configureStore';
-import { selectSettings } from '../../../state/pageSlice';
-import { FilterType } from '../../enums/filterType';
-import type { CustomOption } from '../../types/customOption';
-import type { Filter } from '../../types/filter';
-import { UTCDateRangePicker } from '../utcDateRangePicker/UTCDateRangePicker';
+import { useAppSelector } from '../../../../state/configureStore';
+import { selectSettings } from '../../../../state/pageSlice';
+import { FilterType } from '../../../enums/filterType';
+import type { CustomOption } from '../../../types/customOption';
+import type { Filter } from '../../../types/filter';
+import { UTCDateRangePicker } from '../../inputs/utcDateRangePicker/UTCDateRangePicker';
 
 interface Props {
   filters: Filter[];

@@ -1,8 +1,8 @@
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import React, { createContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { useAppSelector } from '../../../state/configureStore';
-import { selectSettings } from '../../../state/pageSlice';
-import { Themes } from '../../enums/themes';
+import { useAppSelector } from '../../../../state/configureStore';
+import { selectSettings } from '../../../../state/pageSlice';
+import { Themes } from '../../../enums/themes';
 import { darkTheme, lightTheme } from './theme';
 
 type ThemeMode = Themes;

@@ -1,8 +1,8 @@
 import { TextField } from '@mui/material';
 import type { FC } from 'react';
 import { NumericFormat } from 'react-number-format';
-import { AmountFormat } from '../../enums/amountFormat';
-import { getFormattingMeta } from '../../utils/functions';
+import { AmountFormat } from '../../../enums/amountFormat';
+import { getFormattingMeta } from '../../../utils/functions';
 
 interface Props {
   value: number;

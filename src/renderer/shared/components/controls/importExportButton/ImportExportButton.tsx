@@ -4,8 +4,8 @@ import FileUploadIcon from '@mui/icons-material/FileUpload';
 import { Button, ListItemIcon, ListItemText, Menu, MenuItem } from '@mui/material';
 import React, { useRef, useState, type MouseEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAppDispatch } from '../../../state/configureStore';
-import { addToast } from '../../../state/pageSlice';
+import { useAppDispatch } from '../../../../state/configureStore';
+import { addToast } from '../../../../state/pageSlice';
 
 interface Props {
   onImport?: (file: File) => Promise<void> | void;

@@ -4,9 +4,9 @@ import { Box, Fab, IconButton, Tooltip, useTheme } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import 'react-image-crop/dist/ReactCrop.css';
-import { useAppDispatch } from '../../../state/configureStore';
-import { addToast } from '../../../state/pageSlice';
-import { CropModal } from '../cropModal/CropModal';
+import { useAppDispatch } from '../../../../state/configureStore';
+import { addToast } from '../../../../state/pageSlice';
+import { CropModal } from '../../modals/cropModal/CropModal';
 
 interface UploadSquareProps {
   onUpload?: (file?: Blob, filename?: string) => void;

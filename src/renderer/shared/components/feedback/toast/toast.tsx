@@ -1,6 +1,6 @@
 import { Alert, Snackbar } from '@mui/material';
 import React, { useState, type FC } from 'react';
-import type { ToastProps } from '../../types/toastProps';
+import type { ToastProps } from '../../../types/toastProps';
 
 export const Toast: FC<ToastProps> = React.memo(
   ({

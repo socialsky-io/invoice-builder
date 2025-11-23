@@ -1,10 +1,9 @@
 import { type FC } from 'react';
 import { useTranslation } from 'react-i18next';
+import { CRUDPage } from '../../shared/components/layout/crudPage/CRUDPage';
+import { FilterType } from '../../shared/enums/filterType';
 import { InvoiceStatus } from '../../shared/enums/invoiceStatus';
 import { useInvoicesRetrieve } from '../../shared/hooks/invoices/useInvoicesRetrieve';
-
-import { CRUDPage } from '../../shared/components/crudPage/CRUDPage';
-import { FilterType } from '../../shared/enums/filterType';
 import type { Filter } from '../../shared/types/filter';
 import type { Invoice, InvoiceAdd, InvoiceUpdate } from '../../shared/types/invoice';
 import { createCommonFilters } from '../../shared/utils/functions';

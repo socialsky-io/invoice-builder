@@ -3,8 +3,8 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import UnfoldMoreIcon from '@mui/icons-material/UnfoldMore';
 import { Box, IconButton, MenuItem, Select, Tooltip, Typography, type SelectChangeEvent } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { SortType } from '../../enums/sortType';
-import type { CustomOption } from '../../types/customOption';
+import { SortType } from '../../../enums/sortType';
+import type { CustomOption } from '../../../types/customOption';
 
 interface Props<T extends string | number | symbol> {
   activeSort: SortType;

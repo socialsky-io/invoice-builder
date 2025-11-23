@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 import type { FC } from 'react';
 import React from 'react';
-import type { ToastMeta } from '../../types/toastMeta';
+import type { ToastMeta } from '../../../types/toastMeta';
 import { Toast } from './toast';
 
 interface Props {

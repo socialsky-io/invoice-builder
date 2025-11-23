@@ -6,8 +6,8 @@ import { App } from './app/App';
 import './globalErrorHandlers';
 import './i18n';
 import reportWebVitals from './reportWebVitals';
-import { GlobalErrorBoundaryWrapper } from './shared/components/globalErrorBoundaryWrapper/GlobalErrorBoundaryWrapper';
-import { ThemeProviderWrapper } from './shared/components/theme/ThemeProviderWrapper';
+import { GlobalErrorBoundaryWrapper } from './shared/components/feedback/globalErrorBoundaryWrapper/GlobalErrorBoundaryWrapper';
+import { ThemeProviderWrapper } from './shared/components/layout/theme/ThemeProviderWrapper';
 import { store } from './state/configureStore';
 
 const mockEnabled = import.meta.env.VITE_ENABLE_MOCKS;

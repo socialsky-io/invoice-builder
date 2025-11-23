@@ -1,6 +1,6 @@
 import { List, ListItem, ListItemButton, ListItemIcon, ListItemText, Switch, Tooltip, useTheme } from '@mui/material';
 import type { FC } from 'react';
-import type { MenuItem } from '../../types/menuItem';
+import type { MenuItem } from '../../../types/menuItem';
 
 interface Props {
   items: MenuItem[];

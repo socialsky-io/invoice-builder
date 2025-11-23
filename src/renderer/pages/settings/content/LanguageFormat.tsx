@@ -1,7 +1,7 @@
 import { Autocomplete, Box, Grid, TextField } from '@mui/material';
 import { useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PageHeader } from '../../../shared/components/pageHeader/PageHeader';
+import { PageHeader } from '../../../shared/components/layout/pageHeader/PageHeader';
 import { AmountFormat } from '../../../shared/enums/amountFormat';
 import { DateFormat } from '../../../shared/enums/dateFormat';
 import { Language } from '../../../shared/enums/language';

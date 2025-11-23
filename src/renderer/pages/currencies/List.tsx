@@ -1,5 +1,5 @@
 import { type FC } from 'react';
-import { GenericList } from '../../shared/components/genericList/GenericList';
+import { GenericList } from '../../shared/components/lists/genericList/GenericList';
 import type { Currency } from '../../shared/types/currency';
 
 interface Props {

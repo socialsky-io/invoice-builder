@@ -10,7 +10,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useCallback, useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { MenuList } from '../shared/components/menuList/MenuList';
+import { MenuList } from '../shared/components/lists/menuList/MenuList';
 import type { MenuItem } from '../shared/types/menuItem';
 import { useAppSelector } from '../state/configureStore';
 import { selectSettings } from '../state/pageSlice';

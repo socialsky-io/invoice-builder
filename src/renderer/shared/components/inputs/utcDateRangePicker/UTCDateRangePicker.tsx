@@ -6,7 +6,7 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { DateFormat } from '../../enums/dateFormat';
+import type { DateFormat } from '../../../enums/dateFormat';
 
 dayjs.extend(utc);
 
