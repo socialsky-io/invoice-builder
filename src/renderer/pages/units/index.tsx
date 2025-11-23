@@ -36,7 +36,7 @@ export const UnitsPage: FC = () => {
 
   return (
     <CRUDPage<Unit, UnitAdd, UnitUpdate>
-      title={t('units.title')}
+      title={t('common.unit')}
       filters={filters}
       excelColumns={excelColumns}
       excelFileName={excelFileName}

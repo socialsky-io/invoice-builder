@@ -40,23 +40,9 @@
       "noInvoicesText": "Businesses who do not have invoices"
     },
     "noItem": "Selected a business to view details.",
-    "title": "Business"
-  },
-  "businessesModal": {
-    "additional": "Additional",
-    "address": "Address",
-    "description": "Description",
-    "email": "Email",
-    "invalidEmail": "Invalid email format",
-    "invalidPhone": "Invalid phone number format",
-    "isArchived": "Archived",
-    "name": "Name",
     "paymentInfo": "Payment information",
-    "phone": "Phone",
-    "phoneHelper": "Enter phone number in international format",
     "role": "Role",
-    "shortName": "Short name",
-    "shortNameHelper": "Maximum 2 characters",
+    "title": "Business",
     "website": "Website"
   },
   "categories": {
@@ -78,15 +64,11 @@
       "noInvoicesDesc": "Categories with no invoices",
       "noInvoicesText": "Categories who do not have invoices"
     },
-    "noItem": "Selected a category to view details.",
-    "title": "Category"
-  },
-  "categoriesModal": {
-    "isArchived": "Archived",
-    "name": "Name"
+    "noItem": "Selected a category to view details."
   },
   "clients": {
     "add": "Add client",
+    "code": "Company code",
     "filter": {
       "activeDesc": "Clients that are not archived",
       "activeText": "Active clients",
@@ -104,34 +86,26 @@
       "noInvoicesDesc": "Clients with no invoices",
       "noInvoicesText": "Clients who do not have invoices"
     },
-    "noItem": "Selected a client to view details.",
-    "title": "Client"
-  },
-  "clientsModal": {
-    "additional": "Additional",
-    "address": "Address",
-    "code": "Company code",
-    "description": "Description",
-    "email": "Email",
-    "invalidEmail": "Invalid email format",
-    "invalidPhone": "Invalid phone number format",
-    "isArchived": "Archived",
-    "name": "Name",
-    "phone": "Phone",
-    "phoneHelper": "Enter phone number in international format",
-    "shortName": "Short name",
-    "shortNameHelper": "Maximum 2 characters"
+    "noItem": "Selected a client to view details."
   },
   "common": {
+    "additional": "Additional",
+    "address": "Address",
     "and": "and",
     "archived": "Archived",
     "cancel": "Cancel",
+    "category": "Category",
+    "client": "Client",
+    "description": "Description",
     "downloadTemplate": "Download template",
+    "email": "Email",
     "export": "Export",
     "fieldRequired": "Field is required",
     "from": "From",
     "import": "Import",
     "importExport": "Import / Export",
+    "invalidEmail": "Invalid email format",
+    "invalidPhone": "Invalid phone number format",
     "invoice": "Invoice",
     "invoiceNumber": "Invoice number",
     "invoices": "Invoices",
@@ -140,19 +114,25 @@
     "name": "Name",
     "noData": "No data based on search criteria",
     "noDataYet": "No data yet. Start adding...",
+    "phone": "Phone",
+    "phoneHelper": "Enter phone number in international format",
     "quote": "Quote",
     "quotes": "Quotes",
     "save": "Save",
     "search": "Search...",
     "selectFilterType": "Select filter type",
     "selectImage": "Select an image file",
+    "shortName": "Short name",
+    "shortNameHelper": "Maximum 2 characters",
     "sortBy": "Sort by",
     "status": "Status",
     "text": "Text",
-    "to": "To"
+    "to": "To",
+    "unit": "Unit"
   },
   "currencies": {
     "add": "Add currency",
+    "code": "Symbol text",
     "filter": {
       "activeDesc": "Currencies that are not archived",
       "activeText": "Active currencies",
@@ -170,16 +150,11 @@
       "noInvoicesDesc": "Currencies with no invoices",
       "noInvoicesText": "Currencies who do not have invoices"
     },
-    "noItem": "Selected a currency to view details.",
-    "title": "Currency"
-  },
-  "currenciesModal": {
-    "code": "Symbol text",
     "format": "Format",
-    "isArchived": "Archived",
+    "noItem": "Selected a currency to view details.",
     "subunit": "Sub unit",
     "symbol": "Symbol",
-    "text": "Text"
+    "title": "Currency"
   },
   "customizeInvoice": {
     "includeBusinessName": "Include business name",
@@ -221,20 +196,17 @@
       "allText": "All invoices",
       "archivedDesc": "Invoices that have been archived",
       "archivedText": "Archived invoices",
-      "business": "Businesses",
-      "client": "Client",
-      "date": "date",
-      "status": "Status"
+      "date": "date"
     },
     "markedAsPaid": "Marked as paid: {{date}}",
     "noItem": "Selected a invoice to view details.",
     "overdue": "Overdue {{days}} day(s)",
     "overpaid": "Overpaid: {{amount}}",
-    "partiallyPaid": "Partially paid: {{amount}} remaining",
-    "title": "Invoice"
+    "partiallyPaid": "Partially paid: {{amount}} remaining"
   },
   "items": {
     "add": "Add item",
+    "amount": "Amount",
     "filter": {
       "activeDesc": "Items that are not archived",
       "activeText": "Active items",
@@ -254,14 +226,6 @@
     },
     "noItem": "Selected a item to view details.",
     "title": "Item"
-  },
-  "itemsModal": {
-    "amount": "Amount",
-    "category": "Category",
-    "description": "Description",
-    "isArchived": "Archived",
-    "name": "Name",
-    "unit": "Unit"
   },
   "languageFormat": {
     "amountFormat": "Amount format",
@@ -329,11 +293,6 @@
       "noInvoicesDesc": "Units with no invoices",
       "noInvoicesText": "Units who do not have invoices"
     },
-    "noItem": "Selected a unit to view details.",
-    "title": "Unit"
-  },
-  "unitsModal": {
-    "isArchived": "Archived",
-    "name": "Name"
+    "noItem": "Selected a unit to view details."
   }
 }

@@ -75,7 +75,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, currency }) => {
     <Grid container spacing={2}>
       <Grid size={{ xs: 12, md: 4 }}>
         <TextField
-          label={t('currenciesModal.code')}
+          label={t('currencies.code')}
           fullWidth
           required
           value={form.code}
@@ -89,7 +89,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, currency }) => {
       </Grid>
       <Grid size={{ xs: 12, md: 4 }}>
         <TextField
-          label={t('currenciesModal.symbol')}
+          label={t('currencies.symbol')}
           fullWidth
           required
           value={form.symbol}
@@ -127,7 +127,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, currency }) => {
               {...params}
               error={errors.format}
               helperText={errors.format ? t('common.fieldRequired') : ''}
-              label={t('currenciesModal.format')}
+              label={t('currencies.format')}
               required
             />
           )}
@@ -136,7 +136,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, currency }) => {
       </Grid>
       <Grid size={{ xs: 12, md: 4 }}>
         <TextField
-          label={t('currenciesModal.subunit')}
+          label={t('currencies.subunit')}
           fullWidth
           required
           type="number"
@@ -151,7 +151,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, currency }) => {
       </Grid>
       <Grid size={{ xs: 12, md: 12 }}>
         <TextField
-          label={t('currenciesModal.text')}
+          label={t('common.text')}
           fullWidth
           required
           value={form.text}
@@ -166,7 +166,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, currency }) => {
       <Grid size={{ xs: 12, md: 12 }}>
         <FormControlLabel
           control={<Switch checked={form.isArchived} onChange={e => update('isArchived', e.target.checked)} />}
-          label={t('currenciesModal.isArchived')}
+          label={t('common.archived')}
         />
       </Grid>
     </Grid>

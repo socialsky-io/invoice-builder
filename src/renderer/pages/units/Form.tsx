@@ -49,7 +49,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, unit }) => {
     <Grid container spacing={2}>
       <Grid size={{ xs: 12, md: 12 }}>
         <TextField
-          label={t('unitsModal.name')}
+          label={t('common.name')}
           fullWidth
           required
           value={form.name}
@@ -64,7 +64,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, unit }) => {
       <Grid size={{ xs: 12, md: 12 }}>
         <FormControlLabel
           control={<Switch checked={form.isArchived} onChange={e => update('isArchived', e.target.checked)} />}
-          label={t('unitsModal.isArchived')}
+          label={t('common.archived')}
         />
       </Grid>
     </Grid>

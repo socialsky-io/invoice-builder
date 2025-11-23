@@ -36,7 +36,7 @@ export const CategoriesPage: FC = () => {
 
   return (
     <CRUDPage<Category, CategoryAdd, CategoryUpdate>
-      title={t('categories.title')}
+      title={t('common.category')}
       filters={filters}
       excelColumns={excelColumns}
       excelFileName={excelFileName}

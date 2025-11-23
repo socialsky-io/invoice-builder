@@ -40,23 +40,9 @@
       "noInvoicesText": "Įmonės be sąskaitų"
     },
     "noItem": "Pasirinkite įmonę, kad peržiūrėtumėte detales.",
-    "title": "Įmonė"
-  },
-  "businessesModal": {
-    "additional": "Papildoma informacija",
-    "address": "Adresas",
-    "description": "Aprašymas",
-    "email": "El. paštas",
-    "invalidEmail": "Neteisingas el. pašto formatas",
-    "invalidPhone": "Neteisingas telefono numerio formatas",
-    "isArchived": "Archyvuota",
-    "name": "Pavadinimas",
     "paymentInfo": "Mokėjimo informacija",
-    "phone": "Telefonas",
-    "phoneHelper": "Įveskite telefono numerį tarptautiniu formatu",
     "role": "Vaidmuo",
-    "shortName": "Trumpinys",
-    "shortNameHelper": "Maksimaliai 2 simboliai",
+    "title": "Įmonė",
     "website": "Svetainė"
   },
   "categories": {
@@ -78,15 +64,11 @@
       "noInvoicesDesc": "Kategorijos, kurioms nėra sukurtų sąskaitų",
       "noInvoicesText": "Kategorijos be sąskaitų"
     },
-    "noItem": "Pasirinkite kategoriją, kad pamatytumėte detales.",
-    "title": "Kategorija"
-  },
-  "categoriesModal": {
-    "isArchived": "Archyvuota",
-    "name": "Pavadinimas"
+    "noItem": "Pasirinkite kategoriją, kad pamatytumėte detales."
   },
   "clients": {
     "add": "Pridėti klientą",
+    "code": "Įmonės kodas",
     "filter": {
       "activeDesc": "Klientai, kurie nėra archyvuoti",
       "activeText": "Aktyvūs klientai",
@@ -104,34 +86,26 @@
       "noInvoicesDesc": "Klientai, neturintys sąskaitų",
       "noInvoicesText": "Klientai be sąskaitų"
     },
-    "noItem": "Pasirinkite klientą, kad pamatytumėte detales.",
-    "title": "Klientas"
-  },
-  "clientsModal": {
-    "additional": "Papildoma informacija",
-    "address": "Adresas",
-    "code": "Įmonės kodas",
-    "description": "Aprašymas",
-    "email": "El. paštas",
-    "invalidEmail": "Neteisingas el. pašto formatas",
-    "invalidPhone": "Neteisingas telefono numerio formatas",
-    "isArchived": "Archyvuota",
-    "name": "Pavadinimas",
-    "phone": "Telefonas",
-    "phoneHelper": "Įveskite telefono numerį tarptautiniu formatu",
-    "shortName": "Trumpinys",
-    "shortNameHelper": "Maksimaliai 2 simboliai"
+    "noItem": "Pasirinkite klientą, kad pamatytumėte detales."
   },
   "common": {
+    "additional": "Papildoma informacija",
+    "address": "Adresas",
     "and": "ir",
     "archived": "Archyvuota",
     "cancel": "Atšaukti",
+    "category": "Kategorija",
+    "client": "Klientas",
+    "description": "Aprašymas",
     "downloadTemplate": "Atsisiųsti šabloną",
+    "email": "El. paštas",
     "export": "Eksportuoti",
     "fieldRequired": "Laukas yra privalomas",
     "from": "Nuo",
     "import": "Importuoti",
     "importExport": "Importuoti / Eksportuoti",
+    "invalidEmail": "Neteisingas el. pašto formatas",
+    "invalidPhone": "Neteisingas telefono numerio formatas",
     "invoice": "Sąskaita",
     "invoiceNumber": "Sąskaitos numeris",
     "invoices": "Sąskaitos",
@@ -140,19 +114,25 @@
     "name": "Pavadinimas",
     "noData": "Duomenų pagal paieškos kriterijus nėra",
     "noDataYet": "Duomenų dar nėra. Pradėkite juos pridėti...",
+    "phone": "Telefonas",
+    "phoneHelper": "Įveskite telefono numerį tarptautiniu formatu",
     "quote": "Pasiūlymas",
     "quotes": "Pasiūlymai",
     "save": "Išsaugoti",
     "search": "Ieškoti...",
     "selectFilterType": "Pasirinkite filtro tipą",
     "selectImage": "Pasirinkite vaizdo failą",
+    "shortName": "Trumpinys",
+    "shortNameHelper": "Maksimaliai 2 simboliai",
     "sortBy": "Rūšiuoti pagal",
     "status": "Statusas",
     "text": "Tekstas",
-    "to": "Iki"
+    "to": "Iki",
+    "unit": "Vienetas"
   },
   "currencies": {
     "add": "Pridėti valiutą",
+    "code": "Valiutos trumpinys",
     "filter": {
       "activeDesc": "Valiutos, kurios nėra archyvuotos",
       "activeText": "Aktyvios valiutos",
@@ -170,16 +150,11 @@
       "noInvoicesDesc": "Valiutos, kurioms nėra sukurtų sąskaitų",
       "noInvoicesText": "Valiutos be sąskaitų"
     },
-    "noItem": "Pasirinkite valiutą, kad pamatytumėte jos informaciją.",
-    "title": "Valiuta"
-  },
-  "currenciesModal": {
-    "code": "Valiutos trumpinys",
     "format": "Formatas",
-    "isArchived": "Archyvuota",
+    "noItem": "Pasirinkite valiutą, kad pamatytumėte jos informaciją.",
     "subunit": "Subvienetas",
     "symbol": "Simbolis",
-    "text": "Pavadinimas"
+    "title": "Valiuta"
   },
   "customizeInvoice": {
     "includeBusinessName": "Įtraukti įmonės pavadinimą",
@@ -221,20 +196,17 @@
       "allText": "Visos sąskaitos",
       "archivedDesc": "Sąskaitos, kurios buvo archyvuotos",
       "archivedText": "Archyvuotos sąskaitos",
-      "business": "Verslas",
-      "client": "Klientas",
-      "date": "Data",
-      "status": "Statusas"
+      "date": "data"
     },
     "markedAsPaid": "Pažymėta kaip apmokėta: {{date}}",
     "noItem": "Pasirinkite sąskaitą, kad matytumėte detales.",
     "overdue": "Vėluojama {{days}} d.",
     "overpaid": "Permokėta: {{amount}}",
-    "partiallyPaid": "Iš dalies apmokėta: liko {{amount}}",
-    "title": "Sąskaita"
+    "partiallyPaid": "Iš dalies apmokėta: liko {{amount}}"
   },
   "items": {
     "add": "Pridėti prekę",
+    "amount": "Suma",
     "filter": {
       "activeDesc": "Elementai, kurie nėra archyvuoti",
       "activeText": "Aktyvūs elementai",
@@ -254,14 +226,6 @@
     },
     "noItem": "Pasirinkite prekę, kad peržiūrėtumėte detales.",
     "title": "Prekė"
-  },
-  "itemsModal": {
-    "amount": "Kiekis",
-    "category": "Kategorija",
-    "description": "Aprašymas",
-    "isArchived": "Archyvuota",
-    "name": "Pavadinimas",
-    "unit": "Vienetas"
   },
   "languageFormat": {
     "amountFormat": "Sumos formatas",
@@ -329,11 +293,6 @@
       "noInvoicesDesc": "Vienetai, kuriems nėra sukurtų sąskaitų",
       "noInvoicesText": "Vienetai be sąskaitų"
     },
-    "noItem": "Pasirinkite vienetą, kad pamatytumėte detales.",
-    "title": "Vienetas"
-  },
-  "unitsModal": {
-    "isArchived": "Archyvuota",
-    "name": "Pavadinimas"
+    "noItem": "Pasirinkite vienetą, kad pamatytumėte detales."
   }
 }

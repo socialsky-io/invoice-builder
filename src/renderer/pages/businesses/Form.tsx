@@ -109,7 +109,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <TextField
-          label={t('businessesModal.name')}
+          label={t('common.name')}
           fullWidth
           required
           value={form.name}
@@ -123,12 +123,12 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <TextField
-          label={t('businessesModal.shortName')}
+          label={t('common.shortName')}
           fullWidth
           required
           value={form.shortName}
           error={errors.shortName}
-          helperText={errors.shortName ? t('common.fieldRequired') : t('businessesModal.shortNameHelper')}
+          helperText={errors.shortName ? t('common.fieldRequired') : t('common.shortNameHelper')}
           onChange={e => {
             update('shortName', e.target.value);
             validateField('shortName', e.target.value);
@@ -142,7 +142,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <TextField
-          label={t('businessesModal.address')}
+          label={t('common.address')}
           fullWidth
           value={form.address}
           onChange={e => update('address', e.target.value)}
@@ -150,7 +150,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <TextField
-          label={t('businessesModal.role')}
+          label={t('businesses.role')}
           fullWidth
           value={form.role}
           onChange={e => update('role', e.target.value)}
@@ -159,7 +159,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
       <Grid size={{ xs: 12, md: 6 }}>
         <TextField
           type="email"
-          label={t('businessesModal.email')}
+          label={t('common.email')}
           fullWidth
           value={form.email}
           onChange={e => {
@@ -167,12 +167,12 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
             validateField('email', e.target.value);
           }}
           error={errors.email}
-          helperText={errors.email ? t('businessesModal.invalidEmail') : ''}
+          helperText={errors.email ? t('common.invalidEmail') : ''}
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <TextField
-          label={t('businessesModal.phone')}
+          label={t('common.phone')}
           fullWidth
           value={form.phone}
           onChange={e => {
@@ -180,7 +180,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
             validateField('phone', e.target.value);
           }}
           error={errors.phone}
-          helperText={errors.phone ? t('businessesModal.invalidPhone') : t('businessesModal.phoneHelper')}
+          helperText={errors.phone ? t('common.invalidPhone') : t('common.phoneHelper')}
           slotProps={{
             htmlInput: {
               maxLength: 16
@@ -190,7 +190,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <TextField
-          label={t('businessesModal.website')}
+          label={t('businesses.website')}
           fullWidth
           value={form.website}
           onChange={e => update('website', e.target.value)}
@@ -198,7 +198,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <TextField
-          label={t('businessesModal.description')}
+          label={t('common.description')}
           fullWidth
           rows={5}
           value={form.description}
@@ -208,7 +208,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
       <Grid size={{ xs: 12, md: 12 }}>
         <TextField
           multiline
-          label={t('businessesModal.additional')}
+          label={t('common.additional')}
           fullWidth
           rows={5}
           value={form.additional}
@@ -219,7 +219,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
         <TextField
           multiline
           rows={5}
-          label={t('businessesModal.paymentInfo')}
+          label={t('businesses.paymentInfo')}
           fullWidth
           value={form.paymentInformation}
           onChange={e => update('paymentInformation', e.target.value)}
@@ -228,7 +228,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
       <Grid size={{ xs: 12, md: 12 }}>
         <FormControlLabel
           control={<Switch checked={form.isArchived} onChange={e => update('isArchived', e.target.checked)} />}
-          label={t('businessesModal.isArchived')}
+          label={t('common.archived')}
         />
       </Grid>
     </Grid>

@@ -58,7 +58,7 @@ export const ClientsPage: FC = () => {
 
   return (
     <CRUDPage<Client, ClientAdd, ClientUpdate>
-      title={t('clients.title')}
+      title={t('common.client')}
       filters={filters}
       excelColumns={excelColumns}
       excelFileName={excelFileName}

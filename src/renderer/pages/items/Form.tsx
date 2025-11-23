@@ -90,7 +90,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, item }) => {
     <Grid container spacing={2}>
       <Grid size={{ xs: 12, md: 6 }}>
         <TextField
-          label={t('itemsModal.name')}
+          label={t('common.name')}
           fullWidth
           required
           value={form.name}
@@ -104,7 +104,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, item }) => {
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <TextField
-          label={t('itemsModal.description')}
+          label={t('common.description')}
           fullWidth
           value={form.description}
           onChange={e => {
@@ -115,7 +115,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, item }) => {
       <Grid size={{ xs: 12, md: 6 }}>
         <AmountInput
           required={true}
-          label={t('itemsModal.amount')}
+          label={t('items.amount')}
           value={form.amount ?? 0}
           amountFormat={settings?.amountFormat}
           onChange={e => {
@@ -132,7 +132,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, item }) => {
           onChange={(_e, newValue) => {
             update('unitId', newValue?.value);
           }}
-          renderInput={params => <TextField {...params} label={t('itemsModal.unit')} />}
+          renderInput={params => <TextField {...params} label={t('common.unit')} />}
           freeSolo={false}
         />
       </Grid>
@@ -145,14 +145,14 @@ export const Form: FC<Props> = ({ handleChange = () => {}, item }) => {
           onChange={(_e, newValue) => {
             update('categoryId', newValue?.value);
           }}
-          renderInput={params => <TextField {...params} label={t('itemsModal.category')} />}
+          renderInput={params => <TextField {...params} label={t('common.category')} />}
           freeSolo={false}
         />
       </Grid>
       <Grid size={{ xs: 12, md: 12 }}>
         <FormControlLabel
           control={<Switch checked={form.isArchived} onChange={e => update('isArchived', e.target.checked)} />}
-          label={t('itemsModal.isArchived')}
+          label={t('common.archived')}
         />
       </Grid>
     </Grid>

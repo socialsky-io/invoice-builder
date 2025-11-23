@@ -37,12 +37,12 @@ export const InvoicesPage: FC = () => {
   const filters: Filter[] = [
     ...createCommonFilters({ t, namespace: 'invoices', initial: FilterType.active, shouldCloseOnClick: false }),
     {
-      label: t('invoices.filter.client'),
+      label: t('common.client'),
       type: FilterType.client,
       options: clientsOptions
     },
     {
-      label: t('invoices.filter.business'),
+      label: t('menuItems.businesses'),
       type: FilterType.business,
       options: businessesOptions
     },
@@ -52,7 +52,7 @@ export const InvoicesPage: FC = () => {
     },
     {
       type: FilterType.status,
-      label: t('invoices.filter.status'),
+      label: t('currencies.status'),
       value: FilterType.status,
       options: [
         { label: InvoiceStatus.unpaid, value: InvoiceStatus.unpaid },
@@ -65,7 +65,7 @@ export const InvoicesPage: FC = () => {
 
   return (
     <CRUDPage<Invoice, InvoiceAdd, InvoiceUpdate>
-      title={t('invoices.title')}
+      title={t('common.invoice')}
       filters={filters}
       // excelColumns={excelColumns}
       // excelFileName={excelFileName}
