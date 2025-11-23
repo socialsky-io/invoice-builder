@@ -6,7 +6,7 @@ import { InvoiceStatus } from '../../shared/enums/invoiceStatus';
 import { useInvoicesRetrieve } from '../../shared/hooks/invoices/useInvoicesRetrieve';
 import type { Filter } from '../../shared/types/filter';
 import type { Invoice, InvoiceAdd, InvoiceUpdate } from '../../shared/types/invoice';
-import { createCommonFilters } from '../../shared/utils/functions';
+import { createCommonFilters } from '../../shared/utils/filterSortFunctions';
 import { useAppSelector } from '../../state/configureStore';
 import { selectBusinessesSnapshotsOptions, selectClientsSnapshotsOptions } from '../../state/pageSlice';
 import { List } from './List';

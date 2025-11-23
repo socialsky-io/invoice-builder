@@ -4,7 +4,7 @@ import { setInvoices } from '../../../state/pageSlice';
 import type { Invoice } from '../../types/invoice';
 import type { RequestHook } from '../../types/requestHook';
 import type { Response } from '../../types/response';
-import { uint8ArrayToDataUrl } from '../../utils/functions';
+import { uint8ArrayToDataUrl } from '../../utils/dataUrlFunctions';
 import { useAsyncAction } from '../useAsyncAction';
 
 export const useInvoicesRetrieve = ({

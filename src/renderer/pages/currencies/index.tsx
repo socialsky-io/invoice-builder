@@ -10,7 +10,8 @@ import { useCurrencyUpdate } from '../../shared/hooks/currencies/useCurrencyUpda
 import type { Currency, CurrencyAdd, CurrencyUpdate } from '../../shared/types/currency';
 import type { Rows } from '../../shared/types/excel';
 import type { Filter } from '../../shared/types/filter';
-import { createCommonFilters, createInvoiceFilters, isCurrencyFromData } from '../../shared/utils/functions';
+import { createCommonFilters, createInvoiceFilters } from '../../shared/utils/filterSortFunctions';
+import { isCurrencyFromData } from '../../shared/utils/typeGuardFunctions';
 import { Form } from './Form';
 import { List } from './List';
 

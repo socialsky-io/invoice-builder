@@ -6,7 +6,7 @@ import type { CurrencyFormat } from '../../shared/enums/currencyFormat';
 import { InvoiceStatus } from '../../shared/enums/invoiceStatus';
 import { Themes } from '../../shared/enums/themes';
 import type { Invoice } from '../../shared/types/invoice';
-import { formatDate, getFormattedCurrency } from '../../shared/utils/functions';
+import { formatDate, getFormattedCurrency } from '../../shared/utils/formatFunctions';
 import { useAppSelector } from '../../state/configureStore';
 import { selectSettings } from '../../state/pageSlice';
 

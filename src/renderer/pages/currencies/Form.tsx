@@ -3,8 +3,8 @@ import { useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from '../../shared/hooks/useForm';
 import type { Currency, CurrencyFromData } from '../../shared/types/currency';
-import { getFormattedLabel } from '../../shared/utils/functions';
-import { validators } from '../../shared/utils/validators';
+import { getFormattedLabel } from '../../shared/utils/formatFunctions';
+import { validators } from '../../shared/utils/validatorFunctions';
 import { CURRENCY_FORMAT_ITEMS_ARRAY } from '../../state/constant';
 
 interface Props {

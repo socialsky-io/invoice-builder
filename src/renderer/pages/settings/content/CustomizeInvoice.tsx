@@ -2,7 +2,7 @@ import { Box, FormControlLabel, Grid, Switch, TextField } from '@mui/material';
 import { useEffect, useRef, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PageHeader } from '../../../shared/components/layout/pageHeader/PageHeader';
-import { validateOnlyNumbersLetters } from '../../../shared/utils/functions';
+import { validateOnlyNumbersLetters } from '../../../shared/utils/validatorFunctions';
 import { useAppSelector } from '../../../state/configureStore';
 import { selectSettings } from '../../../state/pageSlice';
 

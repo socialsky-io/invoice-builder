@@ -10,7 +10,8 @@ import { useCategoryUpdate } from '../../shared/hooks/categories/useCategoryUpda
 import type { Category, CategoryAdd, CategoryUpdate } from '../../shared/types/category';
 import type { Rows } from '../../shared/types/excel';
 import type { Filter } from '../../shared/types/filter';
-import { createCommonFilters, createInvoiceFilters, isCategoryFromData } from '../../shared/utils/functions';
+import { createCommonFilters, createInvoiceFilters } from '../../shared/utils/filterSortFunctions';
+import { isCategoryFromData } from '../../shared/utils/typeGuardFunctions';
 import { Form } from './Form';
 import { List } from './List';
 

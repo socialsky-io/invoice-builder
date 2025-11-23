@@ -4,7 +4,7 @@ import { setBusinesses } from '../../../state/pageSlice';
 import type { Business } from '../../types/business';
 import type { RequestHook } from '../../types/requestHook';
 import type { Response } from '../../types/response';
-import { uint8ArrayToDataUrl } from '../../utils/functions';
+import { uint8ArrayToDataUrl } from '../../utils/dataUrlFunctions';
 import { useAsyncAction } from '../useAsyncAction';
 
 export const useBusinessesRetrieve = ({

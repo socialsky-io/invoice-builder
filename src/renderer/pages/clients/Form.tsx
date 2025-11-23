@@ -3,7 +3,7 @@ import { useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from '../../shared/hooks/useForm';
 import type { Client, ClientFromData } from '../../shared/types/client';
-import { validators } from '../../shared/utils/validators';
+import { validators } from '../../shared/utils/validatorFunctions';
 
 interface Props {
   client?: Client;

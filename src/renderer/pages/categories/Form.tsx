@@ -3,7 +3,7 @@ import { useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from '../../shared/hooks/useForm';
 import type { Category, CategoryFromData } from '../../shared/types/category';
-import { validators } from '../../shared/utils/validators';
+import { validators } from '../../shared/utils/validatorFunctions';
 
 interface Props {
   category?: Category;

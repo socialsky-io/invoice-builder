@@ -9,7 +9,7 @@ import { useForm } from '../../shared/hooks/useForm';
 import type { Item, ItemFromData } from '../../shared/types/item';
 import type { Response } from '../../shared/types/response';
 import type { Unit } from '../../shared/types/unit';
-import { validators } from '../../shared/utils/validators';
+import { validators } from '../../shared/utils/validatorFunctions';
 import { useAppDispatch, useAppSelector } from '../../state/configureStore';
 import { addToast, selectCategoriesOptions, selectSettings, selectUnitsOptions } from '../../state/pageSlice';
 

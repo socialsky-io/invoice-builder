@@ -1,7 +1,7 @@
 import { type FC } from 'react';
 import { GenericList } from '../../shared/components/lists/genericList/GenericList';
 import type { Item } from '../../shared/types/item';
-import { formatAmount } from '../../shared/utils/functions';
+import { formatAmount } from '../../shared/utils/formatFunctions';
 import { useAppSelector } from '../../state/configureStore';
 import { selectSettings } from '../../state/pageSlice';
 

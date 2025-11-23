@@ -10,7 +10,8 @@ import { useUnitUpdate } from '../../shared/hooks/units/useUnitUpdate';
 import type { Rows } from '../../shared/types/excel';
 import type { Filter } from '../../shared/types/filter';
 import type { Unit, UnitAdd, UnitUpdate } from '../../shared/types/unit';
-import { createCommonFilters, createInvoiceFilters, isUnitFromData } from '../../shared/utils/functions';
+import { createCommonFilters, createInvoiceFilters } from '../../shared/utils/filterSortFunctions';
+import { isUnitFromData } from '../../shared/utils/typeGuardFunctions';
 import { Form } from './Form';
 import { List } from './List';
 

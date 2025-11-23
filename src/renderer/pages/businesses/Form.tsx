@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { UploadImage } from '../../shared/components/inputs/uploadImage/UploadImage';
 import { useForm } from '../../shared/hooks/useForm';
 import type { Business, BusinessFromData } from '../../shared/types/business';
-import { fromUint8Array, toUint8Array } from '../../shared/utils/functions';
-import { validators } from '../../shared/utils/validators';
+import { fromUint8Array, toUint8Array } from '../../shared/utils/dataUrlFunctions';
+import { validators } from '../../shared/utils/validatorFunctions';
 
 interface Props {
   business?: Business;

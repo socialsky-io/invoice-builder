@@ -3,7 +3,7 @@ import { useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useForm } from '../../shared/hooks/useForm';
 import type { Unit, UnitFromData } from '../../shared/types/unit';
-import { validators } from '../../shared/utils/validators';
+import { validators } from '../../shared/utils/validatorFunctions';
 
 interface Props {
   unit?: Unit;

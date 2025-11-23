@@ -10,7 +10,8 @@ import { useClientUpdate } from '../../shared/hooks/clients/useClientUpdate';
 import type { Client, ClientAdd, ClientUpdate } from '../../shared/types/client';
 import type { Rows } from '../../shared/types/excel';
 import type { Filter } from '../../shared/types/filter';
-import { createCommonFilters, createInvoiceFilters, isClientFromData } from '../../shared/utils/functions';
+import { createCommonFilters, createInvoiceFilters } from '../../shared/utils/filterSortFunctions';
+import { isClientFromData } from '../../shared/utils/typeGuardFunctions';
 import { Form } from './Form';
 import { List } from './List';
 

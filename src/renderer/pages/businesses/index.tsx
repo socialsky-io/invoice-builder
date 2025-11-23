@@ -9,7 +9,8 @@ import { useBusinessUpdate } from '../../shared/hooks/businesses/useBusinessUpda
 import type { Business, BusinessAdd, BusinessUpdate } from '../../shared/types/business';
 import type { Rows } from '../../shared/types/excel';
 import type { Filter } from '../../shared/types/filter';
-import { createCommonFilters, createInvoiceFilters, isBusinessFromData } from '../../shared/utils/functions';
+import { createCommonFilters, createInvoiceFilters } from '../../shared/utils/filterSortFunctions';
+import { isBusinessFromData } from '../../shared/utils/typeGuardFunctions';
 import { Form } from './Form';
 import { List } from './List';
 
