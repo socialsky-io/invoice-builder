@@ -4,14 +4,18 @@ import { useTranslation } from 'react-i18next';
 import i18n from '../../i18n';
 import { Content } from '../../shared/components/layout/content/Content';
 import { NoItem } from '../../shared/components/lists/noItem/NoItem';
+import { Confirmation } from '../../shared/components/modals/confirmation';
 import type { AmountFormat } from '../../shared/enums/amountFormat';
 import type { DateFormat } from '../../shared/enums/dateFormat';
 import type { Language } from '../../shared/enums/language';
 import { MenuItemSettings } from '../../shared/enums/menuItemSettings';
 import { useExportJson } from '../../shared/hooks/backup/useExportJson';
+import { useImportJson } from '../../shared/hooks/backup/useImportJson';
+import { useSettingsRetrieve } from '../../shared/hooks/settings/useSettingsRetrieve';
 import { useSettingsUpdate } from '../../shared/hooks/settings/useSettingsUpdate';
 import type { ExportMeta } from '../../shared/types/exportMeta';
 import type { Response } from '../../shared/types/response';
+import type { Settings } from '../../shared/types/settings';
 import { useAppDispatch, useAppSelector } from '../../state/configureStore';
 import {
   addToast,
@@ -35,6 +39,18 @@ export const SettingsPage = () => {
   const storeSettings = useAppSelector(selectSettings);
   const hasInitialized = useRef(false);
   const stableSettings = useMemo(() => storeSettings ?? {}, [storeSettings]);
+  const [showImportConfirm, setShowImportConfirm] = useState(false);
+
+  const { execute: getSettings } = useSettingsRetrieve({
+    immediate: false,
+    onDone: (data: Response<Settings>) => {
+      if (!data.success) {
+        if (data.message) dispatch(addToast({ message: data.message, severity: 'error' }));
+        else if (data.key) dispatch(addToast({ message: t(data.key), severity: 'error' }));
+      }
+    }
+  });
+
   const { execute } = useSettingsUpdate({
     newSettings: stableSettings ?? {},
     immediate: false,
@@ -64,6 +80,19 @@ export const SettingsPage = () => {
     }
   });
 
+  const { execute: importJSON } = useImportJson({
+    immediate: false,
+    onDone: (data: Response<unknown>) => {
+      if (!data.success) {
+        if (data.message) dispatch(addToast({ message: data.message, severity: 'error' }));
+        else if (data.key) dispatch(addToast({ message: t(data.key), severity: 'error' }));
+      } else {
+        dispatch(addToast({ message: t('common.imported'), severity: 'success' }));
+        getSettings();
+      }
+    }
+  });
+
   const onModeChange = useCallback(
     (isDark: boolean) => {
       dispatch(setMode(isDark));
@@ -88,6 +117,19 @@ export const SettingsPage = () => {
   const exportJSON = useCallback(() => {
     exportJSONBackup();
   }, [exportJSONBackup]);
+
+  const importJSONCallback = useCallback(() => {
+    setShowImportConfirm(true);
+  }, []);
+
+  const handleCancelImport = useCallback(() => {
+    setShowImportConfirm(false);
+  }, []);
+
+  const handleConfirmImport = useCallback(() => {
+    handleCancelImport();
+    importJSON();
+  }, [handleCancelImport, importJSON]);
 
   const onCustomizedInvoice = useCallback(
     (data: {
@@ -170,11 +212,18 @@ export const SettingsPage = () => {
       toggleQuotes={toggleQuotes}
       toggleReports={toggleReports}
       onExportJSON={exportJSON}
+      onImportJSON={importJSONCallback}
     />
   );
 
   return (
     <Grid container component="div" spacing={2} justifyContent="center" alignItems="stretch" sx={{ height: '100%' }}>
+      <Confirmation
+        onCancel={handleCancelImport}
+        onConfirm={handleConfirmImport}
+        isOpen={showImportConfirm}
+        text={t('settingsMenuItems.importConfirmText')}
+      />
       {isDesktop ? (
         <>
           {leftColumnMenu}

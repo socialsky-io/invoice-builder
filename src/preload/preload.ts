@@ -59,5 +59,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
 
   getAllInvoices: (filter?: FilterData[]) => ipcRenderer.invoke('get-all-invoices', filter),
 
-  exportAllData: () => ipcRenderer.invoke('export-all-data')
+  exportAllData: () => ipcRenderer.invoke('export-all-data'),
+  importAllData: () => ipcRenderer.invoke('import-all-data')
 });

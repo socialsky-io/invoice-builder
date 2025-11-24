@@ -13,6 +13,7 @@ import type { Currency } from './types/currency';
 import type { EntityWithId } from './types/entityWithId';
 import type { FilterData } from './types/invoiceFilter';
 import type { Item } from './types/item';
+import type { SqliteValue } from './types/sqliteValue';
 import type { Unit } from './types/unit';
 import type { UpdateData } from './types/updateData';
 
@@ -24,22 +25,33 @@ const isSqliteError = (error: unknown): error is SqliteError => {
   return error instanceof Error && 'code' in error && typeof (error as Record<string, unknown>).code === 'string';
 };
 
+const sqliteErrorMap: Record<string, string> = {
+  'UNIQUE constraint failed': 'error.invalidConstraintUnique',
+  'FOREIGN KEY constraint failed': 'error.invalidConstraintForeign',
+  'CHECK constraint failed': 'error.invalidConstraintCheck',
+  'NOT NULL constraint failed': 'error.invalidConstraintNotNull',
+  SQLITE_ERROR: 'error.sqlSyntaxError',
+  'datatype mismatch': 'error.datatypeMismatch',
+  SQLITE_IOERR: 'error.diskIOError',
+  'database is locked': 'error.databaseLocked',
+  'file is not a database': 'error.databaseCorrupt'
+};
+
 const mapSqliteError = (error: unknown): { message?: string; key?: string } => {
   if (isSqliteError(error)) {
-    if (error.message.indexOf('UNIQUE constraint failed') > -1) {
-      return { key: 'error.invalidConstraintUnique' };
-    }
-    if (error.message.indexOf('FOREIGN KEY constraint failed') > -1) {
-      return { key: 'error.invalidConstraintForeign' };
+    for (const [key, mapped] of Object.entries(sqliteErrorMap)) {
+      if (error.message.includes(key)) return { key: mapped };
     }
     return { message: error.message };
   }
-  if ((error as Error).message.indexOf('Database file does not exist') > -1) {
-    return { key: 'error.databaseFileMissing' };
-  } else if ((error as Error).message.indexOf('EBUSY') > -1) {
-    return { key: 'error.databaseIsBusy' };
+  if (error instanceof Error) {
+    const msg = error.message;
+    if (msg.includes('Database file does not exist')) return { key: 'error.databaseFileMissing' };
+    if (msg.includes('EBUSY')) return { key: 'error.databaseIsBusy' };
+    return { key: 'error.unknownError', message: msg };
   }
-  return { key: 'error.unknownError' };
+
+  return { key: 'error.unknownError', message: String(error) };
 };
 
 const prepareUpdate = (data: UpdateData, id?: number) => {
@@ -389,11 +401,21 @@ const initIpcHandler = (db: Database, path: string) => {
     }
   });
   ipcMain.handle('batch-add-client', async (_event, data: Client[]) => {
-    for (const row of data) {
-      const result = await handleClient(row);
-      if (!result.success) return result;
+    try {
+      await runDb(db, 'BEGIN TRANSACTION');
+      for (const row of data) {
+        const result = await handleClient(row);
+        if (!result.success) {
+          await runDb(db, 'ROLLBACK');
+          return result;
+        }
+      }
+      await runDb(db, 'COMMIT');
+      return { success: true };
+    } catch (error) {
+      await runDb(db, 'ROLLBACK');
+      return { success: false, ...mapSqliteError(error) };
     }
-    return { success: true };
   });
   ipcMain.handle('get-all-clients', async (_event, filter) => getAllClients(filter));
 
@@ -408,11 +430,21 @@ const initIpcHandler = (db: Database, path: string) => {
     }
   });
   ipcMain.handle('batch-add-business', async (_event, data: Business[]) => {
-    for (const row of data) {
-      const result = await handleBusiness(row);
-      if (!result.success) return result;
+    try {
+      await runDb(db, 'BEGIN TRANSACTION');
+      for (const row of data) {
+        const result = await handleBusiness(row);
+        if (!result.success) {
+          await runDb(db, 'ROLLBACK');
+          return result;
+        }
+      }
+      await runDb(db, 'COMMIT');
+      return { success: true };
+    } catch (error) {
+      await runDb(db, 'ROLLBACK');
+      return { success: false, ...mapSqliteError(error) };
     }
-    return { success: true };
   });
   ipcMain.handle('get-all-businesses', async (_event, filter) => getAllBusinesses(filter));
 
@@ -427,12 +459,22 @@ const initIpcHandler = (db: Database, path: string) => {
     }
   });
   ipcMain.handle('batch-add-item', async (_event, data: Item[]) => {
-    for (const row of data) {
-      const finalItem = await resolveItemRelations(db, row);
-      const result = await handleItems(finalItem);
-      if (!result.success) return result;
+    try {
+      await runDb(db, 'BEGIN TRANSACTION');
+      for (const row of data) {
+        const finalItem = await resolveItemRelations(db, row);
+        const result = await handleItems(finalItem);
+        if (!result.success) {
+          await runDb(db, 'ROLLBACK');
+          return result;
+        }
+      }
+      await runDb(db, 'COMMIT');
+      return { success: true };
+    } catch (error) {
+      await runDb(db, 'ROLLBACK');
+      return { success: false, ...mapSqliteError(error) };
     }
-    return { success: true };
   });
   ipcMain.handle('get-all-items', async (_event, filter) => {
     const havingClause = getHavingClauseFromFilters({
@@ -475,11 +517,21 @@ const initIpcHandler = (db: Database, path: string) => {
     }
   });
   ipcMain.handle('batch-add-unit', async (_event, data: Unit[]) => {
-    for (const row of data) {
-      const result = await handleUnits(row);
-      if (!result.success) return result;
+    try {
+      await runDb(db, 'BEGIN TRANSACTION');
+      for (const row of data) {
+        const result = await handleUnits(row);
+        if (!result.success) {
+          await runDb(db, 'ROLLBACK');
+          return result;
+        }
+      }
+      await runDb(db, 'COMMIT');
+      return { success: true };
+    } catch (error) {
+      await runDb(db, 'ROLLBACK');
+      return { success: false, ...mapSqliteError(error) };
     }
-    return { success: true };
   });
   ipcMain.handle('get-all-units', async (_event, filter) => {
     const havingClause = getHavingClauseFromFilters({
@@ -518,11 +570,21 @@ const initIpcHandler = (db: Database, path: string) => {
     }
   });
   ipcMain.handle('batch-add-category', async (_event, data: Category[]) => {
-    for (const row of data) {
-      const result = await handleCategories(row);
-      if (!result.success) return result;
+    try {
+      await runDb(db, 'BEGIN TRANSACTION');
+      for (const row of data) {
+        const result = await handleCategories(row);
+        if (!result.success) {
+          await runDb(db, 'ROLLBACK');
+          return result;
+        }
+      }
+      await runDb(db, 'COMMIT');
+      return { success: true };
+    } catch (error) {
+      await runDb(db, 'ROLLBACK');
+      return { success: false, ...mapSqliteError(error) };
     }
-    return { success: true };
   });
   ipcMain.handle('get-all-categories', async (_event, filter) => {
     const havingClause = getHavingClauseFromFilters({
@@ -562,11 +624,21 @@ const initIpcHandler = (db: Database, path: string) => {
     }
   });
   ipcMain.handle('batch-add-currency', async (_event, data: Currency[]) => {
-    for (const row of data) {
-      const result = await handleCurrencies(row);
-      if (!result.success) return result;
+    try {
+      await runDb(db, 'BEGIN TRANSACTION');
+      for (const row of data) {
+        const result = await handleCurrencies(row);
+        if (!result.success) {
+          await runDb(db, 'ROLLBACK');
+          return result;
+        }
+      }
+      await runDb(db, 'COMMIT');
+      return { success: true };
+    } catch (error) {
+      await runDb(db, 'ROLLBACK');
+      return { success: false, ...mapSqliteError(error) };
     }
-    return { success: true };
   });
   ipcMain.handle('get-all-currencies', async (_event, filter) => getAllCurrencies(filter));
 
@@ -662,6 +734,117 @@ const initIpcHandler = (db: Database, path: string) => {
       return { success: false, ...mapSqliteError(error) };
     }
   });
+
+  ipcMain.handle('import-all-data', async () => {
+    const runInTransaction = async (fn: () => Promise<void>) => {
+      try {
+        await runDb(db, 'PRAGMA foreign_keys = OFF');
+        await runDb(db, 'BEGIN TRANSACTION');
+        await fn();
+        await runDb(db, 'COMMIT');
+      } catch (err) {
+        await runDb(db, 'ROLLBACK');
+        throw err;
+      } finally {
+        await runDb(db, 'PRAGMA foreign_keys = ON');
+      }
+    };
+
+    const toSqliteValue = (value: unknown): SqliteValue => {
+      if (value === undefined || value === null) return null;
+      if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') return value;
+      return JSON.stringify(value);
+    };
+
+    const insertRows = async <T extends Record<string, unknown>>(table: string, rows: T[]) => {
+      for (const row of rows) {
+        const keys = Object.keys(row);
+        if (!keys.length) continue;
+        const cols = keys.join(',');
+        const placeholders = keys.map(() => '?').join(',');
+        const params = keys.map(k => toSqliteValue(row[k]));
+        await runDb(db, `INSERT INTO ${table} (${cols}) VALUES (${placeholders})`, params);
+      }
+    };
+
+    const updateSettings = async (settings: Record<string, unknown>) => {
+      const fields: string[] = [];
+      const params: SqliteValue[] = [];
+
+      Object.entries(settings).forEach(([k, v]) => {
+        if (k === 'id') return;
+        fields.push(`${k} = ?`);
+        params.push(toSqliteValue(v));
+      });
+
+      if (fields.length) {
+        await runDb(
+          db,
+          `UPDATE settings SET ${fields.join(', ')} WHERE id = (SELECT id FROM settings LIMIT 1)`,
+          params
+        );
+      }
+    };
+
+    try {
+      console.log('Sadasdsa');
+      const { canceled, filePaths } = await dialog.showOpenDialog({
+        title: 'Import',
+        properties: ['openFile'],
+        filters: [{ name: 'JSON', extensions: ['json'] }]
+      });
+
+      if (canceled || !filePaths?.[0]) return { success: false, message: 'canceled' };
+
+      const content = await fs.readFile(filePaths[0], 'utf8');
+      const parsed = JSON.parse(content);
+      if (!parsed || typeof parsed !== 'object') return { success: false, key: 'invalidFile' };
+
+      await runInTransaction(async () => {
+        const deleteOrder = [
+          'invoice_items',
+          'invoice_payments',
+          'attachments',
+          'invoices',
+          'items',
+          'businesses',
+          'clients',
+          'units',
+          'categories',
+          'currencies'
+        ];
+
+        for (const table of deleteOrder) {
+          await runDb(db, `DELETE FROM ${table}`);
+        }
+
+        const tableDataMap: Record<string, string> = {
+          currencies: 'currencies',
+          units: 'units',
+          categories: 'categories',
+          businesses: 'businesses',
+          clients: 'clients',
+          items: 'items',
+          invoices: 'invoices',
+          invoice_items: 'invoiceItems',
+          invoice_payments: 'invoicePayments',
+          attachments: 'attachments'
+        };
+
+        for (const [table, key] of Object.entries(tableDataMap)) {
+          await insertRows(table, ((parsed as Record<string, unknown>)[key] as Record<string, unknown>[]) ?? []);
+        }
+
+        if (parsed.settings && typeof parsed.settings === 'object') {
+          await updateSettings(parsed.settings as Record<string, unknown>);
+        }
+      });
+
+      return { success: true };
+    } catch (error) {
+      return { success: false, ...mapSqliteError(error) };
+    }
+  });
 };
 
 const initIpcHandlerForDB = (dbName: string) => {
@@ -745,7 +928,9 @@ const resetIPCHandlers = () => {
   ipcMain.removeHandler('get-all-currencies');
 
   ipcMain.removeHandler('get-all-invoices');
+
   ipcMain.removeHandler('export-all-data');
+  ipcMain.removeHandler('import-all-data');
 };
 
 export { initIpcHandler, initIpcHandlerForDB, resetIPCHandlers };

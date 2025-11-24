@@ -23,6 +23,7 @@ interface Props {
   toggleQuotes?: (value: boolean) => void;
   toggleReports?: (value: boolean) => void;
   onExportJSON?: () => void;
+  onImportJSON?: () => void;
 }
 export const Menu: FC<Props> = ({
   onSelected = () => {},
@@ -30,7 +31,8 @@ export const Menu: FC<Props> = ({
   toggleQuotes = () => {},
   toggleReports = () => {},
   onModeChange = () => {},
-  onExportJSON = () => {}
+  onExportJSON = () => {},
+  onImportJSON = () => {}
 }) => {
   const { mode, toggleMode } = useContext(ThemeContext);
   const { t } = useTranslation();
@@ -99,7 +101,8 @@ export const Menu: FC<Props> = ({
       description: t('settingsMenuItems.descriptions.import'),
       icon: <UploadFileIcon />,
       isSelected: false,
-      isToggle: false
+      isToggle: false,
+      onClick: onImportJSON
     },
     {
       text: t('settingsMenuItems.titles.export'),

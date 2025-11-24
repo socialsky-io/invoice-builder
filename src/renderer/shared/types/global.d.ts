@@ -63,6 +63,7 @@ declare global {
 
       getAllInvoices: (filter?: FilterData[]) => Promise<Response<Invoice[]>>;
       exportAllData: () => Promise<Response<ExportMeta>>;
+      importAllData: () => Promise<Response<unknown>>;
     };
   }
 }
