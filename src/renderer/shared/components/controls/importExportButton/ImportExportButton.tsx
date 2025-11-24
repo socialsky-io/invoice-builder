@@ -11,9 +11,10 @@ interface Props {
   onImport?: (file: File) => Promise<void> | void;
   onExport?: () => void;
   onDownloadTemplate?: () => void;
+  showOnlyExport: boolean;
 }
 
-const ImportExportButton: React.FC<Props> = ({ onImport, onExport, onDownloadTemplate }) => {
+const ImportExportButton: React.FC<Props> = ({ onImport, onExport, onDownloadTemplate, showOnlyExport }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const { t } = useTranslation();
@@ -22,7 +23,8 @@ const ImportExportButton: React.FC<Props> = ({ onImport, onExport, onDownloadTem
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
+    if (!showOnlyExport) setAnchorEl(event.currentTarget);
+    else onExport?.();
   };
 
   const handleClose = () => {
@@ -55,7 +57,7 @@ const ImportExportButton: React.FC<Props> = ({ onImport, onExport, onDownloadTem
   return (
     <>
       <Button variant="text" onClick={handleClick}>
-        {t('common.importExport')}
+        {showOnlyExport ? t('common.export') : t('common.importExport')}
       </Button>
       <Menu
         anchorEl={anchorEl}

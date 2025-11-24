@@ -87,10 +87,7 @@ export const CurrenciesPage: FC = () => {
     <CRUDPage<Currency, CurrencyAdd, CurrencyUpdate>
       title={t('currencies.title')}
       filters={filters}
-      excelColumns={excelColumns}
-      excelFileName={excelFileName}
-      excelFormat={'xlsx'}
-      excelTemplateData={excelTemplateData}
+      excelData={{ excelColumns, excelFileName, excelFormat: 'xlsx', excelTemplateData }}
       useRetrieve={useCurrenciesCRUDRetrieve}
       useAdd={useCurrencyCRUDAdd}
       useAddBatch={useCurrenciesCRUDAddBatch}

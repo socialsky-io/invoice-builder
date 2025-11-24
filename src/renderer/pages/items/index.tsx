@@ -85,10 +85,7 @@ export const ItemsPage: FC = () => {
     <CRUDPage<Item, ItemAdd, ItemUpdate>
       title={t('items.title')}
       filters={filters}
-      excelColumns={excelColumns}
-      excelFileName={excelFileName}
-      excelFormat={'xlsx'}
-      excelTemplateData={excelTemplateData}
+      excelData={{ excelColumns, excelFileName, excelFormat: 'xlsx', excelTemplateData }}
       useRetrieve={useItemsCRUDRetrieve}
       useAdd={useItemCRUDAdd}
       useAddBatch={useItemsCRUDAddBatch}

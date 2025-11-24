@@ -67,12 +67,17 @@ interface Props<T, TAdd, TUpdate> {
     onEdit: (item: T) => void,
     onDelete: (id: number) => void
   ) => ReactNode;
-  excelColumns?: string[];
-  excelFileName?: string;
-  excelFormat?: 'xlsx' | 'xls';
-  excelTemplateData?: Rows;
+
   filters?: Filter[];
   itemsPerPage?: number;
+  excelData?: {
+    excelColumns: string[];
+    excelFileName: string;
+    excelFormat: 'xlsx' | 'xls';
+    excelTemplateData: Rows;
+  };
+  exportExcelHandler?: (data: T[]) => Promise<void>;
+  showOnlyExport?: boolean;
 }
 
 export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
@@ -80,10 +85,8 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
   const { t } = useTranslation();
   const {
     title,
-    excelColumns = [],
-    excelFileName,
-    excelFormat,
-    excelTemplateData,
+    excelData,
+    showOnlyExport = false,
     searchField,
     noItemButtonText,
     useRetrieve = () => ({
@@ -109,7 +112,8 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
     sortOptions,
     form = () => null,
     itemsPerPage = 20,
-    filters = []
+    filters = [],
+    exportExcelHandler
   } = props;
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
@@ -261,9 +265,25 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
     setDeleteID(id);
   }, []);
 
-  const onExportToExcel = useCallback(() => {
-    exportExcel(excelColumns, items as Rows, `${excelFileName}.${excelFormat}`);
-  }, [excelColumns, items, excelFileName, excelFormat]);
+  const onExportToExcel = useCallback(async () => {
+    try {
+      if (exportExcelHandler) {
+        await exportExcelHandler(items);
+        return;
+      }
+
+      if (!excelData) return;
+
+      const { excelColumns, excelFileName, excelFormat } = excelData;
+      await exportExcel(
+        [{ name: excelFileName, rows: items as Rows, columns: excelColumns }],
+        `${excelFileName}.${excelFormat}`
+      );
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      dispatch(addToast({ message, severity: 'error' }));
+    }
+  }, [exportExcelHandler, excelData, items, dispatch]);
 
   const onImportExcel = useCallback(
     async (file: File) => {
@@ -299,12 +319,29 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
   );
 
   const showExcelButtons = useCallback(() => {
-    return excelColumns.length > 0 && excelTemplateData && excelFileName && excelFormat;
-  }, [excelColumns, excelFileName, excelFormat, excelTemplateData]);
+    if (!excelData && !exportExcelHandler) return false;
+
+    if (excelData) {
+      const { excelColumns, excelFileName, excelFormat, excelTemplateData } = excelData;
+
+      return excelColumns.length > 0 && excelTemplateData && excelFileName && excelFormat;
+    }
+
+    if (exportExcelHandler) return true;
+
+    return false;
+  }, [exportExcelHandler, excelData]);
 
   const onDownloadTemplate = useCallback(async () => {
-    if (showExcelButtons()) exportExcel(excelColumns, excelTemplateData!, `${excelFileName}_template.${excelFormat}`);
-  }, [excelColumns, excelTemplateData, excelFileName, excelFormat, showExcelButtons]);
+    if (!excelData) return;
+    const { excelColumns, excelFileName, excelFormat, excelTemplateData } = excelData;
+
+    if (showExcelButtons())
+      await exportExcel(
+        [{ name: excelFileName, rows: excelTemplateData as Rows, columns: excelColumns }],
+        `${excelFileName}_template.${excelFormat}`
+      );
+  }, [excelData, showExcelButtons]);
 
   const onFilter = useCallback((filter: Filter[]) => {
     setSelectedFilter(filter);
@@ -393,6 +430,7 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
               onExport={onExportToExcel}
               onImport={onImportExcel}
               onDownloadTemplate={onDownloadTemplate}
+              showOnlyExport={showOnlyExport}
             />
           )}
         </Box>

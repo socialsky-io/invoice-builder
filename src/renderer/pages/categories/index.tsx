@@ -79,10 +79,7 @@ export const CategoriesPage: FC = () => {
     <CRUDPage<Category, CategoryAdd, CategoryUpdate>
       title={t('common.category')}
       filters={filters}
-      excelColumns={excelColumns}
-      excelFileName={excelFileName}
-      excelFormat={'xlsx'}
-      excelTemplateData={excelTemplateData}
+      excelData={{ excelColumns, excelFileName, excelFormat: 'xlsx', excelTemplateData }}
       useRetrieve={useCategoriesCRUDRetrieve}
       useAdd={useCategoryCRUDAdd}
       useAddBatch={useCategoriesCRUDAddBatch}

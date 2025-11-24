@@ -1,31 +1,24 @@
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 import type { TFunction } from 'i18next';
-import type { Columns, Row, Rows, RowValue } from '../types/excel';
+import type { Columns, Row, Rows, RowValue, SheetData } from '../types/excel';
 
-export const exportExcel = async (columns: Columns, rows: Rows, fileName = 'export.xlsx') => {
+export const exportExcel = async (sheets: SheetData[], fileName = 'export.xlsx') => {
   const workbook = new ExcelJS.Workbook();
-  const sheet = workbook.addWorksheet('Sheet1');
 
-  sheet.addRow(columns);
+  for (const { name, columns, rows } of sheets) {
+    const sheet = workbook.addWorksheet(name);
 
-  for (const row of rows) {
-    const processedRow: RowValue[] = [];
+    if (!rows || rows.length === 0) continue;
 
-    for (const col of columns) {
-      const value = row[col];
+    const headers = columns ?? Object.keys(rows[0]);
+    sheet.addRow(headers);
 
-      // Leaving logos column out of excel
-      // if (value instanceof Uint8Array) {
-      //   processedRow.push(await uint8ArrayToDataUrl(value));
-      // } else {
-      //   processedRow.push(value);
-      // }
-
-      processedRow.push(value);
+    // Add rows
+    for (const row of rows) {
+      const rowValues = headers.map(h => row[h]);
+      sheet.addRow(rowValues);
     }
-
-    sheet.addRow(processedRow);
   }
 
   const buffer = await workbook.xlsx.writeBuffer();
@@ -57,13 +50,6 @@ export const importExcel = async (
     const rowData: Row = {} as Row;
     columns.forEach((col, i) => {
       const cellValue = row.getCell(i + 1).value as RowValue;
-
-      // Leaving logos column out of excel
-      // if (isDataUrl(cellValue)) {
-      //   rowData[col] = dataUrlToBlob(cellValue);
-      // } else {
-      //   rowData[col] = cellValue;
-      // }
 
       rowData[col] = cellValue;
     });

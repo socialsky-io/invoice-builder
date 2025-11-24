@@ -75,10 +75,7 @@ export const UnitsPage: FC = () => {
     <CRUDPage<Unit, UnitAdd, UnitUpdate>
       title={t('common.unit')}
       filters={filters}
-      excelColumns={excelColumns}
-      excelFileName={excelFileName}
-      excelFormat={'xlsx'}
-      excelTemplateData={excelTemplateData}
+      excelData={{ excelColumns, excelFileName, excelFormat: 'xlsx', excelTemplateData }}
       useRetrieve={useUnitsCRUDRetrieve}
       useAdd={useUnitCRUDAdd}
       useAddBatch={useUnitsCRUDAddBatch}

@@ -98,10 +98,7 @@ export const ClientsPage: FC = () => {
     <CRUDPage<Client, ClientAdd, ClientUpdate>
       title={t('common.client')}
       filters={filters}
-      excelColumns={excelColumns}
-      excelFileName={excelFileName}
-      excelFormat={'xlsx'}
-      excelTemplateData={excelTemplateData}
+      excelData={{ excelColumns, excelFileName, excelFormat: 'xlsx', excelTemplateData }}
       useRetrieve={useClientsCRUDRetrieve}
       useAdd={useClientCRUDAdd}
       useAddBatch={useClientsCRUDAddBatch}
