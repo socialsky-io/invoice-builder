@@ -220,9 +220,9 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
     if (!isDesktop) setSelectedItem(undefined);
   }, [isDesktop]);
 
-  const isUpdate = (item: TAdd | TUpdate): item is TUpdate => {
+  const isUpdate = useCallback((item: TAdd | TUpdate): item is TUpdate => {
     return typeof item === 'object' && item !== null && 'id' in item && typeof item.id !== 'undefined';
-  };
+  }, []);
 
   const onAdd = () => {
     setSelectedItem(undefined);
@@ -241,15 +241,12 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
       }
       handleCloseModal();
     },
-    [validateAndNormalize, handleCloseModal]
+    [validateAndNormalize, handleCloseModal, isUpdate]
   );
 
-  const onSearchChanged = useCallback(
-    (value: string) => {
-      setSearchValue(value);
-    },
-    [searchValue]
-  );
+  const onSearchChanged = useCallback((value: string) => {
+    setSearchValue(value);
+  }, []);
 
   const onFilterSortChange = useCallback((data: { sortBy: CustomOption<keyof T>; sort: SortType }) => {
     setSortType(data.sort);
@@ -298,16 +295,16 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
         setNewItemsBatch(normalizedRows);
       }
     },
-    [t, validateAndNormalize]
+    [t, validateAndNormalize, dispatch, isUpdate]
   );
 
-  const showExcelButtons = () => {
+  const showExcelButtons = useCallback(() => {
     return excelColumns.length > 0 && excelTemplateData && excelFileName && excelFormat;
-  };
+  }, [excelColumns, excelFileName, excelFormat, excelTemplateData]);
 
   const onDownloadTemplate = useCallback(async () => {
     if (showExcelButtons()) exportExcel(excelColumns, excelTemplateData!, `${excelFileName}_template.${excelFormat}`);
-  }, [excelColumns, excelTemplateData, excelFileName, excelFormat]);
+  }, [excelColumns, excelTemplateData, excelFileName, excelFormat, showExcelButtons]);
 
   const onFilter = useCallback((filter: Filter[]) => {
     setSelectedFilter(filter);
@@ -319,19 +316,19 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
 
   useEffect(() => {
     if (deleteID !== -1) deleteItem();
-  }, [deleteID]);
+  }, [deleteID, deleteItem]);
 
   useEffect(() => {
     if (newItemsBatch !== undefined) addItemsBatch();
-  }, [newItemsBatch]);
+  }, [newItemsBatch, addItemsBatch]);
 
   useEffect(() => {
     if (newItem !== undefined) addItem();
-  }, [newItem]);
+  }, [newItem, addItem]);
 
   useEffect(() => {
     if (changedItem !== undefined) updateItem();
-  }, [changedItem]);
+  }, [changedItem, updateItem]);
 
   useEffect(() => {
     setCurrentPage(1);

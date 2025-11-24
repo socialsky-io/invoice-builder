@@ -15,9 +15,9 @@ import { useCallback, useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import i18n from '../i18n';
 import { DBInitType } from '../shared/enums/dbInitType';
-import { usDBOpener } from '../shared/hooks/dbSelector/usDBOpener';
-import { usDBSelector } from '../shared/hooks/dbSelector/usDBSelector';
 import { useDBInit } from '../shared/hooks/dbSelector/useDBInit';
+import { useDBOpener } from '../shared/hooks/dbSelector/useDBOpener';
+import { useDBSelector } from '../shared/hooks/dbSelector/useDBSelector';
 import type { DBSelector } from '../shared/types/dbSelector';
 import type { Response } from '../shared/types/response';
 import { useAppDispatch } from '../state/configureStore';
@@ -35,7 +35,7 @@ export const DatabaseChooser: FC<Props> = ({ onDatabaseRead }) => {
   const [selectionMode, setSelectionMode] = useState<DBInitType | undefined>(undefined);
   const [isInitializing, setIsInitializing] = useState(false);
 
-  const { execute: selectDB } = usDBSelector({
+  const { execute: selectDB } = useDBSelector({
     immediate: false,
     onDone: (results: Response<DBSelector>) => {
       if (results.data && !results.data.canceled && results.data.filePath) {
@@ -45,7 +45,7 @@ export const DatabaseChooser: FC<Props> = ({ onDatabaseRead }) => {
     }
   });
 
-  const { execute: openDB } = usDBOpener({
+  const { execute: openDB } = useDBOpener({
     immediate: false,
     onDone: (results: Response<DBSelector>) => {
       if (results.data && !results.data.canceled && results.data.filePath) {
@@ -70,15 +70,19 @@ export const DatabaseChooser: FC<Props> = ({ onDatabaseRead }) => {
     }
   });
 
-  const saveDbList = useCallback((list: string[]) => {
-    const sortedList = [...list].sort((a, b) => a.localeCompare(b));
-    setSavedDbs(sortedList);
-    try {
-      localStorage.setItem('databases', JSON.stringify(sortedList));
-    } catch (err) {
-      dispatch(addToast({ message: t('error.failedToSave'), severity: 'error' }));
-    }
-  }, []);
+  const saveDbList = useCallback(
+    (list: string[]) => {
+      const sortedList = [...list].sort((a, b) => a.localeCompare(b));
+      setSavedDbs(sortedList);
+      if (sortedList.length > 0)
+        try {
+          localStorage.setItem('databases', JSON.stringify(sortedList));
+        } catch {
+          dispatch(addToast({ message: t('error.failedToSave'), severity: 'error' }));
+        }
+    },
+    [t, dispatch]
+  );
 
   const handleOpenSaved = useCallback(
     async (fullPath: string) => {
@@ -87,7 +91,7 @@ export const DatabaseChooser: FC<Props> = ({ onDatabaseRead }) => {
       setIsInitializing(true);
       initDB();
     },
-    [savedDbs, initDB]
+    [savedDbs, initDB, saveDbList]
   );
 
   const handleSelectPath = async () => {
@@ -107,6 +111,7 @@ export const DatabaseChooser: FC<Props> = ({ onDatabaseRead }) => {
 
   useEffect(() => {
     if (selectedPath && selectionMode) handleOpenSaved(selectedPath);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedPath, selectionMode]);
 
   useEffect(() => {
@@ -121,7 +126,8 @@ export const DatabaseChooser: FC<Props> = ({ onDatabaseRead }) => {
     } catch {
       dispatch(addToast({ message: t('error.failedToLoad'), severity: 'error' }));
     }
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch]);
 
   return (
     <Box

@@ -8,8 +8,9 @@ import { useItemDelete } from '../../shared/hooks/items/useItemDelete';
 import { useItemsRetrieve } from '../../shared/hooks/items/useItemsRetrieve';
 import { useItemUpdate } from '../../shared/hooks/items/useItemUpdate';
 import type { Rows } from '../../shared/types/excel';
-import type { Filter } from '../../shared/types/filter';
+import type { Filter, FilterData } from '../../shared/types/filter';
 import type { Item, ItemAdd, ItemUpdate } from '../../shared/types/item';
+import type { Response } from '../../shared/types/response';
 import { createCommonFilters, createInvoiceFilters } from '../../shared/utils/filterSortFunctions';
 import { isItemFromData } from '../../shared/utils/typeGuardFunctions';
 import { Form } from './Form';
@@ -42,6 +43,43 @@ export const ItemsPage: FC = () => {
     ...createCommonFilters({ t, namespace: 'items', initial: FilterType.active }),
     ...createInvoiceFilters({ t, namespace: 'items' })
   ];
+  const useItemsCRUDRetrieve = (args: { filter?: FilterData[]; onDone?: (data: Response<Item[]>) => void }) => {
+    const { items, execute } = useItemsRetrieve({ filter: args.filter, onDone: args.onDone });
+    return { items: items, execute };
+  };
+  const useItemCRUDAdd = (args: {
+    item?: ItemAdd;
+    immediate?: boolean;
+    onDone?: (data: Response<ItemAdd>) => void;
+  }) => {
+    return useItemAdd({
+      item: args.item,
+      immediate: args.immediate,
+      onDone: args.onDone
+    });
+  };
+  const useItemsCRUDAddBatch = (args: {
+    item?: ItemAdd[];
+    immediate?: boolean;
+    onDone?: (data: Response<ItemAdd[]>) => void;
+  }) => {
+    return useItemAddBatch({
+      items: args.item,
+      immediate: args.immediate,
+      onDone: args.onDone
+    });
+  };
+  const useItemCRUDUpdate = (args: {
+    item?: ItemUpdate;
+    immediate?: boolean;
+    onDone?: (data: Response<ItemUpdate>) => void;
+  }) => {
+    return useItemUpdate({
+      item: args.item,
+      immediate: args.immediate,
+      onDone: args.onDone
+    });
+  };
 
   return (
     <CRUDPage<Item, ItemAdd, ItemUpdate>
@@ -51,13 +89,10 @@ export const ItemsPage: FC = () => {
       excelFileName={excelFileName}
       excelFormat={'xlsx'}
       excelTemplateData={excelTemplateData}
-      useRetrieve={({ filter, onDone }) => {
-        const { items, execute } = useItemsRetrieve({ filter: filter, onDone });
-        return { items, execute };
-      }}
-      useAdd={({ item, immediate, onDone }) => useItemAdd({ item, immediate, onDone })}
-      useAddBatch={({ item, immediate, onDone }) => useItemAddBatch({ items: item, immediate, onDone })}
-      useUpdate={({ item, immediate, onDone }) => useItemUpdate({ item, immediate, onDone })}
+      useRetrieve={useItemsCRUDRetrieve}
+      useAdd={useItemCRUDAdd}
+      useAddBatch={useItemsCRUDAddBatch}
+      useUpdate={useItemCRUDUpdate}
       useDelete={useItemDelete}
       searchField={'name'}
       sortOptions={[

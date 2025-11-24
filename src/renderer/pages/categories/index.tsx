@@ -9,7 +9,8 @@ import { useCategoryDelete } from '../../shared/hooks/categories/useCategoryDele
 import { useCategoryUpdate } from '../../shared/hooks/categories/useCategoryUpdate';
 import type { Category, CategoryAdd, CategoryUpdate } from '../../shared/types/category';
 import type { Rows } from '../../shared/types/excel';
-import type { Filter } from '../../shared/types/filter';
+import type { Filter, FilterData } from '../../shared/types/filter';
+import type { Response } from '../../shared/types/response';
 import { createCommonFilters, createInvoiceFilters } from '../../shared/utils/filterSortFunctions';
 import { isCategoryFromData } from '../../shared/utils/typeGuardFunctions';
 import { Form } from './Form';
@@ -33,6 +34,46 @@ export const CategoriesPage: FC = () => {
     ...createCommonFilters({ t, namespace: 'categories', initial: FilterType.active }),
     ...createInvoiceFilters({ t, namespace: 'categories' })
   ];
+  const useCategoriesCRUDRetrieve = (args: {
+    filter?: FilterData[];
+    onDone?: (data: Response<Category[]>) => void;
+  }) => {
+    const { categories, execute } = useCategoriesRetrieve({ filter: args.filter, onDone: args.onDone });
+    return { items: categories, execute };
+  };
+  const useCategoryCRUDAdd = (args: {
+    item?: CategoryAdd;
+    immediate?: boolean;
+    onDone?: (data: Response<CategoryAdd>) => void;
+  }) => {
+    return useCategoryAdd({
+      category: args.item,
+      immediate: args.immediate,
+      onDone: args.onDone
+    });
+  };
+  const useCategoriesCRUDAddBatch = (args: {
+    item?: CategoryAdd[];
+    immediate?: boolean;
+    onDone?: (data: Response<CategoryAdd[]>) => void;
+  }) => {
+    return useCategoryAddBatch({
+      categories: args.item,
+      immediate: args.immediate,
+      onDone: args.onDone
+    });
+  };
+  const useCategoryCRUDUpdate = (args: {
+    item?: CategoryUpdate;
+    immediate?: boolean;
+    onDone?: (data: Response<CategoryUpdate>) => void;
+  }) => {
+    return useCategoryUpdate({
+      category: args.item,
+      immediate: args.immediate,
+      onDone: args.onDone
+    });
+  };
 
   return (
     <CRUDPage<Category, CategoryAdd, CategoryUpdate>
@@ -42,13 +83,10 @@ export const CategoriesPage: FC = () => {
       excelFileName={excelFileName}
       excelFormat={'xlsx'}
       excelTemplateData={excelTemplateData}
-      useRetrieve={({ filter, onDone }) => {
-        const { categories, execute } = useCategoriesRetrieve({ filter: filter, onDone });
-        return { items: categories, execute };
-      }}
-      useAdd={({ item, immediate, onDone }) => useCategoryAdd({ category: item, immediate, onDone })}
-      useAddBatch={({ item, immediate, onDone }) => useCategoryAddBatch({ categories: item, immediate, onDone })}
-      useUpdate={({ item, immediate, onDone }) => useCategoryUpdate({ category: item, immediate, onDone })}
+      useRetrieve={useCategoriesCRUDRetrieve}
+      useAdd={useCategoryCRUDAdd}
+      useAddBatch={useCategoriesCRUDAddBatch}
+      useUpdate={useCategoryCRUDUpdate}
       useDelete={useCategoryDelete}
       searchField={'name'}
       sortOptions={[

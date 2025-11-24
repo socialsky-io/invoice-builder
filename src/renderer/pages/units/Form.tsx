@@ -34,7 +34,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, unit }) => {
       name: unit?.name ?? '',
       isArchived: unit?.isArchived ?? false
     });
-  }, [unit]);
+  }, [unit, setForm]);
 
   useEffect(() => {
     const valid = form.name.trim() !== '' && !errors.name;
@@ -43,7 +43,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, unit }) => {
       unit: form,
       isFormValid: valid
     });
-  }, [form, errors]);
+  }, [form, errors, handleChange]);
 
   return (
     <Grid container spacing={2}>

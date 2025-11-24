@@ -8,7 +8,8 @@ import { useBusinessesRetrieve } from '../../shared/hooks/businesses/useBusiness
 import { useBusinessUpdate } from '../../shared/hooks/businesses/useBusinessUpdate';
 import type { Business, BusinessAdd, BusinessUpdate } from '../../shared/types/business';
 import type { Rows } from '../../shared/types/excel';
-import type { Filter } from '../../shared/types/filter';
+import type { Filter, FilterData } from '../../shared/types/filter';
+import type { Response } from '../../shared/types/response';
 import { createCommonFilters, createInvoiceFilters } from '../../shared/utils/filterSortFunctions';
 import { isBusinessFromData } from '../../shared/utils/typeGuardFunctions';
 import { Form } from './Form';
@@ -66,6 +67,46 @@ export const BusinessesPage = () => {
     ...createCommonFilters({ t, namespace: 'businesses', initial: FilterType.active }),
     ...createInvoiceFilters({ t, namespace: 'businesses' })
   ];
+  const useBusinessesCRUDRetrieve = (args: {
+    filter?: FilterData[];
+    onDone?: (data: Response<Business[]>) => void;
+  }) => {
+    const { businesses, execute } = useBusinessesRetrieve({ filter: args.filter, onDone: args.onDone });
+    return { items: businesses, execute };
+  };
+  const useBusinessCRUDAdd = (args: {
+    item?: BusinessAdd;
+    immediate?: boolean;
+    onDone?: (data: Response<BusinessAdd>) => void;
+  }) => {
+    return useBusinessAdd({
+      business: args.item,
+      immediate: args.immediate,
+      onDone: args.onDone
+    });
+  };
+  const useBusinessesCRUDAddBatch = (args: {
+    item?: BusinessAdd[];
+    immediate?: boolean;
+    onDone?: (data: Response<BusinessAdd[]>) => void;
+  }) => {
+    return useBusinessAddBatch({
+      businesses: args.item,
+      immediate: args.immediate,
+      onDone: args.onDone
+    });
+  };
+  const useBusinessCRUDUpdate = (args: {
+    item?: BusinessUpdate;
+    immediate?: boolean;
+    onDone?: (data: Response<BusinessUpdate>) => void;
+  }) => {
+    return useBusinessUpdate({
+      business: args.item,
+      immediate: args.immediate,
+      onDone: args.onDone
+    });
+  };
 
   return (
     <CRUDPage<Business, BusinessAdd, BusinessUpdate>
@@ -75,13 +116,10 @@ export const BusinessesPage = () => {
       excelFileName={excelFileName}
       excelFormat={'xlsx'}
       excelTemplateData={excelTemplateData}
-      useRetrieve={({ filter, onDone }) => {
-        const { businesses, execute } = useBusinessesRetrieve({ filter: filter, onDone });
-        return { items: businesses, execute };
-      }}
-      useAdd={({ item, immediate, onDone }) => useBusinessAdd({ business: item, immediate, onDone })}
-      useAddBatch={({ item, immediate, onDone }) => useBusinessAddBatch({ businesses: item, immediate, onDone })}
-      useUpdate={({ item, immediate, onDone }) => useBusinessUpdate({ business: item, immediate, onDone })}
+      useRetrieve={useBusinessesCRUDRetrieve}
+      useAdd={useBusinessCRUDAdd}
+      useAddBatch={useBusinessesCRUDAddBatch}
+      useUpdate={useBusinessCRUDUpdate}
       useDelete={useBusinessDelete}
       searchField={'name'}
       sortOptions={[

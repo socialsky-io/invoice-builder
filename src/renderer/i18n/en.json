@@ -100,6 +100,8 @@
     "downloadTemplate": "Download template",
     "email": "Email",
     "export": "Export",
+    "exported": "Exported",
+    "exportedTo": "Exported to {{path}}",
     "fieldRequired": "Field is required",
     "from": "From",
     "import": "Import",
@@ -196,7 +198,7 @@
       "allText": "All invoices",
       "archivedDesc": "Invoices that have been archived",
       "archivedText": "Archived invoices",
-      "date": "date"
+      "date": "Date"
     },
     "markedAsPaid": "Marked as paid: {{date}}",
     "noItem": "Selected a invoice to view details.",

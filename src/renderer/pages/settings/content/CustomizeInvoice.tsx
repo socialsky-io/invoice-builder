@@ -72,7 +72,7 @@ export const CustomizeInvoice: FC<Props> = ({ showBack, onCustomizedInvoice = ()
     }, 500);
 
     return () => clearTimeout(timeout);
-  }, [prefix, suffix, includeMonth, includeYear, onCustomizedInvoice]);
+  }, [prefix, suffix, includeMonth, includeYear, includeBusinessName, onCustomizedInvoice]);
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>

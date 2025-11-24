@@ -55,7 +55,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, currency }) => {
       isArchived: currency?.isArchived ?? false,
       subunit: currency?.subunit ?? 0
     });
-  }, [currency]);
+  }, [currency, setForm]);
 
   useEffect(() => {
     const valid =
@@ -69,7 +69,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, currency }) => {
       currency: form,
       isFormValid: valid
     });
-  }, [form, errors]);
+  }, [form, errors, handleChange]);
 
   return (
     <Grid container spacing={2}>
@@ -115,9 +115,8 @@ export const Form: FC<Props> = ({ handleChange = () => {}, currency }) => {
             validateField('format', newValue.value);
           }}
           renderOption={(props, option) => {
-            const { key, ...rest } = props;
             return (
-              <li key={option.value} {...rest}>
+              <li {...props} key={option.value}>
                 {getFormattedLabel({ label: option.label, symbol: form.symbol, code: form.code })}
               </li>
             );

@@ -17,7 +17,7 @@ interface Props {
   format: DateFormat;
   onChange?: (valueFrom?: string, valueTo?: string) => void;
 }
-export const UTCDateRangePicker: React.FC<Props> = ({ label, valueFrom, valueTo, format, onChange = () => {} }) => {
+export const UTCDateRangePicker: React.FC<Props> = ({ valueFrom, valueTo, format, onChange = () => {} }) => {
   const { t } = useTranslation();
   const [range, setRange] = useState<[string?, string?]>([valueFrom, valueTo]);
 
@@ -29,8 +29,11 @@ export const UTCDateRangePicker: React.FC<Props> = ({ label, valueFrom, valueTo,
   useEffect(() => {
     if (range[0] && range[1]) {
       onChange(range[0], range[1]);
+    } else {
+      onChange(undefined, undefined);
     }
-  }, range);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [range]);
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -44,7 +47,7 @@ export const UTCDateRangePicker: React.FC<Props> = ({ label, valueFrom, valueTo,
         }}
       >
         <DatePicker
-          label={`${t('common.from')} ${label}`}
+          label={`${t('common.from')}`}
           value={range[0] ? dayjs.utc(range[0]) : null}
           format={format.toUpperCase()}
           onChange={newValue => {
@@ -63,7 +66,7 @@ export const UTCDateRangePicker: React.FC<Props> = ({ label, valueFrom, valueTo,
           }}
         />
         <DatePicker
-          label={`${t('common.to')} ${label}`}
+          label={`${t('common.to')}`}
           value={range[1] ? dayjs.utc(range[1]) : null}
           format={format.toUpperCase()}
           onChange={newValue => {

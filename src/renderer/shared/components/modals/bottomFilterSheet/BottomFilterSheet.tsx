@@ -15,7 +15,7 @@ import {
   Typography,
   useTheme
 } from '@mui/material';
-import { useMemo, useState, type ChangeEvent, type FC } from 'react';
+import { useCallback, useMemo, useState, type ChangeEvent, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAppSelector } from '../../../../state/configureStore';
 import { selectSettings } from '../../../../state/pageSlice';
@@ -45,34 +45,37 @@ export const BottomFilterSheet: FC<Props> = ({ filters, onFilter = () => {}, sel
     return value.split(',') as [string, string];
   };
 
-  const updateFilter = (type: FilterType, value?: string) => {
-    let sf = [...selectedFilter];
-    const filter = sf.find(f => f.type === type);
-    const specificFilter = remainingFilters.find(f => f.type === type);
-    let close = false;
+  const updateFilter = useCallback(
+    (type: FilterType, value?: string) => {
+      let sf = [...selectedFilter];
+      const filter = sf.find(f => f.type === type);
+      const specificFilter = remainingFilters.find(f => f.type === type);
+      let close = false;
 
-    if (filter) {
-      if (value) {
-        if (type === FilterType.status) {
-          if (filter.value !== value) filter.value = value ?? '';
-          else sf = sf.filter(item => item.type !== type);
-        } else filter.value = value ?? '';
-      } else sf = sf.filter(item => item.type !== type);
+      if (filter) {
+        if (value) {
+          if (type === FilterType.status) {
+            if (filter.value !== value) filter.value = value ?? '';
+            else sf = sf.filter(item => item.type !== type);
+          } else filter.value = value ?? '';
+        } else sf = sf.filter(item => item.type !== type);
 
-      if (filter.shouldCloseOnClick) close = true;
-    } else if (specificFilter) {
-      sf.push({ ...specificFilter, value: value ?? '' });
+        if (filter.shouldCloseOnClick) close = true;
+      } else if (specificFilter && value) {
+        sf.push({ ...specificFilter, value: value ?? '' });
 
-      if (specificFilter.shouldCloseOnClick) close = true;
-    }
+        if (specificFilter.shouldCloseOnClick) close = true;
+      }
 
-    onFilter(sf);
+      onFilter(sf);
 
-    if (close) onClose();
-  };
+      if (close) onClose();
+    },
+    [onFilter, remainingFilters, selectedFilter]
+  );
 
   const handleChipClick = (type: FilterType, value: string) => updateFilter(type, value);
-  const handleDateChange = (type: FilterType, value?: string) => updateFilter(type, value);
+  const handleDateChange = useCallback((type: FilterType, value?: string) => updateFilter(type, value), [updateFilter]);
   const handleAutocompleteChange =
     <T extends string | number | symbol>(type: FilterType) =>
     (_event: React.SyntheticEvent, newValue: CustomOption<T> | null) =>
@@ -130,7 +133,10 @@ export const BottomFilterSheet: FC<Props> = ({ filters, onFilter = () => {}, sel
             valueTo={to}
             label={item.label}
             format={storeSettings.dateFormat}
-            onChange={(valueFrom, valueTo) => handleDateChange(item.type, `${valueFrom},${valueTo}`)}
+            onChange={(valueFrom, valueTo) => {
+              if (valueFrom && valueTo) handleDateChange(item.type, `${valueFrom},${valueTo}`);
+              else handleDateChange(item.type, undefined);
+            }}
           />
         ) : null;
       case FilterType.status:

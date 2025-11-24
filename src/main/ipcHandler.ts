@@ -1,4 +1,5 @@
 import { dialog, ipcMain, shell } from 'electron';
+import { promises as fs } from 'fs';
 import { join } from 'path';
 import type { Database } from 'sqlite3';
 import { setupDB } from './database';
@@ -338,15 +339,7 @@ const initIpcHandler = (db: Database, path: string) => {
     if (!row) return null;
     return {
       success: true,
-      data: {
-        ...row,
-        isDarkMode: row.isDarkMode === 1,
-        shouldIncludeYear: row.shouldIncludeYear === 1,
-        shouldIncludeMonth: row.shouldIncludeMonth === 1,
-        shouldIncludeBusinessName: row.shouldIncludeBusinessName === 1,
-        quotesON: row.quotesON === 1,
-        reportsON: row.reportsON === 1
-      }
+      data: row
     };
   });
 
@@ -624,6 +617,51 @@ const initIpcHandler = (db: Database, path: string) => {
       data: finalInvoices
     };
   });
+
+  ipcMain.handle('export-all-data', async () => {
+    try {
+      const settingsRow = await getFirstRow(db, 'SELECT * FROM settings LIMIT 1');
+      const businesses = await getAllRows(db, 'SELECT * FROM businesses');
+      const clients = await getAllRows(db, 'SELECT * FROM clients');
+      const items = await getAllRows(db, 'SELECT * FROM items');
+      const units = await getAllRows(db, 'SELECT * FROM units');
+      const categories = await getAllRows(db, 'SELECT * FROM categories');
+      const currencies = await getAllRows(db, 'SELECT * FROM currencies');
+      const invoices = await getAllRows(db, 'SELECT * FROM invoices');
+      const invoiceItems = await getAllRows(db, 'SELECT * FROM invoice_items');
+      const invoicePayments = await getAllRows(db, 'SELECT * FROM invoice_payments');
+      const attachments = await getAllRows(db, 'SELECT * FROM attachments');
+
+      const payload = {
+        settings: settingsRow ?? null,
+        businesses,
+        clients,
+        items,
+        units,
+        categories,
+        currencies,
+        invoices,
+        invoiceItems,
+        invoicePayments,
+        attachments
+      };
+
+      const defaultFileName = `invoice-builder-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      const result = await dialog.showSaveDialog({
+        title: 'Export',
+        defaultPath: join(process.env.USERPROFILE || process.cwd(), defaultFileName),
+        filters: [{ name: 'JSON', extensions: ['json'] }]
+      });
+
+      if (result.canceled || !result.filePath) return { success: false };
+
+      await fs.writeFile(result.filePath, JSON.stringify(payload, null, 2), 'utf8');
+
+      return { success: true, data: { filePath: result.filePath } };
+    } catch (error) {
+      return { success: false, ...mapSqliteError(error) };
+    }
+  });
 };
 
 const initIpcHandlerForDB = (dbName: string) => {
@@ -707,6 +745,7 @@ const resetIPCHandlers = () => {
   ipcMain.removeHandler('get-all-currencies');
 
   ipcMain.removeHandler('get-all-invoices');
+  ipcMain.removeHandler('export-all-data');
 };
 
 export { initIpcHandler, initIpcHandlerForDB, resetIPCHandlers };

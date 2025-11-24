@@ -46,7 +46,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, item }) => {
   const { form, setForm, update } = useForm<ItemFromData>({
     id: item?.id,
     name: item?.name ?? '',
-    amount: item?.amount ?? 0,
+    amount: item?.amount ?? '0',
     unitId: item?.unitId,
     categoryId: item?.categoryId,
     description: item?.description ?? '',
@@ -69,13 +69,13 @@ export const Form: FC<Props> = ({ handleChange = () => {}, item }) => {
     setForm({
       id: item?.id,
       name: item?.name ?? '',
-      amount: item?.amount ?? 0,
+      amount: item?.amount ?? '0',
       unitId: item?.unitId,
       categoryId: item?.categoryId,
       description: item?.description ?? '',
       isArchived: item?.isArchived ?? false
     });
-  }, [item]);
+  }, [item, setForm]);
 
   useEffect(() => {
     const valid = form.name.trim() !== '';
@@ -84,7 +84,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, item }) => {
       item: form,
       isFormValid: valid
     });
-  }, [form, errors]);
+  }, [form, errors, handleChange]);
 
   return (
     <Grid container spacing={2}>
@@ -116,10 +116,10 @@ export const Form: FC<Props> = ({ handleChange = () => {}, item }) => {
         <AmountInput
           required={true}
           label={t('items.amount')}
-          value={form.amount ?? 0}
+          value={Number(form.amount ?? 0)}
           amountFormat={settings?.amountFormat}
           onChange={e => {
-            update('amount', e);
+            update('amount', e.toString());
           }}
         />
       </Grid>

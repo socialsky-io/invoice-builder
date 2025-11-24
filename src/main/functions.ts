@@ -1,6 +1,16 @@
 import sqlite3 from 'sqlite3';
 import type { SqliteValue } from './types/sqliteValue';
 
+const BOOLEAN_FIELDS = [
+  'isDarkMode',
+  'shouldIncludeYear',
+  'shouldIncludeMonth',
+  'shouldIncludeBusinessName',
+  'quotesON',
+  'reportsON',
+  'isArchived'
+] as const;
+
 export const runAsync = (db: sqlite3.Database, sql: string) =>
   new Promise<void>((resolve, reject) => {
     db.run(sql, err => (err ? reject(err) : resolve()));
@@ -27,8 +37,14 @@ const getFirstRow = <T extends Record<string, unknown>>(
   return new Promise((resolve, reject) => {
     db.get(sql, convertedParams, (err, row) => {
       if (err) return reject(err);
-
       if (!row) return resolve(null);
+
+      BOOLEAN_FIELDS.forEach(key => {
+        const convertedRow = row as Record<string, unknown>;
+        if (key in convertedRow) {
+          convertedRow[key] = Boolean(convertedRow[key]);
+        }
+      });
 
       resolve(row as T);
     });
@@ -47,10 +63,13 @@ const getAllRows = <T extends Record<string, unknown>>(
       if (err) return reject(err);
 
       const transformedRows = (rows as Record<string, unknown>[]).map(row => {
-        if ('isArchived' in row) {
-          return { ...row, isArchived: Boolean(row['isArchived']) } as unknown as T;
-        }
-        return row as unknown as T;
+        const convertedRow = { ...row };
+        BOOLEAN_FIELDS.forEach(key => {
+          if (key in convertedRow) {
+            convertedRow[key] = Boolean(convertedRow[key]);
+          }
+        });
+        return convertedRow as unknown as T;
       });
 
       resolve(transformedRows as T[]);

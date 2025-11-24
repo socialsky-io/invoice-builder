@@ -8,7 +8,8 @@ import { useUnitDelete } from '../../shared/hooks/units/useUnitDelete';
 import { useUnitsRetrieve } from '../../shared/hooks/units/useUnitsRetrieve';
 import { useUnitUpdate } from '../../shared/hooks/units/useUnitUpdate';
 import type { Rows } from '../../shared/types/excel';
-import type { Filter } from '../../shared/types/filter';
+import type { Filter, FilterData } from '../../shared/types/filter';
+import type { Response } from '../../shared/types/response';
 import type { Unit, UnitAdd, UnitUpdate } from '../../shared/types/unit';
 import { createCommonFilters, createInvoiceFilters } from '../../shared/utils/filterSortFunctions';
 import { isUnitFromData } from '../../shared/utils/typeGuardFunctions';
@@ -33,7 +34,43 @@ export const UnitsPage: FC = () => {
     ...createCommonFilters({ t, namespace: 'units', initial: FilterType.active }),
     ...createInvoiceFilters({ t, namespace: 'units' })
   ];
-
+  const useUnitsCRUDRetrieve = (args: { filter?: FilterData[]; onDone?: (data: Response<Unit[]>) => void }) => {
+    const { units, execute } = useUnitsRetrieve({ filter: args.filter, onDone: args.onDone });
+    return { items: units, execute };
+  };
+  const useUnitCRUDAdd = (args: {
+    item?: UnitAdd;
+    immediate?: boolean;
+    onDone?: (data: Response<UnitAdd>) => void;
+  }) => {
+    return useUnitAdd({
+      unit: args.item,
+      immediate: args.immediate,
+      onDone: args.onDone
+    });
+  };
+  const useUnitsCRUDAddBatch = (args: {
+    item?: UnitAdd[];
+    immediate?: boolean;
+    onDone?: (data: Response<UnitAdd[]>) => void;
+  }) => {
+    return useUnitAddBatch({
+      units: args.item,
+      immediate: args.immediate,
+      onDone: args.onDone
+    });
+  };
+  const useUnitCRUDUpdate = (args: {
+    item?: UnitUpdate;
+    immediate?: boolean;
+    onDone?: (data: Response<UnitUpdate>) => void;
+  }) => {
+    return useUnitUpdate({
+      unit: args.item,
+      immediate: args.immediate,
+      onDone: args.onDone
+    });
+  };
   return (
     <CRUDPage<Unit, UnitAdd, UnitUpdate>
       title={t('common.unit')}
@@ -42,13 +79,10 @@ export const UnitsPage: FC = () => {
       excelFileName={excelFileName}
       excelFormat={'xlsx'}
       excelTemplateData={excelTemplateData}
-      useRetrieve={({ filter, onDone }) => {
-        const { units, execute } = useUnitsRetrieve({ filter: filter, onDone });
-        return { items: units, execute };
-      }}
-      useAdd={({ item, immediate, onDone }) => useUnitAdd({ unit: item, immediate, onDone })}
-      useAddBatch={({ item, immediate, onDone }) => useUnitAddBatch({ units: item, immediate, onDone })}
-      useUpdate={({ item, immediate, onDone }) => useUnitUpdate({ unit: item, immediate, onDone })}
+      useRetrieve={useUnitsCRUDRetrieve}
+      useAdd={useUnitCRUDAdd}
+      useAddBatch={useUnitsCRUDAddBatch}
+      useUpdate={useUnitCRUDUpdate}
       useDelete={useUnitDelete}
       searchField={'name'}
       sortOptions={[

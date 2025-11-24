@@ -9,7 +9,8 @@ import { useCurrencyDelete } from '../../shared/hooks/currencies/useCurrencyDele
 import { useCurrencyUpdate } from '../../shared/hooks/currencies/useCurrencyUpdate';
 import type { Currency, CurrencyAdd, CurrencyUpdate } from '../../shared/types/currency';
 import type { Rows } from '../../shared/types/excel';
-import type { Filter } from '../../shared/types/filter';
+import type { Filter, FilterData } from '../../shared/types/filter';
+import type { Response } from '../../shared/types/response';
 import { createCommonFilters, createInvoiceFilters } from '../../shared/utils/filterSortFunctions';
 import { isCurrencyFromData } from '../../shared/utils/typeGuardFunctions';
 import { Form } from './Form';
@@ -41,6 +42,46 @@ export const CurrenciesPage: FC = () => {
     ...createCommonFilters({ t, namespace: 'currencies', initial: FilterType.active }),
     ...createInvoiceFilters({ t, namespace: 'currencies' })
   ];
+  const useCurrenciesCRUDRetrieve = (args: {
+    filter?: FilterData[];
+    onDone?: (data: Response<Currency[]>) => void;
+  }) => {
+    const { currencies, execute } = useCurrenciesRetrieve({ filter: args.filter, onDone: args.onDone });
+    return { items: currencies, execute };
+  };
+  const useCurrencyCRUDAdd = (args: {
+    item?: CurrencyAdd;
+    immediate?: boolean;
+    onDone?: (data: Response<CurrencyAdd>) => void;
+  }) => {
+    return useCurrencyAdd({
+      currency: args.item,
+      immediate: args.immediate,
+      onDone: args.onDone
+    });
+  };
+  const useCurrenciesCRUDAddBatch = (args: {
+    item?: CurrencyAdd[];
+    immediate?: boolean;
+    onDone?: (data: Response<CurrencyAdd[]>) => void;
+  }) => {
+    return useCurrencyAddBatch({
+      currencies: args.item,
+      immediate: args.immediate,
+      onDone: args.onDone
+    });
+  };
+  const useCurrencyCRUDUpdate = (args: {
+    item?: CurrencyUpdate;
+    immediate?: boolean;
+    onDone?: (data: Response<CurrencyUpdate>) => void;
+  }) => {
+    return useCurrencyUpdate({
+      currency: args.item,
+      immediate: args.immediate,
+      onDone: args.onDone
+    });
+  };
 
   return (
     <CRUDPage<Currency, CurrencyAdd, CurrencyUpdate>
@@ -50,13 +91,10 @@ export const CurrenciesPage: FC = () => {
       excelFileName={excelFileName}
       excelFormat={'xlsx'}
       excelTemplateData={excelTemplateData}
-      useRetrieve={({ filter, onDone }) => {
-        const { currencies, execute } = useCurrenciesRetrieve({ filter: filter, onDone });
-        return { items: currencies, execute };
-      }}
-      useAdd={({ item, immediate, onDone }) => useCurrencyAdd({ currency: item, immediate, onDone })}
-      useAddBatch={({ item, immediate, onDone }) => useCurrencyAddBatch({ currencies: item, immediate, onDone })}
-      useUpdate={({ item, immediate, onDone }) => useCurrencyUpdate({ currency: item, immediate, onDone })}
+      useRetrieve={useCurrenciesCRUDRetrieve}
+      useAdd={useCurrencyCRUDAdd}
+      useAddBatch={useCurrenciesCRUDAddBatch}
+      useUpdate={useCurrencyCRUDUpdate}
       useDelete={useCurrencyDelete}
       searchField={'text'}
       sortOptions={[

@@ -174,7 +174,7 @@ const init = async () => {
     CREATE TABLE IF NOT EXISTS items (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT NOT NULL,
-      amount DECIMAL(20, 6) DEFAULT (0), 
+      amount TEXT NOT NULL DEFAULT '0',
       unitId INTEGER,
       categoryId INTEGER,
       description TEXT,
@@ -236,7 +236,7 @@ const init = async () => {
       shippingFeeCents INTEGER NOT NULL DEFAULT 0,
       taxName TEXT,              
       taxRate REAL NOT NULL DEFAULT 0,           
-      taxType TEXT CHECK(type IN ('exclusive','inclusive','deducted') OR taxType IS NULL), 
+      taxType TEXT CHECK(taxType IN ('exclusive','inclusive','deducted') OR taxType IS NULL), 
       FOREIGN KEY (businessId) REFERENCES businesses(id),
       FOREIGN KEY (clientId) REFERENCES clients(id),
       FOREIGN KEY (currencyId) REFERENCES currencies(id),
@@ -244,7 +244,7 @@ const init = async () => {
       UNIQUE (businessId, invoiceNumber),
       CHECK (
         (discountType = 'fixed' AND discountAmountCents >= 0 AND discountPercent = 0) OR
-        (discountType = 'percentage' AND discountPercent >= 0 AND discountAmountCents = 0) OR
+        (discountType = 'percentage' AND discountPercent <= 100 AND discountPercent >= 0 AND discountAmountCents = 0) OR
         (discountType IS NULL AND discountAmountCents = 0 AND discountPercent = 0)
       ),
       CHECK (dueDate IS NULL OR dueDate >= issuedAt),
@@ -267,7 +267,7 @@ const init = async () => {
         quantity REAL NOT NULL DEFAULT 0,
         taxName TEXT,
         taxRate REAL NOT NULL DEFAULT 0,
-        taxType TEXT CHECK(type IN ('exclusive','inclusive') OR taxType IS NULL),
+        taxType TEXT CHECK(taxType IN ('exclusive','inclusive') OR taxType IS NULL),
         createdAt DATETIME NOT NULL DEFAULT (datetime('now')),
         updatedAt DATETIME NOT NULL DEFAULT (datetime('now')),
         FOREIGN KEY (parentInvoiceId) REFERENCES invoices(id) ON DELETE CASCADE,
@@ -307,6 +307,7 @@ const init = async () => {
     )
   `
   );
+
   await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_invoice_items_invoiceId ON invoice_items(parentInvoiceId)`);
   await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_invoice_payments_invoiceId ON invoice_payments(parentInvoiceId)`);
   await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_attachments_invoiceId ON attachments(parentInvoiceId)`);
@@ -318,7 +319,18 @@ const init = async () => {
     db,
     `CREATE INDEX IF NOT EXISTS idx_invoices_convertedFromQuotationId ON invoices(convertedFromQuotationId)`
   );
-  await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_invoice_items_itemId ON invoice_items(itemId);`);
+  await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_invoice_items_itemId ON invoice_items(itemId)`);
+  await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_items_unitId ON items(unitId)`);
+  await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_items_categoryId ON items(categoryId)`);
+  await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_clients_active ON clients(isArchived)`);
+  await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_items_active ON items(isArchived)`);
+  await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_businesses_active ON businesses(isArchived)`);
+  await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_categories_active ON categories(isArchived)`);
+  await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_units_active ON units(isArchived)`);
+  await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_currencies_active ON currencies(isArchived)`);
+  await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_invoices_invoiceNumber ON invoices(invoiceNumber)`);
+  await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_invoices_status ON invoices(status)`);
+  await runAsync(db, `CREATE INDEX IF NOT EXISTS idx_invoices_issuedAt ON invoices(issuedAt)`);
 };
 
 const initDatabase = async () => {

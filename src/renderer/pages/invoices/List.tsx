@@ -1,6 +1,6 @@
 import { Box, Card, CardActionArea, CardContent, darken, lighten, Typography, useTheme } from '@mui/material';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
-import { useMemo, type FC } from 'react';
+import { useCallback, useMemo, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { CurrencyFormat } from '../../shared/enums/currencyFormat';
 import { InvoiceStatus } from '../../shared/enums/invoiceStatus';
@@ -21,7 +21,7 @@ export const List: FC<Props> = ({ item, selectedItem, onEdit }) => {
   const theme = useTheme();
   const { t } = useTranslation();
 
-  const getLastPaymentDate = (): string | null => {
+  const getLastPaymentDate = useCallback((): string | null => {
     if (!item.invoicePayments || item.invoicePayments.length === 0) {
       return null;
     }
@@ -31,9 +31,9 @@ export const List: FC<Props> = ({ item, selectedItem, onEdit }) => {
       const paymentTime = new Date(payment.paidAt).getTime();
       return paymentTime > latestTime ? payment.paidAt : latest;
     }, item.invoicePayments[0].paidAt);
-  };
+  }, [item.invoicePayments]);
 
-  const daysLeft = () => {
+  const daysLeft = useCallback(() => {
     if (!item.dueDate) return 0;
 
     const d = typeof item.dueDate === 'string' ? parseISO(item.dueDate) : item.dueDate;
@@ -43,9 +43,9 @@ export const List: FC<Props> = ({ item, selectedItem, onEdit }) => {
     const todayDateOnly = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
     return differenceInCalendarDays(due, todayDateOnly);
-  };
+  }, [item]);
 
-  const getColor = () => {
+  const getColor = useCallback(() => {
     if (item.status === InvoiceStatus.partiallyPaid) return theme.palette.warning.main;
     if (item.status === InvoiceStatus.paid) return theme.palette.success.main;
     if (item.status === InvoiceStatus.unpaid) return theme.palette.error.main;
@@ -53,14 +53,14 @@ export const List: FC<Props> = ({ item, selectedItem, onEdit }) => {
     if (item.status === InvoiceStatus.open) return theme.palette.primary.main;
 
     return theme.palette.divider;
-  };
+  }, [item, theme]);
 
-  const latestPaidAt = useMemo(() => getLastPaymentDate(), [item.invoicePayments]);
-  const overdueDaysLeft = useMemo(() => daysLeft(), [item]);
+  const latestPaidAt = useMemo(() => getLastPaymentDate(), [getLastPaymentDate]);
+  const overdueDaysLeft = useMemo(() => daysLeft(), [daysLeft]);
   const totalAmountCents = useMemo(() => getTotalAmountCents(item), [item]);
   const remainingCents = useMemo(() => getBalanceDueCents(item), [item]);
-  const remainingAmount = useMemo(() => remainingCents / item.currencySubunitSnapshot, [remainingCents]);
-  const totalAmount = useMemo(() => totalAmountCents / item.currencySubunitSnapshot, [totalAmountCents]);
+  const remainingAmount = useMemo(() => remainingCents / item.currencySubunitSnapshot, [remainingCents, item]);
+  const totalAmount = useMemo(() => totalAmountCents / item.currencySubunitSnapshot, [totalAmountCents, item]);
 
   return (
     <>

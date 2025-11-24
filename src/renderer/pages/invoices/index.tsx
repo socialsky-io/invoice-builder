@@ -4,8 +4,9 @@ import { CRUDPage } from '../../shared/components/layout/crudPage/CRUDPage';
 import { FilterType } from '../../shared/enums/filterType';
 import { InvoiceStatus } from '../../shared/enums/invoiceStatus';
 import { useInvoicesRetrieve } from '../../shared/hooks/invoices/useInvoicesRetrieve';
-import type { Filter } from '../../shared/types/filter';
+import type { Filter, FilterData } from '../../shared/types/filter';
 import type { Invoice, InvoiceAdd, InvoiceUpdate } from '../../shared/types/invoice';
+import type { Response } from '../../shared/types/response';
 import { createCommonFilters } from '../../shared/utils/filterSortFunctions';
 import { useAppSelector } from '../../state/configureStore';
 import { selectBusinessesSnapshotsOptions, selectClientsSnapshotsOptions } from '../../state/pageSlice';
@@ -62,6 +63,10 @@ export const InvoicesPage: FC = () => {
       ]
     }
   ];
+  const useInvoicesCRUDRetrieve = (args: { filter?: FilterData[]; onDone?: (data: Response<Invoice[]>) => void }) => {
+    const { invoices, execute } = useInvoicesRetrieve({ filter: args.filter, onDone: args.onDone });
+    return { items: invoices, execute };
+  };
 
   return (
     <CRUDPage<Invoice, InvoiceAdd, InvoiceUpdate>
@@ -71,10 +76,7 @@ export const InvoicesPage: FC = () => {
       // excelFileName={excelFileName}
       // excelFormat={'xlsx'}
       // excelTemplateData={excelTemplateData}
-      useRetrieve={({ filter, onDone }) => {
-        const { invoices, execute } = useInvoicesRetrieve({ filter: filter, onDone });
-        return { items: invoices, execute };
-      }}
+      useRetrieve={useInvoicesCRUDRetrieve}
       // useAdd={({ item, immediate, onDone }) => useCurrencyAdd({ currency: item, immediate, onDone })}
       // useAddBatch={({ item, immediate, onDone }) => useCurrencyAddBatch({ currencies: item, immediate, onDone })}
       // useUpdate={({ item, immediate, onDone }) => useCurrencyUpdate({ currency: item, immediate, onDone })}

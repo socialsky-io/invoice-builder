@@ -22,13 +22,15 @@ interface Props {
   onModeChange?: (isDark: boolean) => void;
   toggleQuotes?: (value: boolean) => void;
   toggleReports?: (value: boolean) => void;
+  onExportJSON?: () => void;
 }
 export const Menu: FC<Props> = ({
   onSelected = () => {},
   selectedMenu,
   toggleQuotes = () => {},
   toggleReports = () => {},
-  onModeChange = () => {}
+  onModeChange = () => {},
+  onExportJSON = () => {}
 }) => {
   const { mode, toggleMode } = useContext(ThemeContext);
   const { t } = useTranslation();
@@ -104,7 +106,8 @@ export const Menu: FC<Props> = ({
       description: t('settingsMenuItems.descriptions.export'),
       icon: <FileDownload />,
       isSelected: false,
-      isToggle: false
+      isToggle: false,
+      onClick: onExportJSON
     },
     {
       text: t('settingsMenuItems.titles.share'),

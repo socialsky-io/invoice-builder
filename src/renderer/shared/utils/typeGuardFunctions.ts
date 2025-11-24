@@ -70,7 +70,7 @@ export const isItemFromData = (data: unknown): data is ItemFromData => {
   if (d.isArchived !== undefined && d.isArchived !== null && d.isArchived !== '' && typeof d.isArchived !== 'boolean')
     return false;
 
-  if (d.amount !== undefined && d.amount !== null && d.amount !== '' && typeof d.amount !== 'number') return false;
+  if (d.amount !== undefined && d.amount !== null && d.amount !== '' && typeof d.amount !== 'string') return false;
   if (
     d.description !== undefined &&
     d.description !== null &&

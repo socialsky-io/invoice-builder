@@ -8,7 +8,9 @@ import type { AmountFormat } from '../../shared/enums/amountFormat';
 import type { DateFormat } from '../../shared/enums/dateFormat';
 import type { Language } from '../../shared/enums/language';
 import { MenuItemSettings } from '../../shared/enums/menuItemSettings';
+import { useExportJson } from '../../shared/hooks/backup/useExportJson';
 import { useSettingsUpdate } from '../../shared/hooks/settings/useSettingsUpdate';
+import type { ExportMeta } from '../../shared/types/exportMeta';
 import type { Response } from '../../shared/types/response';
 import { useAppDispatch, useAppSelector } from '../../state/configureStore';
 import {
@@ -44,6 +46,24 @@ export const SettingsPage = () => {
     }
   });
 
+  const { execute: exportJSONBackup } = useExportJson({
+    immediate: false,
+    onDone: (data: Response<ExportMeta>) => {
+      if (!data.success) {
+        if (data.message) dispatch(addToast({ message: data.message, severity: 'error' }));
+        else if (data.key) dispatch(addToast({ message: t(data.key), severity: 'error' }));
+      } else if (data?.success) {
+        const path = data.data?.filePath;
+        dispatch(
+          addToast({
+            message: path ? t('common.exportedTo', { path: path }) : t('common.exported'),
+            severity: 'success'
+          })
+        );
+      }
+    }
+  });
+
   const onModeChange = useCallback(
     (isDark: boolean) => {
       dispatch(setMode(isDark));
@@ -64,6 +84,10 @@ export const SettingsPage = () => {
     },
     [dispatch]
   );
+
+  const exportJSON = useCallback(() => {
+    exportJSONBackup();
+  }, [exportJSONBackup]);
 
   const onCustomizedInvoice = useCallback(
     (data: {
@@ -145,6 +169,7 @@ export const SettingsPage = () => {
       onModeChange={onModeChange}
       toggleQuotes={toggleQuotes}
       toggleReports={toggleReports}
+      onExportJSON={exportJSON}
     />
   );
 

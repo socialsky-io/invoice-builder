@@ -5,6 +5,7 @@ import type { Category, CategoryAdd, CategoryUpdate } from './category';
 import type { Client, ClientAdd, ClientUpdate } from './client';
 import type { Currency, CurrencyAdd, CurrencyUpdate } from './currency';
 import type { DBSelector } from './dbSelector';
+import type { ExportMeta } from './exportMeta';
 import type { FilterData } from './filter';
 import type { Invoice } from './invoice';
 import type { Item, ItemAdd, ItemUpdate } from './item';
@@ -61,6 +62,7 @@ declare global {
       addBatchCurrency: (data: CurrencyAdd[]) => Promise<Response<CurrencyAdd[]>>;
 
       getAllInvoices: (filter?: FilterData[]) => Promise<Response<Invoice[]>>;
+      exportAllData: () => Promise<Response<ExportMeta>>;
     };
   }
 }

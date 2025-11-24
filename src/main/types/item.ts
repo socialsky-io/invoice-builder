@@ -2,7 +2,7 @@ export interface Item {
   id?: number;
   name: string;
   unitId?: number;
-  amount?: number;
+  amount?: string;
   categoryId?: number;
   categoryName?: string;
   unitName?: string;

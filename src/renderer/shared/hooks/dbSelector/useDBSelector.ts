@@ -4,7 +4,7 @@ import type { RequestHook } from '../../types/requestHook';
 import type { Response } from '../../types/response';
 import { useAsyncAction } from '../useAsyncAction';
 
-export const usDBSelector = ({ showLoader = true, immediate = true, onDone }: RequestHook<Response<DBSelector>>) => {
+export const useDBSelector = ({ showLoader = true, immediate = true, onDone }: RequestHook<Response<DBSelector>>) => {
   const asyncFn = useCallback(() => window.electronAPI.selectDatabase(), []);
   const { data, execute } = useAsyncAction<Response<DBSelector>>(asyncFn, { showLoader, immediate, onDone });
 

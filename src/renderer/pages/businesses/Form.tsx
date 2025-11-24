@@ -85,7 +85,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
     });
 
     setLogoUrl(fromUint8Array(business?.logo) ?? undefined);
-  }, [business]);
+  }, [business, setForm]);
 
   useEffect(() => {
     const valid =
@@ -100,7 +100,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
       business: form,
       isFormValid: valid
     });
-  }, [form, errors]);
+  }, [form, errors, handleChange]);
 
   return (
     <Grid container spacing={2}>

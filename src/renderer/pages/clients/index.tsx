@@ -9,7 +9,8 @@ import { useClientsRetrieve } from '../../shared/hooks/clients/useClientsRetriev
 import { useClientUpdate } from '../../shared/hooks/clients/useClientUpdate';
 import type { Client, ClientAdd, ClientUpdate } from '../../shared/types/client';
 import type { Rows } from '../../shared/types/excel';
-import type { Filter } from '../../shared/types/filter';
+import type { Filter, FilterData } from '../../shared/types/filter';
+import type { Response } from '../../shared/types/response';
 import { createCommonFilters, createInvoiceFilters } from '../../shared/utils/filterSortFunctions';
 import { isClientFromData } from '../../shared/utils/typeGuardFunctions';
 import { Form } from './Form';
@@ -55,6 +56,43 @@ export const ClientsPage: FC = () => {
     ...createCommonFilters({ t, namespace: 'clients', initial: FilterType.active }),
     ...createInvoiceFilters({ t, namespace: 'clients' })
   ];
+  const useClientsCRUDRetrieve = (args: { filter?: FilterData[]; onDone?: (data: Response<Client[]>) => void }) => {
+    const { clients, execute } = useClientsRetrieve({ filter: args.filter, onDone: args.onDone });
+    return { items: clients, execute };
+  };
+  const useClientCRUDAdd = (args: {
+    item?: ClientAdd;
+    immediate?: boolean;
+    onDone?: (data: Response<ClientAdd>) => void;
+  }) => {
+    return useClientAdd({
+      client: args.item,
+      immediate: args.immediate,
+      onDone: args.onDone
+    });
+  };
+  const useClientsCRUDAddBatch = (args: {
+    item?: ClientAdd[];
+    immediate?: boolean;
+    onDone?: (data: Response<ClientAdd[]>) => void;
+  }) => {
+    return useClientAddBatch({
+      clients: args.item,
+      immediate: args.immediate,
+      onDone: args.onDone
+    });
+  };
+  const useClientCRUDUpdate = (args: {
+    item?: ClientUpdate;
+    immediate?: boolean;
+    onDone?: (data: Response<ClientUpdate>) => void;
+  }) => {
+    return useClientUpdate({
+      client: args.item,
+      immediate: args.immediate,
+      onDone: args.onDone
+    });
+  };
 
   return (
     <CRUDPage<Client, ClientAdd, ClientUpdate>
@@ -64,13 +102,10 @@ export const ClientsPage: FC = () => {
       excelFileName={excelFileName}
       excelFormat={'xlsx'}
       excelTemplateData={excelTemplateData}
-      useRetrieve={({ filter, onDone }) => {
-        const { clients, execute } = useClientsRetrieve({ filter: filter, onDone });
-        return { items: clients, execute };
-      }}
-      useAdd={({ item, immediate, onDone }) => useClientAdd({ client: item, immediate, onDone })}
-      useAddBatch={({ item, immediate, onDone }) => useClientAddBatch({ clients: item, immediate, onDone })}
-      useUpdate={({ item, immediate, onDone }) => useClientUpdate({ client: item, immediate, onDone })}
+      useRetrieve={useClientsCRUDRetrieve}
+      useAdd={useClientCRUDAdd}
+      useAddBatch={useClientsCRUDAddBatch}
+      useUpdate={useClientCRUDUpdate}
       useDelete={useClientDelete}
       searchField={'name'}
       sortOptions={[
