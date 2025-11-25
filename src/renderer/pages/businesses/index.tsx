@@ -140,7 +140,8 @@ export const BusinessesPage = () => {
             if (isBusinessFromData(d.business)) {
               onChange({
                 changedData: d.business,
-                isFormValid: d.isFormValid
+                isFormValid: d.isFormValid,
+                description: d.description
               });
             }
           }}

@@ -3,6 +3,7 @@ import type { BusinessFromData } from '../types/business';
 import type { CategoryFromData } from '../types/category';
 import type { ClientFromData } from '../types/client';
 import type { CurrencyFromData } from '../types/currency';
+import type { InvoiceFromData } from '../types/invoice';
 import type { ItemFromData } from '../types/item';
 import type { UnitFromData } from '../types/unit';
 import { validators } from './validatorFunctions';
@@ -180,6 +181,105 @@ export const isCurrencyFromData = (data: unknown): data is CurrencyFromData => {
   if (!isValidCurrencyFormat(d.format)) return false;
 
   if (d.id !== undefined && d.id !== null && d.id !== '' && typeof d.id !== 'number') return false;
+
+  return true;
+};
+
+export const isInvoiceFromData = (data: unknown): data is InvoiceFromData => {
+  if (typeof data !== 'object' || data === null) return false;
+
+  const d = data as Record<string, unknown>;
+
+  if (typeof d.invoiceType !== 'string') return false;
+  if (typeof d.businessId !== 'number') return false;
+  if (typeof d.clientId !== 'number') return false;
+  if (typeof d.currencyId !== 'number') return false;
+  if (typeof d.issuedAt !== 'string') return false;
+  if (typeof d.invoiceNumber !== 'string') return false;
+  if (typeof d.status !== 'string') return false;
+  if (typeof d.businessNameSnapshot !== 'string') return false;
+  if (typeof d.businessShortName !== 'string') return false;
+  if (typeof d.clientShortName !== 'string') return false;
+  if (typeof d.clientNameSnapshot !== 'string') return false;
+  if (typeof d.currencyCodeSnapshot !== 'string') return false;
+  if (typeof d.currencySymbolSnapshot !== 'string') return false;
+  if (typeof d.currencySubunitSnapshot !== 'number') return false;
+  if (typeof d.taxRate !== 'number') return false;
+
+  if (d.id !== undefined && d.id !== null && d.id !== '' && typeof d.id !== 'number') return false;
+  if (
+    d.convertedFromQuotationId !== undefined &&
+    d.convertedFromQuotationId !== null &&
+    d.convertedFromQuotationId !== '' &&
+    typeof d.convertedFromQuotationId !== 'number'
+  )
+    return false;
+
+  if (d.createdAt !== undefined && d.createdAt !== null && d.createdAt !== '' && typeof d.createdAt !== 'string')
+    return false;
+  if (d.updatedAt !== undefined && d.updatedAt !== null && d.updatedAt !== '' && typeof d.updatedAt !== 'string')
+    return false;
+
+  if (d.dueDate !== undefined && d.dueDate !== null && d.dueDate !== '' && typeof d.dueDate !== 'string') return false;
+
+  if (d.isArchived !== undefined && d.isArchived !== null && d.isArchived !== '' && typeof d.isArchived !== 'boolean')
+    return false;
+
+  const stringFields = [
+    'customerNotes',
+    'thanksNotes',
+    'termsConditionNotes',
+    'discountName',
+    'businessDescriptionSnapshot',
+    'businessAddressSnapshot',
+    'businessRoleSnapshot',
+    'businessEmailSnapshot',
+    'businessPhoneSnapshot',
+    'businessWebsiteSnapshot',
+    'businessAdditionalSnapshot',
+    'businessPaymentInformationSnapshot',
+    'businessFileTypeSnapshot',
+    'businessFileNameSnapshot',
+    'clientAddressSnapshot',
+    'clientDescriptionSnapshot',
+    'clientEmailSnapshot',
+    'clientPhoneSnapshot',
+    'clientCodeSnapshot',
+    'clientAdditionalSnapshot',
+    'taxName',
+    'invoicePrefixSnapshot',
+    'invoiceSuffixSnapshot'
+  ];
+
+  for (const key of stringFields) {
+    const val = d[key];
+    if (val !== undefined && val !== null && val !== '' && typeof val !== 'string') return false;
+  }
+
+  const numberFields = ['businessFileSizeSnapshot', 'discountAmountCents', 'discountPercent', 'shippingFeeCents'];
+
+  for (const key of numberFields) {
+    const val = d[key];
+    if (val !== undefined && val !== null && val !== '' && typeof val !== 'number') return false;
+  }
+
+  if (
+    d.businessLogoSnapshot !== undefined &&
+    d.businessLogoSnapshot !== null &&
+    d.businessLogoSnapshot !== '' &&
+    !(d.businessLogoSnapshot instanceof Uint8Array)
+  )
+    return false;
+
+  if (
+    d.discountType !== undefined &&
+    d.discountType !== null &&
+    d.discountType !== '' &&
+    typeof d.discountType !== 'string'
+  )
+    return false;
+
+  if (d.taxType !== undefined && d.taxType !== null && d.taxType !== '' && typeof d.taxType !== 'string') return false;
 
   return true;
 };

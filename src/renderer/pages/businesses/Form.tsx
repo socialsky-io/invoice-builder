@@ -9,7 +9,7 @@ import { validators } from '../../shared/utils/validatorFunctions';
 
 interface Props {
   business?: Business;
-  handleChange?: (data: { business: BusinessFromData; isFormValid: boolean }) => void;
+  handleChange?: (data: { business: BusinessFromData; isFormValid: boolean; description?: string }) => void;
 }
 export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
   const { t } = useTranslation();
@@ -37,7 +37,9 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
     name: false,
     shortName: false
   });
-  const [logoUrl, setLogoUrl] = useState<string | undefined>(fromUint8Array(business?.logo) ?? undefined);
+  const [logoUrl, setLogoUrl] = useState<string | undefined>(
+    fromUint8Array(business?.logo, business?.fileType) ?? undefined
+  );
 
   const onUpload = async (file?: Blob, filename?: string) => {
     if (file) {
@@ -84,7 +86,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
       isArchived: business?.isArchived ?? false
     });
 
-    setLogoUrl(fromUint8Array(business?.logo) ?? undefined);
+    setLogoUrl(fromUint8Array(business?.logo, business?.fileType) ?? undefined);
   }, [business, setForm]);
 
   useEffect(() => {
@@ -98,9 +100,10 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
 
     handleChange({
       business: form,
-      isFormValid: valid
+      isFormValid: valid,
+      description: t('common.invalidForm')
     });
-  }, [form, errors, handleChange]);
+  }, [form, errors, handleChange, t]);
 
   return (
     <Grid container spacing={2}>

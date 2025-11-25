@@ -131,7 +131,6 @@ export const BottomFilterSheet: FC<Props> = ({ filters, onFilter = () => {}, sel
           <UTCDateRangePicker
             valueFrom={from}
             valueTo={to}
-            label={item.label}
             format={storeSettings.dateFormat}
             onChange={(valueFrom, valueTo) => {
               if (valueFrom && valueTo) handleDateChange(item.type, `${valueFrom},${valueTo}`);

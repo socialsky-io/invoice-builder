@@ -15,7 +15,7 @@ import { addToast, selectCategoriesOptions, selectSettings, selectUnitsOptions }
 
 interface Props {
   item?: Item;
-  handleChange?: (data: { item: ItemFromData; isFormValid: boolean }) => void;
+  handleChange?: (data: { item: ItemFromData; isFormValid: boolean; description?: string }) => void;
 }
 export const Form: FC<Props> = ({ handleChange = () => {}, item }) => {
   const { t } = useTranslation();
@@ -82,9 +82,10 @@ export const Form: FC<Props> = ({ handleChange = () => {}, item }) => {
 
     handleChange({
       item: form,
-      isFormValid: valid
+      isFormValid: valid,
+      description: t('common.invalidForm')
     });
-  }, [form, errors, handleChange]);
+  }, [form, errors, handleChange, t]);
 
   return (
     <Grid container spacing={2}>

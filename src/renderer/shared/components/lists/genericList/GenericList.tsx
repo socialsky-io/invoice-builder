@@ -1,6 +1,7 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Box,
+  Chip,
   Divider,
   IconButton,
   ListItemButton,
@@ -21,6 +22,7 @@ import { Themes } from '../../../enums/themes';
 interface GenericListProps<T extends { id: number }> {
   item: T;
   selectedItem?: T;
+  showDeleteButton?: boolean;
   onEdit: (item: T) => void;
   onDelete: (id: number) => void;
   getShortName?: (item: T) => string;
@@ -35,6 +37,7 @@ interface GenericListProps<T extends { id: number }> {
 export const GenericList = <T extends { id: number }>({
   item,
   selectedItem,
+  showDeleteButton = true,
   onEdit,
   onDelete,
   getShortName,
@@ -102,26 +105,20 @@ export const GenericList = <T extends { id: number }>({
           }}
         >
           {isArchived && (
-            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', flexDirection: 'row', width: '100%' }}>
-              <Box sx={{ flexGrow: 1 }} />
-              <Box
-                sx={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: '50%',
-                  bgcolor: theme.palette.grey[700],
-                  flexShrink: 0
-                }}
-              />
-              <Typography
-                color={theme.palette.text.secondary}
-                component="div"
-                variant="body1"
-                sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
-              >
-                {t('common.archived').toUpperCase()}
-              </Typography>
-            </Box>
+            <Chip
+              label={t('common.archived').toUpperCase()}
+              variant="outlined"
+              size="small"
+              clickable={false}
+              sx={{
+                pointerEvents: 'none',
+                width: '100%',
+                bgcolor: theme.palette.mode === Themes.dark ? theme.palette.grey[700] : theme.palette.grey[200],
+                '.MuiChip-icon': {
+                  marginLeft: '4px'
+                }
+              }}
+            />
           )}
           <Box
             sx={{
@@ -219,22 +216,25 @@ export const GenericList = <T extends { id: number }>({
                 </Box>
               )}
 
-              <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
-
-              <Box sx={{ display: 'flex', gap: 0.5 }}>
-                <Tooltip title={t('ariaLabel.delete')}>
-                  <IconButton
-                    size="small"
-                    color="error"
-                    onClick={e => {
-                      e.stopPropagation();
-                      onDelete(item.id);
-                    }}
-                  >
-                    <DeleteIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              </Box>
+              {showDeleteButton && (
+                <>
+                  <Divider orientation="vertical" flexItem sx={{ mx: 1 }} />
+                  <Box sx={{ display: 'flex', gap: 0.5 }}>
+                    <Tooltip title={t('ariaLabel.delete')}>
+                      <IconButton
+                        size="small"
+                        color="error"
+                        onClick={e => {
+                          e.stopPropagation();
+                          onDelete(item.id);
+                        }}
+                      >
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+                </>
+              )}
             </Box>
           </Box>
         </Box>

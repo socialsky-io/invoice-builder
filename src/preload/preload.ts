@@ -58,6 +58,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   addBatchCurrency: (data: CurrencyAdd[]) => ipcRenderer.invoke('batch-add-currency', data),
 
   getAllInvoices: (filter?: FilterData[]) => ipcRenderer.invoke('get-all-invoices', filter),
+  deleteInvoice: (id: number) => ipcRenderer.invoke('delete-invoice', id),
 
   exportAllData: () => ipcRenderer.invoke('export-all-data'),
   importAllData: () => ipcRenderer.invoke('import-all-data')

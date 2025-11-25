@@ -1,17 +1,10 @@
 import { Box, Button } from '@mui/material';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { DateFormat } from '../../../enums/dateFormat';
-
-dayjs.extend(utc);
+import { Datepicker } from '../datepicker/Datepicker';
 
 interface Props {
-  label: string;
   valueFrom?: string;
   valueTo?: string;
   format: DateFormat;
@@ -36,58 +29,35 @@ export const UTCDateRangePicker: React.FC<Props> = ({ valueFrom, valueTo, format
   }, [range]);
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          gap: 1,
-          alignItems: 'center',
-          width: '100%'
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'row',
+        gap: 1,
+        alignItems: 'center',
+        width: '100%'
+      }}
+    >
+      <Datepicker
+        label={`${t('common.from')}`}
+        value={range[0]}
+        format={format}
+        onChange={newValue => {
+          setRange([newValue, range[1]]);
         }}
-      >
-        <DatePicker
-          label={`${t('common.from')}`}
-          value={range[0] ? dayjs.utc(range[0]) : null}
-          format={format.toUpperCase()}
-          onChange={newValue => {
-            const utcValue = newValue ? newValue.utc() : null;
-            setRange([utcValue?.toISOString(), range[1]]);
-          }}
-          slotProps={{
-            textField: {
-              onKeyDown: (e: React.KeyboardEvent) => {
-                e.preventDefault();
-              },
-              InputProps: {
-                readOnly: true
-              }
-            }
-          }}
-        />
-        <DatePicker
-          label={`${t('common.to')}`}
-          value={range[1] ? dayjs.utc(range[1]) : null}
-          format={format.toUpperCase()}
-          onChange={newValue => {
-            const utcValue = newValue ? newValue.utc() : null;
-            setRange([range[0], utcValue?.toISOString()]);
-          }}
-          slotProps={{
-            textField: {
-              onKeyDown: (e: React.KeyboardEvent) => {
-                e.preventDefault();
-              },
-              InputProps: {
-                readOnly: true
-              }
-            }
-          }}
-        />
-        <Button variant="outlined" onClick={clearRange}>
-          {t('ariaLabel.clear')}
-        </Button>
-      </Box>
-    </LocalizationProvider>
+      />
+      <Datepicker
+        label={`${t('common.to')}`}
+        value={range[1]}
+        format={format}
+        onChange={newValue => {
+          setRange([range[0], newValue]);
+        }}
+      />
+
+      <Button variant="outlined" onClick={clearRange}>
+        {t('ariaLabel.clear')}
+      </Button>
+    </Box>
   );
 };

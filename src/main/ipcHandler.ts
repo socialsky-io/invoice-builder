@@ -690,6 +690,15 @@ const initIpcHandler = (db: Database, path: string) => {
     };
   });
 
+  ipcMain.handle('delete-invoice', async (_event, id: number) => {
+    try {
+      await runDb(db, 'DELETE FROM invoices WHERE id = ?;', [id]);
+      return { success: true };
+    } catch (error) {
+      return { success: false, ...mapSqliteError(error) };
+    }
+  });
+
   ipcMain.handle('export-all-data', async () => {
     try {
       const settingsRow = await getFirstRow(db, 'SELECT * FROM settings LIMIT 1');
@@ -787,7 +796,6 @@ const initIpcHandler = (db: Database, path: string) => {
     };
 
     try {
-      console.log('Sadasdsa');
       const { canceled, filePaths } = await dialog.showOpenDialog({
         title: 'Import',
         properties: ['openFile'],

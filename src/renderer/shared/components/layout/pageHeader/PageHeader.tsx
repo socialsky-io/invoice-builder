@@ -1,25 +1,32 @@
+import { CloseOutlined } from '@mui/icons-material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Box, Button, IconButton, Tooltip, Typography, useTheme } from '@mui/material';
 import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface Props {
-  title: string;
+  title?: string;
   showBack: boolean;
   showSave?: boolean;
+  showClose?: boolean;
   onBack?: () => void;
+  onClose?: () => void;
   onSave?: (data: unknown) => void;
   formData?: unknown;
+  description?: string;
   isFormValid?: boolean;
 }
 export const PageHeader: FC<Props> = ({
   title,
   showBack = false,
+  showClose = false,
   isFormValid,
   formData,
   showSave,
+  description,
   onBack = () => {},
-  onSave = () => {}
+  onSave = () => {},
+  onClose = () => {}
 }) => {
   const { t } = useTranslation();
   const theme = useTheme();
@@ -34,23 +41,42 @@ export const PageHeader: FC<Props> = ({
         </Tooltip>
       )}
 
-      <Typography variant="h5" noWrap component="div" sx={{ color: theme.palette.secondary.main }}>
-        {title}
-      </Typography>
+      {title && (
+        <Typography variant="h5" noWrap component="div" sx={{ color: theme.palette.secondary.main }}>
+          {title}
+        </Typography>
+      )}
 
       <Box sx={{ flexGrow: 1 }} />
 
+      {showClose && (
+        <Tooltip title={t('ariaLabel.back')}>
+          <IconButton onClick={onClose} aria-label={t('ariaLabel.back')} sx={{ color: theme.palette.secondary.main }}>
+            <CloseOutlined fontSize="medium" />
+          </IconButton>
+        </Tooltip>
+      )}
+
       {showSave && (
-        <Button
-          autoFocus
-          color="inherit"
-          onClick={() => {
-            if (formData) onSave(formData);
-          }}
-          disabled={!isFormValid}
+        <Tooltip
+          title={!isFormValid && description ? description : ''}
+          disableHoverListener={isFormValid}
+          disableFocusListener={isFormValid}
+          disableTouchListener={isFormValid}
         >
-          {t('common.save')}
-        </Button>
+          <Box>
+            <Button
+              autoFocus
+              color="inherit"
+              onClick={() => {
+                if (formData) onSave(formData);
+              }}
+              disabled={!isFormValid}
+            >
+              {t('common.save')}
+            </Button>
+          </Box>
+        </Tooltip>
       )}
     </Box>
   );

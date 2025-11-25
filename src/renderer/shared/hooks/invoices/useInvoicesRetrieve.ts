@@ -25,7 +25,9 @@ export const useInvoicesRetrieve = ({
     const serialized = await Promise.all(
       invoices.map(async b => ({
         ...b,
-        businessLogoSnapshot: b.businessLogoSnapshot ? await uint8ArrayToDataUrl(b.businessLogoSnapshot) : null
+        businessLogoSnapshot: b.businessLogoSnapshot
+          ? await uint8ArrayToDataUrl(b.businessLogoSnapshot, b.businessFileTypeSnapshot)
+          : null
       }))
     );
     return serialized;

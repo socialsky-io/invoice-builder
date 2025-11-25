@@ -1,4 +1,4 @@
-import { Box, Card, CardActionArea, CardContent, darken, lighten, Typography, useTheme } from '@mui/material';
+import { Box, Card, CardActionArea, CardContent, Chip, darken, lighten, Typography, useTheme } from '@mui/material';
 import { differenceInCalendarDays, parseISO } from 'date-fns';
 import { useCallback, useMemo, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -49,7 +49,6 @@ export const List: FC<Props> = ({ item, selectedItem, onEdit }) => {
     if (item.status === InvoiceStatus.partiallyPaid) return theme.palette.warning.main;
     if (item.status === InvoiceStatus.paid) return theme.palette.success.main;
     if (item.status === InvoiceStatus.unpaid) return theme.palette.error.main;
-    if (item.isArchived || item.status === InvoiceStatus.closed) return theme.palette.grey[700];
     if (item.status === InvoiceStatus.open) return theme.palette.primary.main;
 
     return theme.palette.divider;
@@ -93,6 +92,22 @@ export const List: FC<Props> = ({ item, selectedItem, onEdit }) => {
                 gap: 1
               }}
             >
+              {item.isArchived && (
+                <Chip
+                  label={t('common.archived').toUpperCase()}
+                  variant="outlined"
+                  size="small"
+                  clickable={false}
+                  sx={{
+                    pointerEvents: 'none',
+                    width: '100%',
+                    bgcolor: theme.palette.mode === Themes.dark ? theme.palette.grey[700] : theme.palette.grey[200],
+                    '.MuiChip-icon': {
+                      marginLeft: '4px'
+                    }
+                  }}
+                />
+              )}
               <Box
                 sx={{
                   display: 'flex',
@@ -126,7 +141,7 @@ export const List: FC<Props> = ({ item, selectedItem, onEdit }) => {
                     variant="body1"
                     sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
                   >
-                    {item.isArchived ? t('common.archived').toUpperCase() : item.status?.toUpperCase()}
+                    {item.status?.toUpperCase()}
                   </Typography>
                 </Box>
               </Box>

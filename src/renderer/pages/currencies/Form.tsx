@@ -9,7 +9,7 @@ import { CURRENCY_FORMAT_ITEMS_ARRAY } from '../../state/constant';
 
 interface Props {
   currency?: Currency;
-  handleChange?: (data: { currency: CurrencyFromData; isFormValid: boolean }) => void;
+  handleChange?: (data: { currency: CurrencyFromData; isFormValid: boolean; description?: string }) => void;
 }
 export const Form: FC<Props> = ({ handleChange = () => {}, currency }) => {
   const { t } = useTranslation();
@@ -67,9 +67,10 @@ export const Form: FC<Props> = ({ handleChange = () => {}, currency }) => {
 
     handleChange({
       currency: form,
-      isFormValid: valid
+      isFormValid: valid,
+      description: t('common.invalidForm')
     });
-  }, [form, errors, handleChange]);
+  }, [form, errors, handleChange, t]);
 
   return (
     <Grid container spacing={2}>

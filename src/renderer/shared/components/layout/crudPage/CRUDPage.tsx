@@ -26,7 +26,7 @@ import type { Response } from '../../../types/response';
 import { exportExcel, importExcel } from '../../../utils/fileFunctions';
 import { filterAndSortArray } from '../../../utils/filterSortFunctions';
 import { FilterSortBar } from '../../controls/filterSortBar/FilterSortBar';
-import ImportExportButton from '../../controls/importExportButton/ImportExportButton';
+import { ImportExportButton } from '../../controls/importExportButton/ImportExportButton';
 import { SearchInput } from '../../inputs/searchInput/SearchInput';
 import { NoItem } from '../../lists/noItem/NoItem';
 import { BottomFilterSheet } from '../../modals/bottomFilterSheet/BottomFilterSheet';
@@ -34,7 +34,7 @@ import { Content } from '../content/Content';
 import { PageAppBar } from '../pageAppBar/PageAppBar';
 
 interface Props<T, TAdd, TUpdate> {
-  title: string;
+  title?: string;
   useRetrieve?: (args: { filter?: FilterData[]; onDone?: (data: Response<T[]>) => void }) => {
     items: T[];
     execute: () => void;
@@ -55,12 +55,12 @@ interface Props<T, TAdd, TUpdate> {
   validateAndNormalize?: (data: unknown) => Promise<TAdd | TUpdate | undefined>;
   form?: (args: {
     item?: T;
-    onChange: (data: { changedData: TAdd | TUpdate; isFormValid: boolean }) => void;
+    onChange: (data: { changedData: TAdd | TUpdate; isFormValid: boolean; description?: string }) => void;
   }) => ReactNode;
   sortOptions: { label: string; value: keyof T }[];
-  noItemButtonText: string;
+  noItemButtonText?: string;
   noItemText: string;
-  leftTitle: string;
+  leftTitle?: string;
   renderListItem?: (
     item: T,
     selectedItem: T | undefined,
@@ -78,6 +78,9 @@ interface Props<T, TAdd, TUpdate> {
   };
   exportExcelHandler?: (data: T[]) => Promise<void>;
   showOnlyExport?: boolean;
+  inlineOnAdd?: boolean;
+  showRightSide?: boolean;
+  showAddButton?: boolean;
 }
 
 export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
@@ -113,7 +116,10 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
     form = () => null,
     itemsPerPage = 20,
     filters = [],
-    exportExcelHandler
+    exportExcelHandler,
+    inlineOnAdd = false,
+    showRightSide = true,
+    showAddButton = true
   } = props;
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
@@ -380,7 +386,7 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
     });
   }, [totalPages]);
 
-  const noItemButton = (
+  const noItemButton = noItemButtonText && (
     <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={onAdd}>
       {noItemButtonText}
     </Button>
@@ -390,7 +396,7 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
     <PageAppBar
       title={title}
       isOpen={isModalOpen}
-      isModal={typeof selectedItem === 'undefined'}
+      isModal={inlineOnAdd ? false : typeof selectedItem === 'undefined'}
       handleClose={handleCloseModal}
       handleSave={handleSave}
       renderForm={({ onChange }) =>
@@ -405,25 +411,27 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
 
   let rightColumn: ReactNode;
   if (typeof selectedItem === 'undefined') {
-    rightColumn = <NoItem text={noItemText} node={noItemButton} />;
+    rightColumn = inlineOnAdd && isModalOpen ? crBusiness : <NoItem text={noItemText} node={noItemButton} />;
   } else {
     rightColumn = crBusiness;
   }
 
   const leftColumn = (
-    <Grid size={{ xs: 12, md: 4 }} component="div" sx={{ position: 'relative', height: '100%' }}>
+    <Grid size={{ xs: 12, md: showRightSide ? 4 : 12 }} component="div" sx={{ position: 'relative', height: '100%' }}>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, height: '100%', overflow: 'auto' }}>
         <Box display="flex" alignItems="center" gap={1}>
-          <Typography
-            variant="h5"
-            noWrap
-            component="div"
-            sx={{
-              color: theme.palette.secondary.main
-            }}
-          >
-            {leftTitle}
-          </Typography>
+          {leftTitle && (
+            <Typography
+              variant="h5"
+              noWrap
+              component="div"
+              sx={{
+                color: theme.palette.secondary.main
+              }}
+            >
+              {leftTitle}
+            </Typography>
+          )}
           <Box sx={{ flexGrow: 1 }} />
           {showExcelButtons() && (
             <ImportExportButton
@@ -530,35 +538,42 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
 
         <Box sx={{ pb: 2 }} />
       </Box>
-      <Tooltip title={t('ariaLabel.add')}>
-        <Fab
-          color="primary"
-          aria-label={t('ariaLabel.add')}
-          onClick={onAdd}
-          sx={{
-            position: 'absolute',
-            bottom: 20,
-            right: 20,
-            zIndex: 1000
-          }}
-        >
-          <AddIcon />
-        </Fab>
-      </Tooltip>
+      {showAddButton && (
+        <Tooltip title={t('ariaLabel.add')}>
+          <Fab
+            color="primary"
+            aria-label={t('ariaLabel.add')}
+            onClick={onAdd}
+            sx={{
+              position: 'absolute',
+              bottom: 20,
+              right: 20,
+              zIndex: 1000
+            }}
+          >
+            <AddIcon />
+          </Fab>
+        </Tooltip>
+      )}
     </Grid>
   );
 
   return (
     <>
-      {isModalOpen && crBusiness}
+      {!inlineOnAdd && isModalOpen && crBusiness}
       <Grid container component="div" spacing={2} justifyContent="center" alignItems="stretch" sx={{ height: '100%' }}>
-        {isDesktop ? (
+        {!showRightSide && leftColumn}
+        {showRightSide && (
           <>
-            {leftColumn}
-            <Content node={rightColumn} />
+            {isDesktop ? (
+              <>
+                {leftColumn}
+                <Content node={rightColumn} />
+              </>
+            ) : (
+              <>{typeof selectedItem === 'undefined' ? leftColumn : <Content node={rightColumn} />}</>
+            )}
           </>
-        ) : (
-          <>{typeof selectedItem === 'undefined' ? leftColumn : <Content node={rightColumn} />}</>
         )}
       </Grid>
     </>

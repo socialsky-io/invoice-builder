@@ -14,7 +14,7 @@ interface Props {
   showOnlyExport: boolean;
 }
 
-const ImportExportButton: React.FC<Props> = ({ onImport, onExport, onDownloadTemplate, showOnlyExport }) => {
+export const ImportExportButton: React.FC<Props> = ({ onImport, onExport, onDownloadTemplate, showOnlyExport }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const { t } = useTranslation();
@@ -96,5 +96,3 @@ const ImportExportButton: React.FC<Props> = ({ onImport, onExport, onDownloadTem
     </>
   );
 };
-
-export default ImportExportButton;

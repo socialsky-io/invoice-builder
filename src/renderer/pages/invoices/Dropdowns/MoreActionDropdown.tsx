@@ -1,0 +1,164 @@
+import DeleteIcon from '@mui/icons-material/Delete';
+import FileCopyIcon from '@mui/icons-material/FileCopy';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import { Box, ListItem, ListItemButton, ListItemIcon, ListItemText, SwipeableDrawer, Typography } from '@mui/material';
+import { type FC } from 'react';
+import { useTranslation } from 'react-i18next';
+import { PageHeader } from '../../../shared/components/layout/pageHeader/PageHeader';
+
+interface Props {
+  isOpen: boolean;
+  onClose?: () => void;
+  onOpen?: () => void;
+  onExport?: () => void;
+  onDelete?: () => void;
+  onDuplicate?: () => void;
+  showDelete?: boolean;
+  showDuplicate?: boolean;
+}
+export const MoreActionDropdown: FC<Props> = ({
+  isOpen,
+  showDelete = true,
+  showDuplicate = true,
+  onClose,
+  onOpen,
+  onExport,
+  onDelete,
+  onDuplicate
+}) => {
+  const { t } = useTranslation();
+
+  return (
+    <>
+      <SwipeableDrawer
+        anchor="bottom"
+        open={isOpen}
+        onClose={() => onClose?.()}
+        onOpen={() => onOpen?.()}
+        slotProps={{
+          paper: {
+            sx: {
+              maxWidth: '40%',
+              height: '40%',
+              mx: 'auto',
+              borderTopLeftRadius: 16,
+              borderTopRightRadius: 16,
+              borderBottomLeftRadius: 0,
+              borderBottomRightRadius: 0,
+              p: 3
+            }
+          }
+        }}
+      >
+        <Box sx={{ mb: 2, mt: 2, display: 'flex', gap: 2, flexDirection: 'column' }}>
+          <PageHeader
+            title={t('ariaLabel.moreActions')}
+            showBack={false}
+            showSave={false}
+            showClose={true}
+            onClose={onClose}
+          />
+          <Box>
+            <ListItemButton
+              onClick={onExport}
+              sx={{
+                width: '100%',
+                borderRadius: 1,
+                display: 'flex',
+                justifyContent: 'start',
+                alignItems: 'start',
+                flexDirection: 'column'
+              }}
+            >
+              <ListItem sx={{ p: 0 }}>
+                <ListItemIcon sx={{ minWidth: 'auto', mr: 1 }}>
+                  <PictureAsPdfIcon color="error" />
+                </ListItemIcon>
+                <ListItemText
+                  primary={
+                    <Typography
+                      component="div"
+                      variant="body1"
+                      sx={{ fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis' }}
+                    >
+                      {t('common.export')}
+                    </Typography>
+                  }
+                  disableTypography
+                  sx={{ m: 0 }}
+                  slotProps={{ primary: { sx: { fontWeight: 600, m: 0 } } }}
+                />
+              </ListItem>
+            </ListItemButton>
+            {showDuplicate && (
+              <ListItemButton
+                onClick={onDuplicate}
+                sx={{
+                  width: '100%',
+                  borderRadius: 1,
+                  display: 'flex',
+                  justifyContent: 'start',
+                  alignItems: 'start',
+                  flexDirection: 'column'
+                }}
+              >
+                <ListItem sx={{ p: 0 }}>
+                  <ListItemIcon sx={{ minWidth: 'auto', mr: 1 }}>
+                    <FileCopyIcon color="primary" />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={
+                      <Typography
+                        component="div"
+                        variant="body1"
+                        sx={{ fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis' }}
+                      >
+                        {t('common.duplicate')}
+                      </Typography>
+                    }
+                    disableTypography
+                    sx={{ m: 0 }}
+                    slotProps={{ primary: { sx: { fontWeight: 600, m: 0 } } }}
+                  />
+                </ListItem>
+              </ListItemButton>
+            )}
+            {showDelete && (
+              <ListItemButton
+                onClick={onDelete}
+                sx={{
+                  width: '100%',
+                  borderRadius: 1,
+                  display: 'flex',
+                  justifyContent: 'start',
+                  alignItems: 'start',
+                  flexDirection: 'column'
+                }}
+              >
+                <ListItem sx={{ p: 0 }}>
+                  <ListItemIcon sx={{ minWidth: 'auto', mr: 1 }}>
+                    <DeleteIcon color="error" />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={
+                      <Typography
+                        component="div"
+                        variant="body1"
+                        sx={{ fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis' }}
+                      >
+                        {t('ariaLabel.delete')}
+                      </Typography>
+                    }
+                    disableTypography
+                    sx={{ m: 0 }}
+                    slotProps={{ primary: { sx: { fontWeight: 600, m: 0 } } }}
+                  />
+                </ListItem>
+              </ListItemButton>
+            )}
+          </Box>
+        </Box>
+      </SwipeableDrawer>
+    </>
+  );
+};

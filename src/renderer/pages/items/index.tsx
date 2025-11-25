@@ -120,7 +120,8 @@ export const ItemsPage: FC = () => {
             if (isItemFromData(d.item)) {
               onChange({
                 changedData: d.item,
-                isFormValid: d.isFormValid
+                isFormValid: d.isFormValid,
+                description: d.description
               });
             }
           }}

@@ -5,14 +5,22 @@ import type { Currency } from '../../shared/types/currency';
 interface Props {
   item: Currency;
   selectedItem?: Currency;
-  onEdit: (item: Currency) => void;
-  onDelete: (id: number) => void;
+  showDeleteButton?: boolean;
+  onEdit?: (item: Currency) => void;
+  onDelete?: (id: number) => void;
 }
-export const List: FC<Props> = ({ item, selectedItem, onEdit, onDelete }) => {
+export const List: FC<Props> = ({
+  item,
+  selectedItem,
+  onEdit = () => {},
+  onDelete = () => {},
+  showDeleteButton = true
+}) => {
   return (
     <GenericList
       item={item}
       selectedItem={selectedItem}
+      showDeleteButton={showDeleteButton}
       onEdit={onEdit}
       onDelete={onDelete}
       getName={c => c.text}

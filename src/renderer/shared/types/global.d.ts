@@ -62,6 +62,8 @@ declare global {
       addBatchCurrency: (data: CurrencyAdd[]) => Promise<Response<CurrencyAdd[]>>;
 
       getAllInvoices: (filter?: FilterData[]) => Promise<Response<Invoice[]>>;
+      deleteInvoice: (id: number) => Promise<Response<unknown>>;
+
       exportAllData: () => Promise<Response<ExportMeta>>;
       importAllData: () => Promise<Response<unknown>>;
     };

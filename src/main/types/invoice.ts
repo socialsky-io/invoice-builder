@@ -25,6 +25,8 @@ export interface Invoice {
   businessDescriptionSnapshot?: string;
   businessAddressSnapshot?: string;
   businessRoleSnapshot?: string;
+  clientShortName: string;
+  businessShortName: string;
   businessEmailSnapshot?: string;
   businessPhoneSnapshot?: string;
   businessWebsiteSnapshot?: string;
@@ -43,6 +45,8 @@ export interface Invoice {
   clientAdditionalSnapshot?: string;
   currencyCodeSnapshot: string;
   currencySymbolSnapshot: string;
+  invoicePrefixSnapshot?: string;
+  invoiceSuffixSnapshot?: string;
   currencySubunitSnapshot: number;
   discountType?: DiscountType;
   discountAmountCents: number;
@@ -82,4 +86,12 @@ export interface InvoiceItem {
   taxName?: string;
   taxRate: number;
   taxType?: InvoiceItemTaxType;
+}
+export interface InvoiceInfo {
+  id?: number;
+  issuedAt?: string;
+  invoiceNumber?: string;
+  dueDate?: string;
+  invoicePrefix?: string;
+  invoiceSuffix?: string;
 }

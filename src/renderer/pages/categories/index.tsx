@@ -113,7 +113,8 @@ export const CategoriesPage: FC = () => {
             if (isCategoryFromData(d.category)) {
               onChange({
                 changedData: d.category,
-                isFormValid: d.isFormValid
+                isFormValid: d.isFormValid,
+                description: d.description
               });
             }
           }}

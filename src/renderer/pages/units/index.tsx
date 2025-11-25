@@ -109,7 +109,8 @@ export const UnitsPage: FC = () => {
             if (isUnitFromData(d.unit)) {
               onChange({
                 changedData: d.unit,
-                isFormValid: d.isFormValid
+                isFormValid: d.isFormValid,
+                description: d.description
               });
             }
           }}

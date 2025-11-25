@@ -132,7 +132,8 @@ export const ClientsPage: FC = () => {
             if (isClientFromData(d.client)) {
               onChange({
                 changedData: d.client,
-                isFormValid: d.isFormValid
+                isFormValid: d.isFormValid,
+                description: d.description
               });
             }
           }}

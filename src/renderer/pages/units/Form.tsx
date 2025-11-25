@@ -7,7 +7,7 @@ import { validators } from '../../shared/utils/validatorFunctions';
 
 interface Props {
   unit?: Unit;
-  handleChange?: (data: { unit: UnitFromData; isFormValid: boolean }) => void;
+  handleChange?: (data: { unit: UnitFromData; isFormValid: boolean; description?: string }) => void;
 }
 export const Form: FC<Props> = ({ handleChange = () => {}, unit }) => {
   const { t } = useTranslation();
@@ -41,9 +41,10 @@ export const Form: FC<Props> = ({ handleChange = () => {}, unit }) => {
 
     handleChange({
       unit: form,
-      isFormValid: valid
+      isFormValid: valid,
+      description: t('common.invalidForm')
     });
-  }, [form, errors, handleChange]);
+  }, [form, errors, handleChange, t]);
 
   return (
     <Grid container spacing={2}>

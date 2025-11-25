@@ -25,7 +25,7 @@ export const useBusinessesRetrieve = ({
     const serialized = await Promise.all(
       businesses.map(async b => ({
         ...b,
-        logo: b.logo ? await uint8ArrayToDataUrl(b.logo) : null
+        logo: b.logo ? await uint8ArrayToDataUrl(b.logo, b.fileType) : null
       }))
     );
     return serialized;

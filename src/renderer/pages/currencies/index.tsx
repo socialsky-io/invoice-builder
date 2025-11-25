@@ -121,7 +121,8 @@ export const CurrenciesPage: FC = () => {
             if (isCurrencyFromData(d.currency)) {
               onChange({
                 changedData: d.currency,
-                isFormValid: d.isFormValid
+                isFormValid: d.isFormValid,
+                description: d.description
               });
             }
           }}

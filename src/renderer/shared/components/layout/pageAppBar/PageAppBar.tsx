@@ -7,7 +7,7 @@ interface Props {
   isModal?: boolean;
   isOpen?: boolean;
   showBack?: boolean;
-  title: string;
+  title?: string;
   handleClose?: () => void;
   handleSave?: (data: unknown) => void;
   renderForm: (opts: { onChange: (properties: { changedData: unknown; isFormValid: boolean }) => void }) => ReactNode;
@@ -23,17 +23,23 @@ export const PageAppBar: FC<Props> = ({
 }) => {
   const theme = useTheme();
   const [isFormValid, setIsFormValid] = useState(false);
+  const [description, setDescription] = useState<string | undefined>(undefined);
   const [formData, setFormData] = useState<unknown | undefined>(undefined);
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const handleChange = useCallback((properties: { changedData: unknown; isFormValid: boolean }) => {
-    setIsFormValid(properties.isFormValid);
-    setFormData(properties.changedData);
-  }, []);
+  const handleChange = useCallback(
+    (properties: { changedData: unknown; isFormValid: boolean; description?: string }) => {
+      setIsFormValid(properties.isFormValid);
+      setFormData(properties.changedData);
+      setDescription(properties.description);
+    },
+    []
+  );
 
   const appBar = isModal ? (
     <ModalAppBar
       title={title}
+      description={description}
       isFormValid={isFormValid}
       formData={formData}
       onClose={handleClose}
@@ -42,6 +48,7 @@ export const PageAppBar: FC<Props> = ({
   ) : (
     <PageHeader
       title={title}
+      description={description}
       isFormValid={isFormValid}
       formData={formData}
       onBack={handleClose}
