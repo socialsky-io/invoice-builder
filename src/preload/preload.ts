@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron';
-import type { InvoiceType } from '../main/enums/invoiceType';
+import { InvoiceType } from '../main/enums/invoiceType';
 import type { DBInitType } from '../renderer/shared/enums/dbInitType';
 import type { BusinessAdd, BusinessUpdate } from '../renderer/shared/types/business';
 import type { CategoryAdd, CategoryUpdate } from '../renderer/shared/types/category';
@@ -63,6 +63,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   deleteInvoice: (id: number) => ipcRenderer.invoke('delete-invoice', id),
   updateInvoice: (data: InvoiceUpdate) => ipcRenderer.invoke('update-invoice', data),
   addInvoice: (data: InvoiceAdd) => ipcRenderer.invoke('add-invoice', data),
+  duplicateInvoice: (id: number, invoiceType: InvoiceType) => ipcRenderer.invoke('duplicate-invoice', id, invoiceType),
 
   exportAllData: () => ipcRenderer.invoke('export-all-data'),
   importAllData: () => ipcRenderer.invoke('import-all-data')

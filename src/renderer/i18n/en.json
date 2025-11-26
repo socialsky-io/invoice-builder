@@ -120,6 +120,7 @@
     "invoices": "Invoices",
     "issuedAt": "Issued at",
     "lastUpdate": "Last updated",
+    "makeInvoice": "Make invoice",
     "name": "Name",
     "noData": "No data based on search criteria",
     "noDataYet": "No data yet. Start adding...",

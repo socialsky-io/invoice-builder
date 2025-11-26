@@ -22,7 +22,7 @@ export const InvoiceInformationDropdown: FC<Props> = ({ isOpen, onClose, onOpen,
   const storeSettings = useAppSelector(selectSettings);
 
   const { form, setForm, update } = useForm<InvoiceInfo>({
-    issuedAt: information?.issuedAt ?? '',
+    issuedAt: information?.issuedAt,
     invoiceNumber: information?.invoiceNumber ?? '',
     dueDate: information?.dueDate ?? '',
     invoicePrefix: information.id ? (information?.invoicePrefix ?? '') : (storeSettings?.invoicePrefix ?? ''),
@@ -53,7 +53,13 @@ export const InvoiceInformationDropdown: FC<Props> = ({ isOpen, onClose, onOpen,
   }, [information, setForm, storeSettings]);
 
   useEffect(() => {
-    const valid = form.issuedAt?.trim() !== '' && !errors.issuedAt;
+    const valid =
+      typeof form.issuedAt !== 'undefined' &&
+      form.issuedAt?.trim() !== '' &&
+      !errors.issuedAt &&
+      form.invoiceNumber?.trim() !== '' &&
+      !errors.invoiceNumber;
+
     setIsFormValid(valid);
   }, [form, errors]);
 

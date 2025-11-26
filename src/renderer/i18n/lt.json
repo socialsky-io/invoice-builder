@@ -120,6 +120,7 @@
     "invoices": "Sąskaitos",
     "issuedAt": "Išrašyta",
     "lastUpdate": "Paskutinį kartą atnaujinta",
+    "makeInvoice": "Sukurti sąskaitą",
     "name": "Pavadinimas",
     "noData": "Duomenų pagal paieškos kriterijus nėra",
     "noDataYet": "Duomenų dar nėra. Pradėkite juos pridėti...",

@@ -48,6 +48,9 @@ interface Props<T, TAdd, TUpdate> {
   useUpdate?: (args: { item?: TUpdate; immediate?: boolean; onDone?: (data: Response<TUpdate>) => void }) => {
     execute: () => void;
   };
+  useDuplicate?: (args: { id: number; immediate?: boolean; onDone?: (data: Response<unknown>) => void }) => {
+    execute: () => void;
+  };
   useDelete?: (args: { id: number; immediate?: boolean; onDone?: (data: Response<unknown>) => void }) => {
     execute: () => void;
   };
@@ -57,6 +60,7 @@ interface Props<T, TAdd, TUpdate> {
     item?: T;
     onChange: (data: { changedData: TAdd | TUpdate; isFormValid: boolean; description?: string }) => void;
     onDelete?: (id: number) => void;
+    onDuplicate?: (id: number) => void;
   }) => ReactNode;
   sortOptions: { label: string; value: keyof T }[];
   noItemButtonText?: string;
@@ -109,6 +113,9 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
     useDelete = () => ({
       execute: () => {}
     }),
+    useDuplicate = () => ({
+      execute: () => {}
+    }),
     renderListItem = () => null,
     noItemText,
     leftTitle,
@@ -132,6 +139,7 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
   const [sortBy, setSortBy] = useState(sortOptions[0]);
   const [sortType, setSortType] = useState<SortType>(SortType.DEFAULT);
   const [deleteID, setDeleteID] = useState<number>(-1);
+  const [duplicateID, setDuplicateID] = useState<number>(-1);
   const [newItem, setNewItem] = useState<TAdd | undefined>(undefined);
   const [newItemsBatch, setNewItemsBatch] = useState<TAdd[] | undefined>(undefined);
   const [changedItem, setChangedItem] = useState<TUpdate | undefined>(undefined);
@@ -206,6 +214,21 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
     }
   });
 
+  const { execute: duplicateItem } = useDuplicate({
+    id: duplicateID,
+    immediate: false,
+    onDone: (data: Response<unknown>) => {
+      setDuplicateID(-1);
+      setSelectedItem(undefined);
+      reload();
+
+      if (!data.success) {
+        if (data.message) dispatch(addToast({ message: data.message, severity: 'error' }));
+        else if (data.key) dispatch(addToast({ message: t(data.key), severity: 'error' }));
+      }
+    }
+  });
+
   const filteredItems = useMemo(() => {
     return filterAndSortArray({
       data: items,
@@ -270,6 +293,10 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
 
   const onDelete = useCallback((id: number) => {
     setDeleteID(id);
+  }, []);
+
+  const onDuplicate = useCallback((id: number) => {
+    setDuplicateID(id);
   }, []);
 
   const onExportToExcel = useCallback(async () => {
@@ -359,6 +386,10 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
   }, []);
 
   useEffect(() => {
+    if (duplicateID !== -1) duplicateItem();
+  }, [duplicateID, duplicateItem]);
+
+  useEffect(() => {
     if (deleteID !== -1) deleteItem();
   }, [deleteID, deleteItem]);
 
@@ -404,7 +435,8 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
         form({
           item: selectedItem,
           onChange,
-          onDelete: onDelete
+          onDelete: onDelete,
+          onDuplicate: onDuplicate
         })
       }
       showBack={!isDesktop}

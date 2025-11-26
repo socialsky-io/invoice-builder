@@ -757,6 +757,102 @@ const initIpcHandler = (db: Database, path: string) => {
   });
   ipcMain.handle('add-invoice', async (_event, data: Invoice) => handleInvoice(data));
   ipcMain.handle('update-invoice', async (_event, data: Invoice) => handleInvoice(data, true));
+  ipcMain.handle('duplicate-invoice', async (_event, invoiceId: number, invoiceType: 'quotation' | 'invoice') => {
+    try {
+      const original = await getFirstRow(db, 'SELECT * FROM invoices WHERE id = ?;', [invoiceId]);
+      const lastRow = await getFirstRow(db, 'SELECT MAX(id) AS id FROM invoices;');
+
+      if (!original || !lastRow) {
+        return { success: false };
+      }
+
+      const maxIDRow = lastRow.id as number;
+      let convertedFromQuotationId: number | null = original.convertedFromQuotationId as number | null;
+      let status: string = original.status as string;
+      if (original.invoiceType === 'quotation' && invoiceType === 'invoice') {
+        convertedFromQuotationId = original.id as number;
+        status = 'unpaid';
+
+        await runDb(db, `UPDATE invoices SET status = 'closed' WHERE id = ?;`, [original.id as number]);
+      }
+
+      const newInvoiceNumber = original.invoiceNumber + `-COPY${maxIDRow}`;
+      const insertInvoiceSQL = `
+      INSERT INTO invoices (
+        invoiceType, convertedFromQuotationId, businessId, clientId, currencyId,
+        issuedAt, dueDate, invoiceNumber, isArchived, status, customerNotes,
+        thanksNotes, termsConditionNotes, discountName, businessNameSnapshot,
+        businessShortName, businessDescriptionSnapshot, businessAddressSnapshot,
+        businessRoleSnapshot, businessEmailSnapshot, businessPhoneSnapshot,
+        businessWebsiteSnapshot, businessAdditionalSnapshot,
+        businessPaymentInformationSnapshot, businessLogoSnapshot,
+        businessFileSizeSnapshot, businessFileTypeSnapshot,
+        businessFileNameSnapshot, clientNameSnapshot, clientShortName,
+        clientAddressSnapshot, clientDescriptionSnapshot, clientEmailSnapshot,
+        clientPhoneSnapshot, clientCodeSnapshot, clientAdditionalSnapshot,
+        currencyCodeSnapshot, currencySymbolSnapshot, currencySubunitSnapshot,
+        discountType, discountAmountCents, discountPercent, shippingFeeCents,
+        invoicePrefixSnapshot, invoiceSuffixSnapshot, taxName, taxRate, taxType
+      )
+      SELECT
+        ?, ?, businessId, clientId, currencyId,
+        datetime('now'), dueDate, ?, isArchived, ?, customerNotes,
+        thanksNotes, termsConditionNotes, discountName, businessNameSnapshot,
+        businessShortName, businessDescriptionSnapshot, businessAddressSnapshot,
+        businessRoleSnapshot, businessEmailSnapshot, businessPhoneSnapshot,
+        businessWebsiteSnapshot, businessAdditionalSnapshot,
+        businessPaymentInformationSnapshot, businessLogoSnapshot,
+        businessFileSizeSnapshot, businessFileTypeSnapshot,
+        businessFileNameSnapshot, clientNameSnapshot, clientShortName,
+        clientAddressSnapshot, clientDescriptionSnapshot, clientEmailSnapshot,
+        clientPhoneSnapshot, clientCodeSnapshot, clientAdditionalSnapshot,
+        currencyCodeSnapshot, currencySymbolSnapshot, currencySubunitSnapshot,
+        discountType, discountAmountCents, discountPercent, shippingFeeCents,
+        invoicePrefixSnapshot, invoiceSuffixSnapshot, taxName, taxRate, taxType
+      FROM invoices WHERE id = ?;
+    `;
+
+      await runDb(db, insertInvoiceSQL, [invoiceType, convertedFromQuotationId, newInvoiceNumber, status, invoiceId]);
+
+      const lastInsertedRow = await getFirstRow(db, 'SELECT MAX(id) AS id FROM invoices;');
+
+      if (!lastInsertedRow) return { success: false };
+
+      const newInvoiceId = lastInsertedRow.id as number;
+
+      await runDb(
+        db,
+        `
+          INSERT INTO invoice_items (
+            parentInvoiceId, itemId, itemNameSnapshot, unitPriceCentsSnapshot,
+            itemDescriptionSnapshot, unitNameSnapshot, categoryNameSnapshot,
+            quantity, taxName, taxRate, taxType
+          )
+          SELECT ?, itemId, itemNameSnapshot, unitPriceCentsSnapshot,
+            itemDescriptionSnapshot, unitNameSnapshot, categoryNameSnapshot,
+            quantity, taxName, taxRate, taxType
+          FROM invoice_items WHERE parentInvoiceId = ?;
+        `,
+        [newInvoiceId, invoiceId]
+      );
+
+      await runDb(
+        db,
+        `
+          INSERT INTO attachments (
+            parentInvoiceId, fileName, fileType, fileSize, data
+          )
+          SELECT ?, fileName, fileType, fileSize, data
+          FROM attachments WHERE parentInvoiceId = ?;
+        `,
+        [newInvoiceId, invoiceId]
+      );
+
+      return { success: true };
+    } catch (error) {
+      return { success: false, ...mapSqliteError(error) };
+    }
+  });
 
   ipcMain.handle('export-all-data', async () => {
     try {
@@ -992,6 +1088,7 @@ const resetIPCHandlers = () => {
   ipcMain.removeHandler('delete-invoice');
   ipcMain.removeHandler('update-invoice');
   ipcMain.removeHandler('add-invoice');
+  ipcMain.removeHandler('duplicate-invoice');
 
   ipcMain.removeHandler('export-all-data');
   ipcMain.removeHandler('import-all-data');

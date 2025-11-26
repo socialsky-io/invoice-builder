@@ -66,6 +66,7 @@ declare global {
       deleteInvoice: (id: number) => Promise<Response<unknown>>;
       addInvoice: (data: InvoiceAdd) => Promise<Response<InvoiceAdd>>;
       updateInvoice: (data: InvoiceUpdate) => Promise<Response<InvoiceUpdate>>;
+      duplicateInvoice: (id: number, invoiceType: InvoiceType) => Promise<Response<unknown>>;
 
       exportAllData: () => Promise<Response<ExportMeta>>;
       importAllData: () => Promise<Response<unknown>>;

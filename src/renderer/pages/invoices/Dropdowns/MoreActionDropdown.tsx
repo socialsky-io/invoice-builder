@@ -1,3 +1,4 @@
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
@@ -13,18 +14,22 @@ interface Props {
   onExport?: () => void;
   onDelete?: () => void;
   onDuplicate?: () => void;
+  onMakeInvoice?: () => void;
   showDelete?: boolean;
   showDuplicate?: boolean;
+  showMakeInvoice?: boolean;
 }
 export const MoreActionDropdown: FC<Props> = ({
   isOpen,
   showDelete = true,
   showDuplicate = true,
+  showMakeInvoice = true,
   onClose,
   onOpen,
   onExport,
   onDelete,
-  onDuplicate
+  onDuplicate,
+  onMakeInvoice
 }) => {
   const { t } = useTranslation();
 
@@ -59,6 +64,39 @@ export const MoreActionDropdown: FC<Props> = ({
             onClose={onClose}
           />
           <Box>
+            {showMakeInvoice && (
+              <ListItemButton
+                onClick={onMakeInvoice}
+                sx={{
+                  width: '100%',
+                  borderRadius: 1,
+                  display: 'flex',
+                  justifyContent: 'start',
+                  alignItems: 'start',
+                  flexDirection: 'column'
+                }}
+              >
+                <ListItem sx={{ p: 0 }}>
+                  <ListItemIcon sx={{ minWidth: 'auto', mr: 1 }}>
+                    <AddCircleIcon />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={
+                      <Typography
+                        component="div"
+                        variant="body1"
+                        sx={{ fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis' }}
+                      >
+                        {t('common.makeInvoice')}
+                      </Typography>
+                    }
+                    disableTypography
+                    sx={{ m: 0 }}
+                    slotProps={{ primary: { sx: { fontWeight: 600, m: 0 } } }}
+                  />
+                </ListItem>
+              </ListItemButton>
+            )}
             <ListItemButton
               onClick={onExport}
               sx={{

@@ -1,4 +1,4 @@
-import { useCallback, type FC } from 'react';
+import { useCallback, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CRUDPage } from '../../shared/components/layout/crudPage/CRUDPage';
 import { FilterType } from '../../shared/enums/filterType';
@@ -6,6 +6,7 @@ import { InvoiceStatus } from '../../shared/enums/invoiceStatus';
 import { InvoiceType } from '../../shared/enums/invoiceType';
 import { useInvoiceAdd } from '../../shared/hooks/invoices/useInvoiceAdd';
 import { useInvoiceDelete } from '../../shared/hooks/invoices/useInvoiceDelete';
+import { useInvoiceDuplicate } from '../../shared/hooks/invoices/useInvoiceDuplicate';
 import { useInvoicesRetrieve } from '../../shared/hooks/invoices/useInvoicesRetrieve';
 import { useInvoiceUpdate } from '../../shared/hooks/invoices/useInvoiceUpdate';
 import type { Row } from '../../shared/types/excel';
@@ -93,6 +94,21 @@ export const InvoicesPage: FC<Props> = ({ type }) => {
     });
   };
 
+  const [currType, setCurrType] = useState<InvoiceType>(type);
+  const useInvoiceCRUDDuplicate = (args: {
+    id: number;
+    immediate?: boolean;
+    onDone?: (data: Response<unknown>) => void;
+  }) => {
+    console.log(currType);
+    return useInvoiceDuplicate({
+      id: args.id,
+      invoiceType: currType,
+      immediate: args.immediate,
+      onDone: args.onDone
+    });
+  };
+
   const exportInvoices = useCallback(
     async (invoices: Invoice[]) => {
       const mapPayment = (inv: Invoice) => (inv.invoicePayments ?? []).map(p => p);
@@ -136,7 +152,7 @@ export const InvoicesPage: FC<Props> = ({ type }) => {
       useRetrieve={useInvoicesCRUDRetrieve}
       useAdd={useInvoiceCRUDAdd}
       useUpdate={useInvoiceCRUDUpdate}
-      // duplicate
+      useDuplicate={useInvoiceCRUDDuplicate}
       useDelete={useInvoiceDelete}
       searchField={'invoiceNumber'}
       sortOptions={[
@@ -159,10 +175,14 @@ export const InvoicesPage: FC<Props> = ({ type }) => {
       renderListItem={(item, selectedItem, onEdit) => (
         <List key={item.id} item={item} selectedItem={selectedItem} onEdit={(editItem: Invoice) => onEdit(editItem)} />
       )}
-      form={({ item, onChange, onDelete }) => (
+      form={({ item, onChange, onDelete, onDuplicate }) => (
         <Form
           invoice={item}
           type={type}
+          handleDuplicate={(id, invoiceType) => {
+            setCurrType(invoiceType);
+            if (onDuplicate) onDuplicate(id);
+          }}
           handleChange={d => {
             if (isInvoiceFromData(d.invoice)) {
               onChange({

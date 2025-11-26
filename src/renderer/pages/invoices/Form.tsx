@@ -24,8 +24,15 @@ interface Props {
   type: InvoiceType;
   handleChange?: (data: { invoice: InvoiceFromData; isFormValid: boolean }) => void;
   handleDelete?: (id: number) => void;
+  handleDuplicate?: (id: number, invoiceType: InvoiceType) => void;
 }
-export const Form: FC<Props> = ({ type, handleChange = () => {}, invoice, handleDelete = () => {} }) => {
+export const Form: FC<Props> = ({
+  type,
+  handleChange = () => {},
+  invoice,
+  handleDelete = () => {},
+  handleDuplicate = () => {}
+}) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const storeSettings = useAppSelector(selectSettings);
@@ -486,9 +493,15 @@ export const Form: FC<Props> = ({ type, handleChange = () => {}, invoice, handle
         onDelete={() => {
           if (invoiceForm?.id !== undefined) handleDelete(invoiceForm.id);
         }}
+        onDuplicate={() => {
+          if (invoiceForm?.id !== undefined) handleDuplicate(invoiceForm.id, type);
+        }}
+        onMakeInvoice={() => {
+          if (invoiceForm?.id !== undefined) handleDuplicate(invoiceForm.id, InvoiceType.invoice);
+        }}
         showDelete={invoiceForm?.id !== undefined}
         showDuplicate={invoiceForm?.id !== undefined}
-        onDuplicate={() => {}}
+        showMakeInvoice={invoiceForm?.id !== undefined && invoiceForm.invoiceType === InvoiceType.quotation}
         onExport={() => {}}
       />
 
