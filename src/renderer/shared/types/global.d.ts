@@ -1,5 +1,6 @@
 import type { Settings, SettingsUpdate } from '../types/settings';
 import type { DBInitType } from './../enums/dbInitType';
+import type { InvoiceType } from './../enums/invoiceType';
 import type { Business, BusinessAdd, BusinessUpdate } from './business';
 import type { Category, CategoryAdd, CategoryUpdate } from './category';
 import type { Client, ClientAdd, ClientUpdate } from './client';
@@ -7,7 +8,7 @@ import type { Currency, CurrencyAdd, CurrencyUpdate } from './currency';
 import type { DBSelector } from './dbSelector';
 import type { ExportMeta } from './exportMeta';
 import type { FilterData } from './filter';
-import type { Invoice } from './invoice';
+import type { Invoice, InvoiceAdd, InvoiceUpdate } from './invoice';
 import type { Item, ItemAdd, ItemUpdate } from './item';
 import type { Response } from './response';
 import type { Unit, UnitAdd, UnitUpdate } from './unit';
@@ -61,8 +62,10 @@ declare global {
       addCurrency: (data: CurrencyAdd) => Promise<Response<CurrencyAdd>>;
       addBatchCurrency: (data: CurrencyAdd[]) => Promise<Response<CurrencyAdd[]>>;
 
-      getAllInvoices: (filter?: FilterData[]) => Promise<Response<Invoice[]>>;
+      getAllInvoices: (type: InvoiceType, filter?: FilterData[]) => Promise<Response<Invoice[]>>;
       deleteInvoice: (id: number) => Promise<Response<unknown>>;
+      addInvoice: (data: InvoiceAdd) => Promise<Response<InvoiceAdd>>;
+      updateInvoice: (data: InvoiceUpdate) => Promise<Response<InvoiceUpdate>>;
 
       exportAllData: () => Promise<Response<ExportMeta>>;
       importAllData: () => Promise<Response<unknown>>;

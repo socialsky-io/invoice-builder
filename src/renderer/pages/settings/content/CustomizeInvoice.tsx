@@ -83,7 +83,7 @@ export const CustomizeInvoice: FC<Props> = ({ showBack, onCustomizedInvoice = ()
           <TextField
             label={t('customizeInvoice.invoicePrefix')}
             fullWidth
-            placeholder="e.g. INV-"
+            placeholder="e.g. INV"
             onChange={handleInputChange(setPrefix, 'prefix')}
             value={prefix}
             helperText={t('customizeInvoice.lettersAndNumbers')}
@@ -93,7 +93,7 @@ export const CustomizeInvoice: FC<Props> = ({ showBack, onCustomizedInvoice = ()
           <TextField
             label={t('customizeInvoice.invoiceSuffix')}
             fullWidth
-            placeholder="e.g. -ALPHA"
+            placeholder="e.g. ALPHA"
             value={suffix}
             onChange={handleInputChange(setSuffix, 'suffix')}
             helperText={t('customizeInvoice.lettersAndNumbers')}

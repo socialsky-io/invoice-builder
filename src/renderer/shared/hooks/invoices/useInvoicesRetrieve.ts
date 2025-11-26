@@ -1,20 +1,26 @@
 import { useCallback, useEffect } from 'react';
 import { useAppDispatch } from '../../../state/configureStore';
 import { setInvoices } from '../../../state/pageSlice';
+import type { InvoiceType } from '../../enums/invoiceType';
 import type { Invoice } from '../../types/invoice';
 import type { RequestHook } from '../../types/requestHook';
 import type { Response } from '../../types/response';
 import { uint8ArrayToDataUrl } from '../../utils/dataUrlFunctions';
 import { useAsyncAction } from '../useAsyncAction';
 
+interface UseInvoicesParams extends RequestHook<Response<Invoice[]>> {
+  type: InvoiceType;
+}
+
 export const useInvoicesRetrieve = ({
   immediate = true,
   showLoader = true,
+  type,
   filter,
   onDone
-}: RequestHook<Response<Invoice[]>>) => {
+}: UseInvoicesParams) => {
   const dispatch = useAppDispatch();
-  const asyncFn = useCallback(() => window.electronAPI.getAllInvoices(filter), [filter]);
+  const asyncFn = useCallback(() => window.electronAPI.getAllInvoices(type, filter), [filter, type]);
   const { data: invoices, execute } = useAsyncAction<Response<Invoice[]>>(asyncFn, {
     showLoader,
     immediate,

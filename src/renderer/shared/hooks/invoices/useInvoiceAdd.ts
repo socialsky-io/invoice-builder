@@ -1,0 +1,24 @@
+import { useCallback } from 'react';
+import type { InvoiceAdd } from '../../types/invoice';
+import type { RequestHook } from '../../types/requestHook';
+import type { Response } from '../../types/response';
+import { useAsyncAction } from '../useAsyncAction';
+
+interface UseInvoiceAddParams extends RequestHook<Response<InvoiceAdd>> {
+  invoice?: InvoiceAdd;
+}
+
+export const useInvoiceAdd = ({ invoice, immediate = true, showLoader = true, onDone }: UseInvoiceAddParams) => {
+  const asyncFn = useCallback(() => {
+    if (!invoice) return Promise.resolve({ success: false });
+    return window.electronAPI.addInvoice(invoice);
+  }, [invoice]);
+
+  const { data, loading, execute } = useAsyncAction<Response<InvoiceAdd>>(asyncFn, {
+    immediate,
+    showLoader,
+    onDone
+  });
+
+  return { data, loading, execute };
+};

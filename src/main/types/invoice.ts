@@ -4,7 +4,7 @@ import type { InvoiceType } from '../enums/invoiceType';
 import type { InvoiceItemTaxType, InvoiceTaxType } from '../enums/taxType';
 
 export interface Invoice {
-  id: number;
+  id?: number;
   invoiceType: InvoiceType;
   convertedFromQuotationId?: number;
   businessId: number;
@@ -57,7 +57,6 @@ export interface Invoice {
   taxType?: InvoiceTaxType;
   invoicePayments: InvoicePayment[];
   invoiceItems: InvoiceItem[];
-  currencyFormat: string;
 }
 
 export interface InvoicePayment {

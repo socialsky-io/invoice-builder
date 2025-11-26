@@ -126,6 +126,7 @@
     "phone": "Phone",
     "phoneHelper": "Enter phone number in international format",
     "quote": "Quote",
+    "quoteNumber": "Quote number",
     "quotes": "Quotes",
     "save": "Save",
     "search": "Search...",
@@ -204,7 +205,8 @@
     "unsupportedImage": "Unsupported image type"
   },
   "invoices": {
-    "add": "Add invoice",
+    "addInvoice": "Add invoice",
+    "addQuote": "Add quote",
     "billTo": "Bill to",
     "businessLogo": "Logo",
     "dueDate": "Due in {{days}} day(s): {{date}}",
@@ -221,10 +223,12 @@
     "invoiceInfo": "Invoice information",
     "issuedAt": "Date: {{date}}",
     "markedAsPaid": "Marked as paid: {{date}}",
-    "noItem": "Selected a invoice to view details.",
+    "noItemInvoice": "Selected a invoice to view details.",
+    "noItemQuote": "Selected a quote to view details.",
     "overdue": "Overdue {{days}} day(s)",
     "overpaid": "Overpaid: {{amount}}",
-    "partiallyPaid": "Partially paid: {{amount}} remaining"
+    "partiallyPaid": "Partially paid: {{amount}} remaining",
+    "quoteInfo": "Quote information"
   },
   "items": {
     "add": "Add item",
@@ -265,6 +269,15 @@
     "reports": "Reports",
     "settings": "Settings",
     "units": "Units"
+  },
+  "quotes": {
+    "filter": {
+      "activeDesc": "Quotes that are not archived",
+      "activeText": "Active quotes",
+      "allText": "All quotes",
+      "archivedDesc": "Quotes that have been archived",
+      "archivedText": "Archived quotes"
+    }
   },
   "settingsMenuItems": {
     "descriptions": {

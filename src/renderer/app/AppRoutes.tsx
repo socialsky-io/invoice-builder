@@ -6,10 +6,11 @@ import { ClientsPage } from '../pages/clients';
 import { CurrenciesPage } from '../pages/currencies';
 import { InvoicesPage } from '../pages/invoices';
 import { ItemsPage } from '../pages/items';
-import { Quotes } from '../pages/quotes';
+import { QuotesPage } from '../pages/quotes';
 import { Reports } from '../pages/reports';
 import { SettingsPage } from '../pages/settings';
 import { UnitsPage } from '../pages/units';
+import { InvoiceType } from '../shared/enums/invoiceType';
 
 export const AppRoutes: FC = () => {
   return (
@@ -22,10 +23,10 @@ export const AppRoutes: FC = () => {
       <Route path="units" element={<UnitsPage />} />
       <Route path="categories" element={<CategoriesPage />} />
       <Route path="items" element={<ItemsPage />} />
-      <Route path="invoices" element={<InvoicesPage />} />
+      <Route path="invoices" element={<InvoicesPage type={InvoiceType.invoice} />} />
+      <Route path="quotes" element={<QuotesPage />} />
 
       <Route path="reports" element={<Reports />} />
-      <Route path="quotes" element={<Quotes />} />
 
       <Route path="*" element={<Navigate to="/invoices" replace />} />
     </Routes>

@@ -50,6 +50,7 @@ export const List: FC<Props> = ({ item, selectedItem, onEdit }) => {
     if (item.status === InvoiceStatus.paid) return theme.palette.success.main;
     if (item.status === InvoiceStatus.unpaid) return theme.palette.error.main;
     if (item.status === InvoiceStatus.open) return theme.palette.primary.main;
+    if (item.status === InvoiceStatus.closed) return theme.palette.grey[700];
 
     return theme.palette.divider;
   }, [item, theme]);

@@ -126,6 +126,7 @@
     "phone": "Telefonas",
     "phoneHelper": "Įveskite telefono numerį tarptautiniu formatu",
     "quote": "Pasiūlymas",
+    "quoteNumber": "Pasiūlymo numeris",
     "quotes": "Pasiūlymai",
     "save": "Išsaugoti",
     "search": "Ieškoti...",
@@ -204,7 +205,8 @@
     "unsupportedImage": "Nepalaikomas paveikslėlio tipas"
   },
   "invoices": {
-    "add": "Pridėti sąskaitą",
+    "addInvoice": "Pridėti sąskaitą",
+    "addQuote": "Pridėti pasiūlymą",
     "billTo": "Sąskaita skirta",
     "businessLogo": "Logotipas",
     "dueDate": "Apmokėti per {{days}} d.: {{date}}",
@@ -221,10 +223,12 @@
     "invoiceInfo": "Sąskaitos informacija",
     "issuedAt": "Data: {{date}}",
     "markedAsPaid": "Pažymėta kaip apmokėta: {{date}}",
-    "noItem": "Pasirinkite sąskaitą, kad matytumėte detales.",
+    "noItemInvoice": "Pasirinkite sąskaitą, kad matytumėte detales.",
+    "noItemQuote": "Pasirinkite pasiūlymą, kad pamatytumėte detales.",
     "overdue": "Vėluojama {{days}} d.",
     "overpaid": "Permokėta: {{amount}}",
-    "partiallyPaid": "Iš dalies apmokėta: liko {{amount}}"
+    "partiallyPaid": "Iš dalies apmokėta: liko {{amount}}",
+    "quoteInfo": "Pasiūlymo informacija"
   },
   "items": {
     "add": "Pridėti prekę",
@@ -265,6 +269,15 @@
     "reports": "Ataskaitos",
     "settings": "Nustatymai",
     "units": "Vienetai"
+  },
+  "quotes": {
+    "filter": {
+      "activeDesc": "Pasiūlymai, kurie nėra archyvuoti",
+      "activeText": "Aktyvūs pasiūlymai",
+      "allText": "Visi pasiūlymai",
+      "archivedDesc": "Pasiūlymai, kurie buvo archyvuoti",
+      "archivedText": "Archyvuoti pasiūlymai"
+    }
   },
   "settingsMenuItems": {
     "descriptions": {

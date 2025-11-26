@@ -11,6 +11,7 @@ import type { Category } from './types/category';
 import type { Client } from './types/client';
 import type { Currency } from './types/currency';
 import type { EntityWithId } from './types/entityWithId';
+import type { Invoice } from './types/invoice';
 import type { FilterData } from './types/invoiceFilter';
 import type { Item } from './types/item';
 import type { SqliteValue } from './types/sqliteValue';
@@ -23,6 +24,12 @@ interface SqliteError extends Error {
 
 const isSqliteError = (error: unknown): error is SqliteError => {
   return error instanceof Error && 'code' in error && typeof (error as Record<string, unknown>).code === 'string';
+};
+
+const toSqliteValue = (value: unknown): SqliteValue => {
+  if (value === undefined || value === null) return null;
+  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') return value;
+  return JSON.stringify(value);
 };
 
 const sqliteErrorMap: Record<string, string> = {
@@ -327,6 +334,56 @@ const itemFields: (keyof Item)[] = ['name', 'amount', 'unitId', 'categoryId', 'd
 const currencyFields: (keyof Currency)[] = ['code', 'symbol', 'text', 'format', 'isArchived', 'subunit'];
 const unitFields: (keyof Unit)[] = ['name', 'isArchived'];
 const categoryFields: (keyof Category)[] = ['name', 'isArchived'];
+const invoiceFields: (keyof Invoice)[] = [
+  'invoiceType',
+  'convertedFromQuotationId',
+  'businessId',
+  'clientId',
+  'currencyId',
+  'issuedAt',
+  'dueDate',
+  'invoiceNumber',
+  'isArchived',
+  'status',
+  'customerNotes',
+  'thanksNotes',
+  'termsConditionNotes',
+  'discountName',
+  'businessNameSnapshot',
+  'businessDescriptionSnapshot',
+  'businessAddressSnapshot',
+  'businessRoleSnapshot',
+  'clientShortName',
+  'businessShortName',
+  'businessEmailSnapshot',
+  'businessPhoneSnapshot',
+  'businessWebsiteSnapshot',
+  'businessAdditionalSnapshot',
+  'businessPaymentInformationSnapshot',
+  'businessLogoSnapshot',
+  'businessFileSizeSnapshot',
+  'businessFileTypeSnapshot',
+  'businessFileNameSnapshot',
+  'clientNameSnapshot',
+  'clientAddressSnapshot',
+  'clientDescriptionSnapshot',
+  'clientEmailSnapshot',
+  'clientPhoneSnapshot',
+  'clientCodeSnapshot',
+  'clientAdditionalSnapshot',
+  'currencyCodeSnapshot',
+  'currencySymbolSnapshot',
+  'invoicePrefixSnapshot',
+  'invoiceSuffixSnapshot',
+  'currencySubunitSnapshot',
+  'discountType',
+  'discountAmountCents',
+  'discountPercent',
+  'shippingFeeCents',
+  'taxName',
+  'taxRate',
+  'taxType'
+];
 
 const initIpcHandler = (db: Database, path: string) => {
   if (!db) throw new Error('Database not initialized');
@@ -338,6 +395,7 @@ const initIpcHandler = (db: Database, path: string) => {
   const handleUnits = handleEntity<Unit>(db, 'units', unitFields);
   const handleCategories = handleEntity<Category>(db, 'categories', categoryFields);
   const handleCurrencies = handleEntity<Currency>(db, 'currencies', currencyFields);
+  const handleInvoice = handleEntity<Invoice>(db, 'invoices', invoiceFields);
   const getAllBusinesses = getAllEntities(db, 'businesses', 'businessId');
   const getAllClients = getAllEntities(db, 'clients', 'clientId');
   const getAllCurrencies = getAllEntities(db, 'currencies', 'currencyId');
@@ -642,7 +700,7 @@ const initIpcHandler = (db: Database, path: string) => {
   });
   ipcMain.handle('get-all-currencies', async (_event, filter) => getAllCurrencies(filter));
 
-  ipcMain.handle('get-all-invoices', async (_event, filter) => {
+  ipcMain.handle('get-all-invoices', async (_event, type, filter) => {
     const whereClause = getWhereClauseFromFilters({
       filters: filter,
       businessNameSnapshotColumn: 'i.businessNameSnapshot',
@@ -658,7 +716,7 @@ const initIpcHandler = (db: Database, path: string) => {
           c.format as currencyFormat
       FROM invoices i
       INNER JOIN currencies as c on c.id = i.currencyId
-      WHERE i.invoiceType = 'invoice' AND ${whereClause}
+      WHERE i.invoiceType = '${type}' AND ${whereClause}
     `;
     const invoices = await getAllRows(db, invoicesSql);
 
@@ -689,7 +747,6 @@ const initIpcHandler = (db: Database, path: string) => {
       data: finalInvoices
     };
   });
-
   ipcMain.handle('delete-invoice', async (_event, id: number) => {
     try {
       await runDb(db, 'DELETE FROM invoices WHERE id = ?;', [id]);
@@ -698,6 +755,8 @@ const initIpcHandler = (db: Database, path: string) => {
       return { success: false, ...mapSqliteError(error) };
     }
   });
+  ipcMain.handle('add-invoice', async (_event, data: Invoice) => handleInvoice(data));
+  ipcMain.handle('update-invoice', async (_event, data: Invoice) => handleInvoice(data, true));
 
   ipcMain.handle('export-all-data', async () => {
     try {
@@ -757,12 +816,6 @@ const initIpcHandler = (db: Database, path: string) => {
       } finally {
         await runDb(db, 'PRAGMA foreign_keys = ON');
       }
-    };
-
-    const toSqliteValue = (value: unknown): SqliteValue => {
-      if (value === undefined || value === null) return null;
-      if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') return value;
-      return JSON.stringify(value);
     };
 
     const insertRows = async <T extends Record<string, unknown>>(table: string, rows: T[]) => {
@@ -936,6 +989,9 @@ const resetIPCHandlers = () => {
   ipcMain.removeHandler('get-all-currencies');
 
   ipcMain.removeHandler('get-all-invoices');
+  ipcMain.removeHandler('delete-invoice');
+  ipcMain.removeHandler('update-invoice');
+  ipcMain.removeHandler('add-invoice');
 
   ipcMain.removeHandler('export-all-data');
   ipcMain.removeHandler('import-all-data');

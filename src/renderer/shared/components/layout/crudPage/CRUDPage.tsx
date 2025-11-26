@@ -56,6 +56,7 @@ interface Props<T, TAdd, TUpdate> {
   form?: (args: {
     item?: T;
     onChange: (data: { changedData: TAdd | TUpdate; isFormValid: boolean; description?: string }) => void;
+    onDelete?: (id: number) => void;
   }) => ReactNode;
   sortOptions: { label: string; value: keyof T }[];
   noItemButtonText?: string;
@@ -402,7 +403,8 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
       renderForm={({ onChange }) =>
         form({
           item: selectedItem,
-          onChange
+          onChange,
+          onDelete: onDelete
         })
       }
       showBack={!isDesktop}
