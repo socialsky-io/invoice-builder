@@ -2,7 +2,7 @@ import { config } from 'dotenv';
 import { app, BrowserWindow } from 'electron';
 import { dirname, join, resolve } from 'path';
 import { fileURLToPath } from 'url';
-import { initIpcHandlerForDB } from './ipcHandler';
+import { initDBDialogsHandlers } from './ipc/dbDialogs';
 
 config();
 
@@ -40,7 +40,7 @@ const createWindow = () => {
 
 app.whenReady().then(() => {
   createWindow();
-  initIpcHandlerForDB(dbName);
+  initDBDialogsHandlers(dbName);
 });
 
 app.on('window-all-closed', () => {

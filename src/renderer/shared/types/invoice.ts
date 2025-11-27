@@ -15,8 +15,8 @@ export interface InvoicePayment {
 }
 
 export interface InvoiceItem {
-  id: number;
-  parentInvoiceId: number;
+  id?: number;
+  parentInvoiceId?: number;
   itemId: number;
   itemNameSnapshot: string;
   unitPriceCentsSnapshot: number;
@@ -24,8 +24,8 @@ export interface InvoiceItem {
   unitNameSnapshot?: string;
   categoryNameSnapshot?: string;
   quantity: number;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
   taxName?: string;
   taxRate: number;
   taxType?: InvoiceItemTaxType;
@@ -139,6 +139,7 @@ export interface InvoiceAdd {
   taxType?: InvoiceTaxType;
   invoicePayments?: InvoicePayment[];
   invoiceItems?: InvoiceItem[];
+  currencyFormat?: string;
 }
 
 export interface InvoiceUpdate extends InvoiceAdd {
@@ -197,6 +198,7 @@ export interface InvoiceFromData {
   taxType?: InvoiceTaxType;
   invoicePayments?: InvoicePayment[];
   invoiceItems?: InvoiceItem[];
+  currencyFormat?: string;
 }
 
 export interface InvoicesModified {
@@ -253,4 +255,5 @@ export interface InvoicesModified {
   taxType?: InvoiceTaxType;
   invoicePayments: InvoicePayment[];
   invoiceItems: InvoiceItem[];
+  currencyFormat: string;
 }

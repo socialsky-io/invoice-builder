@@ -1,0 +1,54 @@
+import { Dialog, DialogContent } from '@mui/material';
+import { useEffect, useState, type FC } from 'react';
+import { useTranslation } from 'react-i18next';
+import { AmountInput } from '../../../shared/components/inputs/amountInput/AmountInput';
+import { ModalAppBar } from '../../../shared/components/layout/modalAppBar/ModalAppBar';
+import { validators } from '../../../shared/utils/validatorFunctions';
+
+interface Props {
+  isOpen: boolean;
+  onCancel?: () => void;
+  onSave?: (quantity: number) => void;
+}
+export const AddItem: FC<Props> = ({ isOpen, onCancel = () => {}, onSave = () => {} }) => {
+  const { t } = useTranslation();
+  const [isFormValid, setIsFormValid] = useState(true);
+  const [quantity, setQuantity] = useState<number | undefined>(undefined);
+  const [quantityError, setQuantityErrors] = useState(false);
+
+  useEffect(() => {
+    const valid = quantity !== undefined;
+
+    setIsFormValid(valid);
+  }, [quantity]);
+
+  return (
+    <Dialog open={isOpen} onClose={onCancel}>
+      <ModalAppBar
+        title={t('invoices.addItem')}
+        description={t('common.fieldRequired')}
+        isFormValid={isFormValid}
+        formData={quantity}
+        onClose={onCancel}
+        onSave={data => {
+          onSave(data as number);
+        }}
+      />
+      <DialogContent sx={{ minWidth: '300px' }}>
+        <AmountInput
+          required={true}
+          label={t('invoices.quantity')}
+          value={quantity}
+          error={quantityError}
+          helperText={quantityError ? t('common.fieldRequired') : ''}
+          onChange={e => {
+            setQuantity(e);
+            if (!validators.required((e ?? '').toString())) {
+              setQuantityErrors(true);
+            }
+          }}
+        />
+      </DialogContent>
+    </Dialog>
+  );
+};

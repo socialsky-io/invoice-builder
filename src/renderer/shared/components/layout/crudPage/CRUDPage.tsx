@@ -428,7 +428,7 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
     <PageAppBar
       title={title}
       isOpen={isModalOpen}
-      isModal={inlineOnAdd ? false : typeof selectedItem === 'undefined'}
+      isModal={inlineOnAdd && isDesktop ? false : typeof selectedItem === 'undefined'}
       handleClose={handleCloseModal}
       handleSave={handleSave}
       renderForm={({ onChange }) =>
@@ -591,10 +591,10 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
       )}
     </Grid>
   );
-
   return (
     <>
-      {!inlineOnAdd && isModalOpen && crBusiness}
+      {(!inlineOnAdd && isModalOpen && crBusiness) || (inlineOnAdd && !isDesktop && isModalOpen && crBusiness)}
+
       <Grid container component="div" spacing={2} justifyContent="center" alignItems="stretch" sx={{ height: '100%' }}>
         {!showRightSide && leftColumn}
         {showRightSide && (

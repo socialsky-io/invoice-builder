@@ -1,3 +1,4 @@
+import AddIcon from '@mui/icons-material/Add';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Box, Divider, Fab, ListItemButton, ListItemText, Tooltip, Typography, useTheme } from '@mui/material';
 import { formatDate } from 'date-fns';
@@ -10,6 +11,7 @@ import type { Business } from '../../shared/types/business';
 import type { Client } from '../../shared/types/client';
 import type { Currency } from '../../shared/types/currency';
 import type { Invoice, InvoiceFromData } from '../../shared/types/invoice';
+import type { Item } from '../../shared/types/item';
 import { fromUint8Array } from '../../shared/utils/dataUrlFunctions';
 import { useAppSelector } from '../../state/configureStore';
 import { selectSettings } from '../../state/pageSlice';
@@ -17,6 +19,7 @@ import { BusinessesDropdown } from './Dropdowns/BusinessesDropdown';
 import { ClientsDropdown } from './Dropdowns/ClientsDropdown';
 import { CurrenciesDropdown } from './Dropdowns/CurrenciesDropdown';
 import { InvoiceInformationDropdown } from './Dropdowns/InvoiceInformationDropdown';
+import { ItemsDropdown } from './Dropdowns/ItemsDropdown';
 import { MoreActionDropdown } from './Dropdowns/MoreActionDropdown';
 
 interface Props {
@@ -42,6 +45,7 @@ export const Form: FC<Props> = ({
   const [isDropdownOpenClients, setIsDropdownOpenClients] = useState<boolean>(false);
   const [isDropdownInvoiceInfo, setIsDropdownOpenInvoiceInfo] = useState<boolean>(false);
   const [isDropdownMoreAction, setMoreActionDropdown] = useState<boolean>(false);
+  const [isDropdownItems, setIsDropdownOpenItems] = useState<boolean>(false);
 
   const [invoiceForm, setInvoiceForm] = useState<InvoiceFromData | undefined>(undefined);
   const [isFormValid, setIsFormValid] = useState(false);
@@ -138,6 +142,32 @@ export const Form: FC<Props> = ({
     [handleOnClose, invoiceForm]
   );
 
+  const handleClickItems = useCallback(
+    (data: Item, quantity: number) => {
+      console.log(data, quantity);
+      handleOnClose(setIsDropdownOpenItems);
+      //     // parentInvoiceId: number;
+      if (invoiceForm && invoiceForm.invoiceItems) {
+        const amount = Number(data.amount ?? 0);
+        invoiceForm.invoiceItems.push({
+          itemId: data.id,
+          itemNameSnapshot: data.name,
+          categoryNameSnapshot: data.categoryName,
+          unitNameSnapshot: data.unitName,
+          itemDescriptionSnapshot: data.description,
+          unitPriceCentsSnapshot: invoiceForm.currencySubunitSnapshot
+            ? amount * invoiceForm.currencySubunitSnapshot
+            : amount,
+          quantity: quantity,
+          taxName: undefined,
+          taxRate: 0,
+          taxType: undefined
+        });
+      }
+    },
+    [handleOnClose, invoiceForm]
+  );
+
   const handleOnClickInvoiceInformation = useCallback(
     (data: InvoiceInfo) => {
       handleOnClose(setIsDropdownOpenInvoiceInfo);
@@ -167,7 +197,9 @@ export const Form: FC<Props> = ({
         isArchived: false,
         discountAmountCents: 0,
         discountPercent: 0,
-        shippingFeeCents: 0
+        shippingFeeCents: 0,
+        invoiceItems: [],
+        invoicePayments: []
       });
     }
   }, [invoice, type]);
@@ -190,7 +222,6 @@ export const Form: FC<Props> = ({
         display: 'flex',
         flexDirection: 'column',
         width: '100%',
-        height: '100%',
         gap: 2
       }}
     >
@@ -454,6 +485,52 @@ export const Form: FC<Props> = ({
         </Box>
       </Box>
 
+      <Divider flexItem />
+
+      <ListItemButton
+        onClick={() => onEdit(setIsDropdownOpenItems)}
+        sx={{
+          pt: 2,
+          pb: 2,
+          pl: 2,
+          pr: 2,
+          width: '100%',
+          borderRadius: 1,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'start',
+          flexDirection: 'column'
+        }}
+      >
+        <ListItemText
+          primary={
+            <>
+              <Typography
+                component="div"
+                variant="body1"
+                sx={{
+                  fontWeight: 600,
+                  color: theme.palette.primary.main,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  flexDirection: 'row'
+                }}
+              >
+                <AddIcon />
+                {t('invoices.addItem').toUpperCase()}
+              </Typography>
+            </>
+          }
+          disableTypography
+          sx={{ m: 0 }}
+          slotProps={{ primary: { sx: { fontWeight: 500, m: 0 } } }}
+        />
+      </ListItemButton>
+
+      <Divider flexItem />
+
       <BusinessesDropdown
         isOpen={isDropdownOpenBusinesses}
         onClose={() => handleOnClose(setIsDropdownOpenBusinesses)}
@@ -471,6 +548,12 @@ export const Form: FC<Props> = ({
         onClose={() => handleOnClose(setIsDropdownOpenClients)}
         onOpen={() => handleOnOpen(setIsDropdownOpenClients)}
         onClick={handleOnClickClients}
+      />
+      <ItemsDropdown
+        isOpen={isDropdownItems}
+        onClose={() => handleOnClose(setIsDropdownOpenItems)}
+        onOpen={() => handleOnOpen(setIsDropdownOpenItems)}
+        onClick={handleClickItems}
       />
       <InvoiceInformationDropdown
         information={{

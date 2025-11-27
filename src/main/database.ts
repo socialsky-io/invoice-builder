@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import sqlite3 from 'sqlite3';
-import { getFirstRow, runAsync } from './functions';
-import { initIpcHandler } from './ipcHandler';
+import { initIpcHandler } from './ipc';
+import { getFirstRow, runAsync } from './utils/dbFuntions';
 
 let db: sqlite3.Database;
 let dbPath: string | undefined;

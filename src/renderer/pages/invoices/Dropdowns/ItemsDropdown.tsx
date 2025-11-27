@@ -1,5 +1,5 @@
 import { SwipeableDrawer } from '@mui/material';
-import type { FC } from 'react';
+import { useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CRUDPage } from '../../../shared/components/layout/crudPage/CRUDPage';
 import { FilterType } from '../../../shared/enums/filterType';
@@ -9,12 +9,13 @@ import type { Item, ItemAdd, ItemUpdate } from '../../../shared/types/item';
 import type { Response } from '../../../shared/types/response';
 import { createCommonFilters, createInvoiceFilters } from '../../../shared/utils/filterSortFunctions';
 import { List as ItemsList } from '../../items/List';
+import { AddItem } from '../Modals/AddItem';
 
 interface Props {
   isOpen: boolean;
   onClose?: () => void;
   onOpen?: () => void;
-  onClick?: (data: Item) => void;
+  onClick?: (data: Item, quantity: number) => void;
 }
 
 export const ItemsDropdown: FC<Props> = ({ isOpen, onClose, onOpen, onClick }) => {
@@ -27,51 +28,65 @@ export const ItemsDropdown: FC<Props> = ({ isOpen, onClose, onOpen, onClick }) =
     const { items, execute } = useItemsRetrieve({ filter: args.filter, onDone: args.onDone });
     return { items: items, execute };
   };
+  const [selectedItem, setSelectedItem] = useState<Item | undefined>(undefined);
 
   return (
     <>
-      <SwipeableDrawer
-        anchor="bottom"
-        open={isOpen}
-        onClose={() => onClose?.()}
-        onOpen={() => onOpen?.()}
-        slotProps={{
-          paper: {
-            sx: {
-              maxWidth: '40%',
-              height: '80%',
-              mx: 'auto',
-              borderTopLeftRadius: 16,
-              borderTopRightRadius: 16,
-              borderBottomLeftRadius: 0,
-              borderBottomRightRadius: 0,
-              p: 3
-            }
-          }
-        }}
-      >
-        <CRUDPage<Item, ItemAdd, ItemUpdate>
-          filters={filters}
-          showRightSide={false}
-          showAddButton={false}
-          useRetrieve={useItemsCRUDRetrieve}
-          searchField={'name'}
-          sortOptions={[
-            { label: t('common.name'), value: 'name' },
-            { label: t('common.lastUpdate'), value: 'updatedAt' }
-          ]}
-          noItemText={t('items.noItem')}
-          renderListItem={(item, selectedItem) => (
-            <ItemsList
-              key={item.id}
-              item={item}
-              showDeleteButton={false}
-              selectedItem={selectedItem}
-              onEdit={(editItem: Item) => onClick?.(editItem)}
-            />
-          )}
+      {isOpen && (
+        <AddItem
+          isOpen={selectedItem !== undefined}
+          onCancel={() => setSelectedItem(undefined)}
+          onSave={quantity => {
+            if (selectedItem) onClick?.(selectedItem, quantity);
+            setSelectedItem(undefined);
+          }}
         />
-      </SwipeableDrawer>
+      )}
+
+      {!selectedItem && (
+        <SwipeableDrawer
+          anchor="bottom"
+          open={isOpen}
+          onClose={() => onClose?.()}
+          onOpen={() => onOpen?.()}
+          slotProps={{
+            paper: {
+              sx: {
+                maxWidth: '40%',
+                height: '80%',
+                mx: 'auto',
+                borderTopLeftRadius: 16,
+                borderTopRightRadius: 16,
+                borderBottomLeftRadius: 0,
+                borderBottomRightRadius: 0,
+                p: 3
+              }
+            }
+          }}
+        >
+          <CRUDPage<Item, ItemAdd, ItemUpdate>
+            filters={filters}
+            showRightSide={false}
+            showAddButton={false}
+            useRetrieve={useItemsCRUDRetrieve}
+            searchField={'name'}
+            sortOptions={[
+              { label: t('common.name'), value: 'name' },
+              { label: t('common.lastUpdate'), value: 'updatedAt' }
+            ]}
+            noItemText={t('items.noItem')}
+            renderListItem={(item, selectedItem) => (
+              <ItemsList
+                key={item.id}
+                item={item}
+                showDeleteButton={false}
+                selectedItem={selectedItem}
+                onEdit={(editItem: Item) => setSelectedItem(editItem)}
+              />
+            )}
+          />
+        </SwipeableDrawer>
+      )}
     </>
   );
 };

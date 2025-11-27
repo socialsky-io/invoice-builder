@@ -1,22 +1,14 @@
 import sqlite3 from 'sqlite3';
-import type { SqliteValue } from './types/sqliteValue';
-
-const BOOLEAN_FIELDS = [
-  'isDarkMode',
-  'shouldIncludeYear',
-  'shouldIncludeMonth',
-  'shouldIncludeBusinessName',
-  'quotesON',
-  'reportsON',
-  'isArchived'
-] as const;
+import { BOOLEAN_FIELDS } from '../constant';
+import type { SqliteValue } from '../types/sqliteValue';
+import type { UpdateData } from '../types/updateData';
 
 export const runAsync = (db: sqlite3.Database, sql: string) =>
   new Promise<void>((resolve, reject) => {
     db.run(sql, err => (err ? reject(err) : resolve()));
   });
 
-const runDb = (db: sqlite3.Database, sql: string, params: SqliteValue[] = []): Promise<void> => {
+export const runDb = (db: sqlite3.Database, sql: string, params: SqliteValue[] = []): Promise<void> => {
   const convertedParams = params.map(p => (p === true ? 1 : p === false ? 0 : p));
 
   return new Promise((resolve, reject) => {
@@ -27,7 +19,7 @@ const runDb = (db: sqlite3.Database, sql: string, params: SqliteValue[] = []): P
   });
 };
 
-const getFirstRow = <T extends Record<string, unknown>>(
+export const getFirstRow = <T extends Record<string, unknown>>(
   db: sqlite3.Database,
   sql: string,
   params: SqliteValue[] = []
@@ -51,7 +43,7 @@ const getFirstRow = <T extends Record<string, unknown>>(
   });
 };
 
-const getAllRows = <T extends Record<string, unknown>>(
+export const getAllRows = <T extends Record<string, unknown>>(
   db: sqlite3.Database,
   sql: string,
   params: SqliteValue[] = []
@@ -77,4 +69,32 @@ const getAllRows = <T extends Record<string, unknown>>(
   });
 };
 
-export { getAllRows, getFirstRow, runDb };
+export const toSqliteValue = (value: unknown): SqliteValue => {
+  if (value === undefined || value === null) return null;
+  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') return value;
+  return JSON.stringify(value);
+};
+
+export const prepareUpdate = (data: UpdateData, id?: number) => {
+  const fields: string[] = [];
+  const params: (string | number | null)[] = [];
+
+  Object.entries(data).forEach(([key, value]) => {
+    if (value !== undefined) {
+      fields.push(`${key} = ?`);
+
+      let param: string | number | null;
+
+      if (typeof value === 'boolean') param = value ? 1 : 0;
+      else if (value === null) param = null;
+      else if (typeof value === 'string' || typeof value === 'number') param = value;
+      else throw new Error(`Unsupported value type for key "${key}"`);
+
+      params.push(param);
+    }
+  });
+
+  if (id != null) params.push(id);
+
+  return { fields, params };
+};
