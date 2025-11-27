@@ -1,37 +1,33 @@
-import { SwipeableDrawer, useMediaQuery, useTheme } from '@mui/material';
+import { SwipeableDrawer } from '@mui/material';
 import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CRUDPage } from '../../../shared/components/layout/crudPage/CRUDPage';
 import { FilterType } from '../../../shared/enums/filterType';
-import { useCurrenciesRetrieve } from '../../../shared/hooks/currencies/useCurrenciesRetrieve';
-import type { Currency, CurrencyAdd, CurrencyUpdate } from '../../../shared/types/currency';
+import { useItemsRetrieve } from '../../../shared/hooks/items/useItemsRetrieve';
 import type { Filter, FilterData } from '../../../shared/types/filter';
+import type { Item, ItemAdd, ItemUpdate } from '../../../shared/types/item';
 import type { Response } from '../../../shared/types/response';
 import { createCommonFilters, createInvoiceFilters } from '../../../shared/utils/filterSortFunctions';
-import { List as CurrenciesList } from '../../currencies/List';
+import { List as ItemsList } from '../../items/List';
 
 interface Props {
   isOpen: boolean;
   onClose?: () => void;
   onOpen?: () => void;
-  onClick?: (data: Currency) => void;
+  onClick?: (data: Item) => void;
 }
 
-export const CurrenciesDropdown: FC<Props> = ({ isOpen, onClose, onOpen, onClick }) => {
+export const ItemsDropdown: FC<Props> = ({ isOpen, onClose, onOpen, onClick }) => {
   const { t } = useTranslation();
   const filters: Filter[] = [
-    ...createCommonFilters({ t, namespace: 'currencies', initial: FilterType.active }),
-    ...createInvoiceFilters({ t, namespace: 'currencies' })
+    ...createCommonFilters({ t, namespace: 'items', initial: FilterType.active }),
+    ...createInvoiceFilters({ t, namespace: 'items' })
   ];
-  const theme = useTheme();
-  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
-  const useCurrenciesCRUDRetrieve = (args: {
-    filter?: FilterData[];
-    onDone?: (data: Response<Currency[]>) => void;
-  }) => {
-    const { currencies, execute } = useCurrenciesRetrieve({ filter: args.filter, onDone: args.onDone });
-    return { items: currencies, execute };
+  const useItemsCRUDRetrieve = (args: { filter?: FilterData[]; onDone?: (data: Response<Item[]>) => void }) => {
+    const { items, execute } = useItemsRetrieve({ filter: args.filter, onDone: args.onDone });
+    return { items: items, execute };
   };
+
   return (
     <>
       <SwipeableDrawer
@@ -42,7 +38,7 @@ export const CurrenciesDropdown: FC<Props> = ({ isOpen, onClose, onOpen, onClick
         slotProps={{
           paper: {
             sx: {
-              maxWidth: isDesktop ? '40%' : '100%',
+              maxWidth: '40%',
               height: '80%',
               mx: 'auto',
               borderTopLeftRadius: 16,
@@ -54,24 +50,24 @@ export const CurrenciesDropdown: FC<Props> = ({ isOpen, onClose, onOpen, onClick
           }
         }}
       >
-        <CRUDPage<Currency, CurrencyAdd, CurrencyUpdate>
+        <CRUDPage<Item, ItemAdd, ItemUpdate>
           filters={filters}
           showRightSide={false}
           showAddButton={false}
-          useRetrieve={useCurrenciesCRUDRetrieve}
-          searchField={'text'}
+          useRetrieve={useItemsCRUDRetrieve}
+          searchField={'name'}
           sortOptions={[
-            { label: t('common.text'), value: 'text' },
+            { label: t('common.name'), value: 'name' },
             { label: t('common.lastUpdate'), value: 'updatedAt' }
           ]}
-          noItemText={t('currencies.noItem')}
+          noItemText={t('items.noItem')}
           renderListItem={(item, selectedItem) => (
-            <CurrenciesList
+            <ItemsList
               key={item.id}
               item={item}
               showDeleteButton={false}
               selectedItem={selectedItem}
-              onEdit={(editItem: Currency) => onClick?.(editItem)}
+              onEdit={(editItem: Item) => onClick?.(editItem)}
             />
           )}
         />

@@ -137,6 +137,8 @@ export interface InvoiceAdd {
   taxName?: string;
   taxRate?: number;
   taxType?: InvoiceTaxType;
+  invoicePayments?: InvoicePayment[];
+  invoiceItems?: InvoiceItem[];
 }
 
 export interface InvoiceUpdate extends InvoiceAdd {
@@ -193,6 +195,8 @@ export interface InvoiceFromData {
   taxName?: string;
   taxRate?: number;
   taxType?: InvoiceTaxType;
+  invoicePayments?: InvoicePayment[];
+  invoiceItems?: InvoiceItem[];
 }
 
 export interface InvoicesModified {

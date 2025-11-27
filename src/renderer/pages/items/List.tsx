@@ -8,19 +8,27 @@ import { selectSettings } from '../../state/pageSlice';
 interface Props {
   item: Item;
   selectedItem?: Item;
-  onEdit: (item: Item) => void;
-  onDelete: (id: number) => void;
+  showDeleteButton?: boolean;
+  onEdit?: (item: Item) => void;
+  onDelete?: (id: number) => void;
 }
-export const List: FC<Props> = ({ item, selectedItem, onEdit, onDelete }) => {
+export const List: FC<Props> = ({
+  item,
+  selectedItem,
+  onEdit = () => {},
+  onDelete = () => {},
+  showDeleteButton = true
+}) => {
   const settings = useAppSelector(selectSettings);
   return (
     <GenericList
       item={item}
       selectedItem={selectedItem}
+      showDeleteButton={showDeleteButton}
       onEdit={onEdit}
       onDelete={onDelete}
       getName={c => c.name}
-      getAdditional={c => `${formatAmount(c.amount ?? 0, settings?.amountFormat)}`}
+      getAdditional={c => `${formatAmount(Number(c.amount ?? 0), settings?.amountFormat)}`}
       getInvoiceCount={c => c.invoiceCount}
       getQuotesCount={c => c.quotesCount}
       getIsArchived={c => c.isArchived}

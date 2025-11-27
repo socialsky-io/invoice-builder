@@ -207,6 +207,7 @@
   },
   "invoices": {
     "addInvoice": "Pridėti sąskaitą",
+    "addItem": "Pridėti prekę",
     "addQuote": "Pridėti pasiūlymą",
     "billTo": "Sąskaita skirta",
     "businessLogo": "Logotipas",
@@ -229,6 +230,7 @@
     "overdue": "Vėluojama {{days}} d.",
     "overpaid": "Permokėta: {{amount}}",
     "partiallyPaid": "Iš dalies apmokėta: liko {{amount}}",
+    "quantity": "Kiekis",
     "quoteInfo": "Pasiūlymo informacija"
   },
   "items": {

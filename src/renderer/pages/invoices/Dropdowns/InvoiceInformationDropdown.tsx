@@ -1,4 +1,4 @@
-import { Box, Grid, SwipeableDrawer, TextField } from '@mui/material';
+import { Box, Grid, SwipeableDrawer, TextField, useMediaQuery, useTheme } from '@mui/material';
 import { useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { InvoiceInfo } from '../../../../main/types/invoice';
@@ -20,7 +20,8 @@ interface Props {
 export const InvoiceInformationDropdown: FC<Props> = ({ isOpen, onClose, onOpen, onClick, information }) => {
   const { t } = useTranslation();
   const storeSettings = useAppSelector(selectSettings);
-
+  const theme = useTheme();
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
   const { form, setForm, update } = useForm<InvoiceInfo>({
     issuedAt: information?.issuedAt,
     invoiceNumber: information?.invoiceNumber ?? '',
@@ -73,8 +74,8 @@ export const InvoiceInformationDropdown: FC<Props> = ({ isOpen, onClose, onOpen,
         slotProps={{
           paper: {
             sx: {
-              maxWidth: '40%',
-              height: '40%',
+              maxWidth: isDesktop ? '40%' : '100%',
+              height: isDesktop ? '40%' : '80%',
               mx: 'auto',
               borderTopLeftRadius: 16,
               borderTopRightRadius: 16,

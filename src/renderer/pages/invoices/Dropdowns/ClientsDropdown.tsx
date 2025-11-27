@@ -1,4 +1,4 @@
-import { SwipeableDrawer } from '@mui/material';
+import { SwipeableDrawer, useMediaQuery, useTheme } from '@mui/material';
 import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CRUDPage } from '../../../shared/components/layout/crudPage/CRUDPage';
@@ -23,6 +23,8 @@ export const ClientsDropdown: FC<Props> = ({ isOpen, onClose, onOpen, onClick })
     ...createCommonFilters({ t, namespace: 'clients', initial: FilterType.active }),
     ...createInvoiceFilters({ t, namespace: 'clients' })
   ];
+  const theme = useTheme();
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
   const useClientsCRUDRetrieve = (args: { filter?: FilterData[]; onDone?: (data: Response<Client[]>) => void }) => {
     const { clients, execute } = useClientsRetrieve({ filter: args.filter, onDone: args.onDone });
     return { items: clients, execute };
@@ -38,7 +40,7 @@ export const ClientsDropdown: FC<Props> = ({ isOpen, onClose, onOpen, onClick })
         slotProps={{
           paper: {
             sx: {
-              maxWidth: '40%',
+              maxWidth: isDesktop ? '40%' : '100%',
               height: '80%',
               mx: 'auto',
               borderTopLeftRadius: 16,

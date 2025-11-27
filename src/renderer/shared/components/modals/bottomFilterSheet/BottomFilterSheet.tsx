@@ -13,6 +13,7 @@ import {
   TextField,
   Tooltip,
   Typography,
+  useMediaQuery,
   useTheme
 } from '@mui/material';
 import { useCallback, useMemo, useState, type ChangeEvent, type FC } from 'react';
@@ -36,6 +37,7 @@ export const BottomFilterSheet: FC<Props> = ({ filters, onFilter = () => {}, sel
   const storeSettings = useAppSelector(selectSettings);
   const radioFilters = useMemo(() => filters.filter(f => f.isGroup), [filters]);
   const remainingFilters = useMemo(() => filters.filter(f => !f.isGroup), [filters]);
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
 
   const getDateRange = (type: FilterType): [string | undefined, string | undefined] => {
     const value = selectedFilter.find(f => f.type === type)?.value;
@@ -172,7 +174,7 @@ export const BottomFilterSheet: FC<Props> = ({ filters, onFilter = () => {}, sel
         slotProps={{
           paper: {
             sx: {
-              maxWidth: '40%',
+              maxWidth: isDesktop ? '40%' : '100%',
               mx: 'auto',
               borderTopLeftRadius: 16,
               borderTopRightRadius: 16,

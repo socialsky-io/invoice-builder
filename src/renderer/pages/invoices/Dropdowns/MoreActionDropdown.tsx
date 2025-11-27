@@ -2,7 +2,17 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
-import { Box, ListItem, ListItemButton, ListItemIcon, ListItemText, SwipeableDrawer, Typography } from '@mui/material';
+import {
+  Box,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  SwipeableDrawer,
+  Typography,
+  useMediaQuery,
+  useTheme
+} from '@mui/material';
 import { type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PageHeader } from '../../../shared/components/layout/pageHeader/PageHeader';
@@ -32,6 +42,8 @@ export const MoreActionDropdown: FC<Props> = ({
   onMakeInvoice
 }) => {
   const { t } = useTranslation();
+  const theme = useTheme();
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
 
   return (
     <>
@@ -43,7 +55,7 @@ export const MoreActionDropdown: FC<Props> = ({
         slotProps={{
           paper: {
             sx: {
-              maxWidth: '40%',
+              maxWidth: isDesktop ? '40%' : '100%',
               height: '40%',
               mx: 'auto',
               borderTopLeftRadius: 16,

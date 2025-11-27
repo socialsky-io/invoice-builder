@@ -207,6 +207,7 @@
   },
   "invoices": {
     "addInvoice": "Add invoice",
+    "addItem": "Add Item",
     "addQuote": "Add quote",
     "billTo": "Bill to",
     "businessLogo": "Logo",
@@ -229,6 +230,7 @@
     "overdue": "Overdue {{days}} day(s)",
     "overpaid": "Overpaid: {{amount}}",
     "partiallyPaid": "Partially paid: {{amount}} remaining",
+    "quantity": "Quantity",
     "quoteInfo": "Quote information"
   },
   "items": {

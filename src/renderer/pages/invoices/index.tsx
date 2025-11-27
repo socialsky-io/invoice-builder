@@ -100,7 +100,6 @@ export const InvoicesPage: FC<Props> = ({ type }) => {
     immediate?: boolean;
     onDone?: (data: Response<unknown>) => void;
   }) => {
-    console.log(currType);
     return useInvoiceDuplicate({
       id: args.id,
       invoiceType: currType,

@@ -1,22 +1,28 @@
 import { TextField } from '@mui/material';
-import type { FC } from 'react';
+import type { FC, ReactNode } from 'react';
 import { NumericFormat } from 'react-number-format';
 import { AmountFormat } from '../../../enums/amountFormat';
 import { getFormattingMeta } from '../../../utils/formatFunctions';
 
 interface Props {
-  value: number;
-  onChange?: (valueInCents: number) => void;
+  value?: number;
+  onChange?: (valueInCents?: number) => void;
   amountFormat?: AmountFormat;
   label: string;
   required: boolean;
+  error?: boolean;
+  helperText?: ReactNode;
+  min?: number;
 }
 export const AmountInput: FC<Props> = ({
   value,
   onChange = () => {},
   amountFormat = AmountFormat.enUS,
   label,
-  required
+  required,
+  error,
+  min = 0,
+  helperText
 }) => {
   const { hasDecimal, thousand, decimal } = getFormattingMeta(amountFormat);
 
@@ -25,6 +31,9 @@ export const AmountInput: FC<Props> = ({
       customInput={TextField}
       label={label}
       fullWidth
+      min={min}
+      error={error}
+      helperText={helperText}
       required={required}
       value={value}
       thousandSeparator={thousand}
@@ -34,7 +43,7 @@ export const AmountInput: FC<Props> = ({
       allowNegative={false}
       onValueChange={values => {
         const { floatValue } = values;
-        onChange(floatValue ?? 0);
+        onChange(floatValue);
       }}
     />
   );

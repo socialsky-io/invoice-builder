@@ -54,11 +54,12 @@ export const Form: FC<Props> = ({ handleChange = () => {}, item }) => {
   });
 
   const [errors, setErrors] = useState({
-    name: false
+    name: false,
+    amount: false
   });
 
   const validateField = (field: keyof typeof errors, value: string) => {
-    if (!validators.required(value) && field === 'name') {
+    if (!validators.required(value) && (field === 'name' || field === 'amount')) {
       setErrors(e => ({ ...e, [field]: true }));
     } else {
       setErrors(e => ({ ...e, [field]: false }));
@@ -78,7 +79,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, item }) => {
   }, [item, setForm]);
 
   useEffect(() => {
-    const valid = form.name.trim() !== '';
+    const valid = form.name.trim() !== '' && form.amount !== undefined && form.amount.trim() !== '';
 
     handleChange({
       item: form,
@@ -117,10 +118,14 @@ export const Form: FC<Props> = ({ handleChange = () => {}, item }) => {
         <AmountInput
           required={true}
           label={t('items.amount')}
-          value={Number(form.amount ?? 0)}
+          value={form.amount !== undefined ? Number(form.amount) : undefined}
           amountFormat={settings?.amountFormat}
+          error={errors.amount}
+          helperText={errors.amount ? t('common.fieldRequired') : ''}
           onChange={e => {
-            update('amount', e.toString());
+            const value = e !== undefined ? e.toString() : '';
+            update('amount', value);
+            validateField('amount', value);
           }}
         />
       </Grid>
