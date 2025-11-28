@@ -1,7 +1,5 @@
-import AddIcon from '@mui/icons-material/Add';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { Box, Divider, Fab, ListItemButton, ListItemText, Tooltip, Typography, useTheme } from '@mui/material';
-import { formatDate } from 'date-fns';
+import { Box, Divider, Fab, Tooltip } from '@mui/material';
 import { useCallback, useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { InvoiceInfo } from '../../../main/types/invoice';
@@ -10,17 +8,21 @@ import { InvoiceType } from '../../shared/enums/invoiceType';
 import type { Business } from '../../shared/types/business';
 import type { Client } from '../../shared/types/client';
 import type { Currency } from '../../shared/types/currency';
-import type { Invoice, InvoiceFromData } from '../../shared/types/invoice';
+import type { Invoice, InvoiceFromData, InvoiceItem } from '../../shared/types/invoice';
 import type { Item } from '../../shared/types/item';
 import { fromUint8Array } from '../../shared/utils/dataUrlFunctions';
-import { useAppSelector } from '../../state/configureStore';
-import { selectSettings } from '../../state/pageSlice';
 import { BusinessesDropdown } from './Dropdowns/BusinessesDropdown';
 import { ClientsDropdown } from './Dropdowns/ClientsDropdown';
 import { CurrenciesDropdown } from './Dropdowns/CurrenciesDropdown';
 import { InvoiceInformationDropdown } from './Dropdowns/InvoiceInformationDropdown';
 import { ItemsDropdown } from './Dropdowns/ItemsDropdown';
 import { MoreActionDropdown } from './Dropdowns/MoreActionDropdown';
+import { BusinessSelector } from './Form/BusinessSelector';
+import { ClientInvoiceRow } from './Form/ClientInvoiceRow';
+import { CurrencySelector } from './Form/CurrencySelector';
+import { ItemSelector } from './Form/ItemSelector';
+import { ItemsList } from './Form/ItemsList';
+import { ItemQuantitySetter } from './Modals/ItemQuantitySetter';
 
 interface Props {
   invoice?: Invoice;
@@ -37,8 +39,6 @@ export const Form: FC<Props> = ({
   handleDuplicate = () => {}
 }) => {
   const { t } = useTranslation();
-  const theme = useTheme();
-  const storeSettings = useAppSelector(selectSettings);
 
   const [isDropdownOpenBusinesses, setIsDropdownOpenBusinesses] = useState<boolean>(false);
   const [isDropdownOpenCurrencies, setIsDropdownOpenCurrencies] = useState<boolean>(false);
@@ -46,9 +46,12 @@ export const Form: FC<Props> = ({
   const [isDropdownInvoiceInfo, setIsDropdownOpenInvoiceInfo] = useState<boolean>(false);
   const [isDropdownMoreAction, setMoreActionDropdown] = useState<boolean>(false);
   const [isDropdownItems, setIsDropdownOpenItems] = useState<boolean>(false);
+  const [isModalQuantityOpen, setModalQuantityOpen] = useState<boolean>(false);
 
   const [invoiceForm, setInvoiceForm] = useState<InvoiceFromData | undefined>(undefined);
   const [isFormValid, setIsFormValid] = useState(false);
+
+  const [selectedInvoiceItem, setSelectedInvoiceItem] = useState<InvoiceItem | undefined>(undefined);
 
   const onEdit = (setter: React.Dispatch<React.SetStateAction<boolean>>) => {
     setter(true);
@@ -72,7 +75,7 @@ export const Form: FC<Props> = ({
     ) {
       setIsFormValid(true);
     } else {
-      setIsFormValid(true);
+      setIsFormValid(false);
     }
   }, [invoiceForm]);
 
@@ -108,12 +111,38 @@ export const Form: FC<Props> = ({
       handleOnClose(setIsDropdownOpenCurrencies);
 
       if (invoiceForm?.currencyId !== data.id) {
+        if (!invoiceForm) return;
+
+        const prevSubunit = invoiceForm.currencySubunitSnapshot;
+        const newSubunit = data.subunit;
+
+        const updatedItems = invoiceForm.invoiceItems?.map(it => {
+          const raw = Number(it.unitPriceCentsSnapshot ?? 0);
+
+          let converted = raw;
+
+          if (prevSubunit === undefined && newSubunit !== undefined) {
+            converted = raw * newSubunit;
+          } else if (prevSubunit !== undefined && newSubunit !== undefined) {
+            converted = raw * (newSubunit / prevSubunit);
+          } else if (prevSubunit !== undefined && newSubunit === undefined) {
+            converted = raw / prevSubunit;
+          }
+
+          return {
+            ...it,
+            unitPriceCentsSnapshot: converted
+          };
+        });
+
         setInvoiceForm({
           ...invoiceForm,
           currencyId: data.id,
           currencyCodeSnapshot: data.code,
           currencySymbolSnapshot: data.symbol,
-          currencySubunitSnapshot: data.subunit
+          currencySubunitSnapshot: data.subunit,
+          currencyFormat: data.format,
+          invoiceItems: updatedItems ?? invoiceForm.invoiceItems
         });
       }
     },
@@ -144,28 +173,82 @@ export const Form: FC<Props> = ({
 
   const handleClickItems = useCallback(
     (data: Item, quantity: number) => {
-      console.log(data, quantity);
       handleOnClose(setIsDropdownOpenItems);
-      //     // parentInvoiceId: number;
-      if (invoiceForm && invoiceForm.invoiceItems) {
-        const amount = Number(data.amount ?? 0);
-        invoiceForm.invoiceItems.push({
-          itemId: data.id,
-          itemNameSnapshot: data.name,
-          categoryNameSnapshot: data.categoryName,
-          unitNameSnapshot: data.unitName,
-          itemDescriptionSnapshot: data.description,
-          unitPriceCentsSnapshot: invoiceForm.currencySubunitSnapshot
-            ? amount * invoiceForm.currencySubunitSnapshot
-            : amount,
-          quantity: quantity,
-          taxName: undefined,
-          taxRate: 0,
-          taxType: undefined
-        });
-      }
+
+      if (!invoiceForm) return;
+
+      const amount = Number(data.amount ?? 0);
+      const unitPrice = invoiceForm.currencySubunitSnapshot ? amount * invoiceForm.currencySubunitSnapshot : amount;
+
+      const newItem = {
+        id: Date.now(),
+        itemId: data.id,
+        itemNameSnapshot: data.name,
+        categoryNameSnapshot: data.categoryName,
+        unitNameSnapshot: data.unitName,
+        itemDescriptionSnapshot: data.description,
+        unitPriceCentsSnapshot: unitPrice,
+        quantity: quantity,
+        taxName: undefined,
+        taxRate: 0,
+        taxType: undefined
+      };
+
+      setInvoiceForm(prev => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          invoiceItems: [...(prev.invoiceItems ?? []), newItem]
+        };
+      });
     },
     [handleOnClose, invoiceForm]
+  );
+
+  const handleDeleteItem = useCallback(
+    (itemToRemove: InvoiceItem) => {
+      if (!invoiceForm) return;
+
+      setInvoiceForm(prev => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          invoiceItems: (prev.invoiceItems ?? []).filter(i => i.id !== itemToRemove.id)
+        };
+      });
+    },
+    [invoiceForm]
+  );
+
+  const handleEditItem = useCallback(
+    (itemToEdit: InvoiceItem) => {
+      if (!invoiceForm) return;
+
+      setSelectedInvoiceItem(itemToEdit);
+      handleOnOpen(setModalQuantityOpen);
+    },
+    [invoiceForm, handleOnOpen]
+  );
+
+  const handleEditQuantity = useCallback(
+    (quantity: number) => {
+      if (!selectedInvoiceItem || !invoiceForm) return;
+
+      setInvoiceForm(prev => {
+        if (!prev) return prev;
+
+        return {
+          ...prev,
+          invoiceItems: (prev.invoiceItems ?? []).map(item =>
+            item.id === selectedInvoiceItem.id ? { ...item, quantity: quantity } : item
+          )
+        };
+      });
+
+      setSelectedInvoiceItem(undefined);
+      handleOnClose(setModalQuantityOpen);
+    },
+    [invoiceForm, selectedInvoiceItem, handleOnClose, setSelectedInvoiceItem]
   );
 
   const handleOnClickInvoiceInformation = useCallback(
@@ -226,308 +309,27 @@ export const Form: FC<Props> = ({
       }}
     >
       <Divider flexItem />
-
-      <Box sx={{ width: 'fit-content' }}>
-        <ListItemButton
-          onClick={() => onEdit(setIsDropdownOpenCurrencies)}
-          sx={{
-            pt: 2,
-            pb: 2,
-            pl: 2,
-            pr: 2,
-            borderRadius: 1
-          }}
-        >
-          <ListItemText
-            primary={
-              <Typography
-                component="div"
-                variant="body1"
-                sx={{
-                  fontWeight: 600,
-                  color: theme.palette.primary.main,
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis'
-                }}
-              >
-                {t('currencies.title').toUpperCase()}
-              </Typography>
-            }
-            secondary={
-              invoiceForm?.currencyCodeSnapshot &&
-              invoiceForm?.currencySymbolSnapshot && (
-                <Typography
-                  component="div"
-                  variant="body2"
-                  sx={{
-                    fontWeight: 500,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis'
-                  }}
-                >
-                  {invoiceForm.currencyCodeSnapshot} / {invoiceForm.currencySymbolSnapshot}
-                </Typography>
-              )
-            }
-            disableTypography
-            sx={{ m: 0 }}
-            slotProps={{ primary: { sx: { fontWeight: 500, m: 0 } } }}
-          />
-        </ListItemButton>
-      </Box>
+      <CurrencySelector onEdit={() => onEdit(setIsDropdownOpenCurrencies)} invoiceForm={invoiceForm} />
+      <Divider flexItem />
+      <BusinessSelector onEdit={() => onEdit(setIsDropdownOpenBusinesses)} invoiceForm={invoiceForm} />
+      <Divider flexItem />
+      <ClientInvoiceRow
+        onEditClients={() => onEdit(setIsDropdownOpenClients)}
+        onEditInvoiceInfo={() => onEdit(setIsDropdownOpenInvoiceInfo)}
+        invoiceForm={invoiceForm}
+        type={type}
+      />
 
       <Divider flexItem />
 
-      <ListItemButton
-        onClick={() => onEdit(setIsDropdownOpenBusinesses)}
-        sx={{
-          pt: 2,
-          pb: 2,
-          pl: 2,
-          pr: 2,
-          width: '100%',
-          borderRadius: 1,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'start',
-          flexDirection: 'column'
-        }}
-      >
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'start',
-            alignItems: 'center',
-            width: '100%',
-            gap: 2
-          }}
-        >
-          <ListItemText
-            primary={
-              <Typography
-                component="div"
-                variant="body1"
-                sx={{
-                  fontWeight: 600,
-                  color: theme.palette.primary.main,
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis'
-                }}
-              >
-                {t('businesses.title').toUpperCase()}
-              </Typography>
-            }
-            secondary={
-              <Typography
-                component="div"
-                variant="body2"
-                sx={{ fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis' }}
-              >
-                {invoiceForm?.businessNameSnapshot}
-              </Typography>
-            }
-            disableTypography
-            sx={{ m: 0 }}
-            slotProps={{ primary: { sx: { fontWeight: 500, m: 0 } } }}
-          />
-          {invoiceForm?.businessLogoSnapshot ? (
-            <img
-              src={invoiceForm.businessLogoSnapshot}
-              alt={t('invoices.businessLogo')}
-              style={{ width: '60px', height: '60px', objectFit: 'cover' }}
-            />
-          ) : (
-            <Box
-              sx={{
-                width: '60px',
-                height: '60px',
-                background: theme.palette.primary.main,
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                borderRadius: 1,
-                fontWeight: 500,
-                overflow: 'hidden'
-              }}
-            >
-              {invoiceForm?.businessShortName}
-            </Box>
-          )}
-        </Box>
-      </ListItemButton>
+      <ItemsList
+        invoiceForm={invoiceForm}
+        setInvoiceForm={setInvoiceForm}
+        onEdit={handleEditItem}
+        onDelete={handleDeleteItem}
+      />
 
-      <Divider flexItem />
-
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          gap: 2
-        }}
-      >
-        <Box sx={{ width: 'fit-content' }}>
-          <ListItemButton
-            onClick={() => onEdit(setIsDropdownOpenClients)}
-            sx={{
-              pt: 2,
-              pb: 2,
-              pl: 2,
-              pr: 2,
-              width: '100%',
-              borderRadius: 1,
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'start',
-              flexDirection: 'column'
-            }}
-          >
-            <ListItemText
-              primary={
-                <Typography
-                  component="div"
-                  variant="body1"
-                  sx={{
-                    fontWeight: 600,
-                    color: theme.palette.primary.main,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis'
-                  }}
-                >
-                  {t('invoices.billTo').toUpperCase()}
-                </Typography>
-              }
-              secondary={
-                <Typography
-                  component="div"
-                  variant="body2"
-                  sx={{ fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis' }}
-                >
-                  {invoiceForm?.clientNameSnapshot}
-                </Typography>
-              }
-              disableTypography
-              sx={{ m: 0 }}
-              slotProps={{ primary: { sx: { fontWeight: 500, m: 0 } } }}
-            />
-          </ListItemButton>
-        </Box>
-        <Box sx={{ width: 'fit-content' }}>
-          <ListItemButton
-            onClick={() => onEdit(setIsDropdownOpenInvoiceInfo)}
-            sx={{
-              pt: 2,
-              pb: 2,
-              pl: 2,
-              pr: 2,
-              width: '100%',
-              borderRadius: 1,
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'start',
-              flexDirection: 'column'
-            }}
-          >
-            <ListItemText
-              primary={
-                <Typography
-                  component="div"
-                  variant="body1"
-                  sx={{
-                    fontWeight: 600,
-                    color: theme.palette.primary.main,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis'
-                  }}
-                >
-                  {type === InvoiceType.quotation
-                    ? t('invoices.quoteInfo').toUpperCase()
-                    : t('invoices.invoiceInfo').toUpperCase()}
-                </Typography>
-              }
-              secondary={
-                <>
-                  <Typography
-                    component="div"
-                    variant="body2"
-                    sx={{ fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis' }}
-                  >
-                    {invoiceForm?.invoicePrefixSnapshot}
-                    {invoiceForm?.invoiceNumber}
-                    {invoiceForm?.invoiceSuffixSnapshot}
-                  </Typography>
-                  {storeSettings && invoiceForm?.issuedAt && (
-                    <Typography
-                      component="div"
-                      variant="body2"
-                      sx={{ fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis' }}
-                    >
-                      {t('invoices.issuedAt', { date: formatDate(invoiceForm.issuedAt, storeSettings.dateFormat) })}
-                    </Typography>
-                  )}
-                  {storeSettings && invoiceForm?.dueDate && (
-                    <Typography
-                      component="div"
-                      variant="body2"
-                      sx={{ fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis' }}
-                    >
-                      {t('invoices.dueDateAt', { date: formatDate(invoiceForm.dueDate, storeSettings.dateFormat) })}
-                    </Typography>
-                  )}
-                </>
-              }
-              disableTypography
-              sx={{ m: 0, textAlign: 'end' }}
-              slotProps={{ primary: { sx: { fontWeight: 500, m: 0 } } }}
-            />
-          </ListItemButton>
-        </Box>
-      </Box>
-
-      <Divider flexItem />
-
-      <ListItemButton
-        onClick={() => onEdit(setIsDropdownOpenItems)}
-        sx={{
-          pt: 2,
-          pb: 2,
-          pl: 2,
-          pr: 2,
-          width: '100%',
-          borderRadius: 1,
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'start',
-          flexDirection: 'column'
-        }}
-      >
-        <ListItemText
-          primary={
-            <>
-              <Typography
-                component="div"
-                variant="body1"
-                sx={{
-                  fontWeight: 600,
-                  color: theme.palette.primary.main,
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  flexDirection: 'row'
-                }}
-              >
-                <AddIcon />
-                {t('invoices.addItem').toUpperCase()}
-              </Typography>
-            </>
-          }
-          disableTypography
-          sx={{ m: 0 }}
-          slotProps={{ primary: { sx: { fontWeight: 500, m: 0 } } }}
-        />
-      </ListItemButton>
+      <ItemSelector onEdit={() => onEdit(setIsDropdownOpenItems)} />
 
       <Divider flexItem />
 
@@ -586,6 +388,12 @@ export const Form: FC<Props> = ({
         showDuplicate={invoiceForm?.id !== undefined}
         showMakeInvoice={invoiceForm?.id !== undefined && invoiceForm.invoiceType === InvoiceType.quotation}
         onExport={() => {}}
+      />
+      <ItemQuantitySetter
+        isOpen={isModalQuantityOpen}
+        onCancel={() => handleOnClose(setModalQuantityOpen)}
+        currQuantity={selectedInvoiceItem?.quantity}
+        onSave={handleEditQuantity}
       />
 
       <Tooltip title={t('ariaLabel.moreActions')}>

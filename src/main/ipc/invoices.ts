@@ -115,8 +115,88 @@ export const initInvoicesHandlers = (db: Database) => {
       return { success: false, ...mapSqliteError(error) };
     }
   });
-  ipcMain.handle('add-invoice', async (_event, data: Invoice) => handleInvoice(data));
-  ipcMain.handle('update-invoice', async (_event, data: Invoice) => handleInvoice(data, true));
+  ipcMain.handle('add-invoice', async (_event, data: Invoice) => {
+    try {
+      const result = await handleInvoice(data);
+
+      if (!result.success) return { success: false };
+
+      const lastRow = await getFirstRow(db, 'SELECT MAX(id) AS id FROM invoices;');
+
+      if (!lastRow) return { success: false };
+
+      const newId = lastRow.id as number;
+
+      for (const item of data.invoiceItems) {
+        await runDb(
+          db,
+          `
+        INSERT INTO invoice_items (
+          parentInvoiceId, itemId, itemNameSnapshot, unitPriceCentsSnapshot,
+          itemDescriptionSnapshot, unitNameSnapshot, categoryNameSnapshot,
+          quantity, taxName, taxRate, taxType
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `,
+          [
+            newId,
+            item.itemId,
+            item.itemNameSnapshot,
+            item.unitPriceCentsSnapshot,
+            item.itemDescriptionSnapshot ?? null,
+            item.unitNameSnapshot ?? null,
+            item.categoryNameSnapshot ?? null,
+            item.quantity,
+            item.taxName ?? null,
+            item.taxRate,
+            item.taxType ?? null
+          ]
+        );
+      }
+
+      return { success: true };
+    } catch (error) {
+      return { success: false, ...mapSqliteError(error) };
+    }
+  });
+  ipcMain.handle('update-invoice', async (_event, data: Invoice) => {
+    try {
+      const result = await handleInvoice(data, true);
+
+      if (!result.success || !data.id) return { success: false };
+
+      await runDb(db, 'DELETE FROM invoice_items WHERE parentInvoiceId = ?;', [data.id]);
+
+      for (const item of data.invoiceItems) {
+        await runDb(
+          db,
+          `
+        INSERT INTO invoice_items (
+          parentInvoiceId, itemId, itemNameSnapshot, unitPriceCentsSnapshot,
+          itemDescriptionSnapshot, unitNameSnapshot, categoryNameSnapshot,
+          quantity, taxName, taxRate, taxType
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `,
+          [
+            data.id,
+            item.itemId,
+            item.itemNameSnapshot,
+            item.unitPriceCentsSnapshot,
+            item.itemDescriptionSnapshot ?? null,
+            item.unitNameSnapshot ?? null,
+            item.categoryNameSnapshot ?? null,
+            item.quantity,
+            item.taxName ?? null,
+            item.taxRate,
+            item.taxType ?? null
+          ]
+        );
+      }
+
+      return { success: true };
+    } catch (error) {
+      return { success: false, ...mapSqliteError(error) };
+    }
+  });
   ipcMain.handle('duplicate-invoice', async (_event, invoiceId: number, invoiceType: 'quotation' | 'invoice') => {
     try {
       const original = await getFirstRow(db, 'SELECT * FROM invoices WHERE id = ?;', [invoiceId]);

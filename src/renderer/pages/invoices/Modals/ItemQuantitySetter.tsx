@@ -7,13 +7,14 @@ import { validators } from '../../../shared/utils/validatorFunctions';
 
 interface Props {
   isOpen: boolean;
+  currQuantity?: number;
   onCancel?: () => void;
   onSave?: (quantity: number) => void;
 }
-export const AddItem: FC<Props> = ({ isOpen, onCancel = () => {}, onSave = () => {} }) => {
+export const ItemQuantitySetter: FC<Props> = ({ isOpen, currQuantity, onCancel = () => {}, onSave = () => {} }) => {
   const { t } = useTranslation();
   const [isFormValid, setIsFormValid] = useState(true);
-  const [quantity, setQuantity] = useState<number | undefined>(undefined);
+  const [quantity, setQuantity] = useState<number | undefined>(currQuantity);
   const [quantityError, setQuantityErrors] = useState(false);
 
   useEffect(() => {
@@ -21,6 +22,10 @@ export const AddItem: FC<Props> = ({ isOpen, onCancel = () => {}, onSave = () =>
 
     setIsFormValid(valid);
   }, [quantity]);
+
+  useEffect(() => {
+    setQuantity(currQuantity);
+  }, [currQuantity]);
 
   return (
     <Dialog open={isOpen} onClose={onCancel}>

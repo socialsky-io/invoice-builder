@@ -9,7 +9,7 @@ import type { Item, ItemAdd, ItemUpdate } from '../../../shared/types/item';
 import type { Response } from '../../../shared/types/response';
 import { createCommonFilters, createInvoiceFilters } from '../../../shared/utils/filterSortFunctions';
 import { List as ItemsList } from '../../items/List';
-import { AddItem } from '../Modals/AddItem';
+import { ItemQuantitySetter } from '../Modals/ItemQuantitySetter';
 
 interface Props {
   isOpen: boolean;
@@ -33,7 +33,7 @@ export const ItemsDropdown: FC<Props> = ({ isOpen, onClose, onOpen, onClick }) =
   return (
     <>
       {isOpen && (
-        <AddItem
+        <ItemQuantitySetter
           isOpen={selectedItem !== undefined}
           onCancel={() => setSelectedItem(undefined)}
           onSave={quantity => {

@@ -96,3 +96,31 @@ export const getInvoiceItemTaxCents = (invoiceItem: InvoiceItem): number => {
   }
   return 0;
 };
+
+export const getUnitPrice = (data: { supportsSubunit?: boolean; amountCents: number; subunit?: number }): number => {
+  const { supportsSubunit, amountCents, subunit } = data;
+  const unitPrice = supportsSubunit ? amountCents / subunit! : amountCents;
+
+  return unitPrice;
+};
+
+export const getTotalUnitPrice = (data: { unitPrice: number; quantity: number }): number => {
+  const { unitPrice, quantity } = data;
+
+  return unitPrice * quantity;
+};
+
+export const getUnitPriceTax = (data: { unitPrice: number; taxType?: InvoiceItemTaxType; taxRate: number }): number => {
+  const { unitPrice, taxType, taxRate } = data;
+
+  if (!taxType) {
+    return 0;
+  }
+
+  if (taxType === InvoiceItemTaxType.exclusive) {
+    return (unitPrice * taxRate) / 100;
+  } else if (taxType === InvoiceItemTaxType.inclusive) {
+    return (unitPrice * taxRate) / (100 + taxRate);
+  }
+  return 0;
+};
