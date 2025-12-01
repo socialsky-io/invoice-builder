@@ -20,6 +20,7 @@ import { MoreActionDropdown } from './Dropdowns/MoreActionDropdown';
 import { BusinessSelector } from './Form/BusinessSelector';
 import { ClientInvoiceRow } from './Form/ClientInvoiceRow';
 import { CurrencySelector } from './Form/CurrencySelector';
+import { FinancialInfo } from './Form/FinancialInfo';
 import { ItemSelector } from './Form/ItemSelector';
 import { ItemsList } from './Form/ItemsList';
 import { ItemQuantitySetter } from './Modals/ItemQuantitySetter';
@@ -329,9 +330,11 @@ export const Form: FC<Props> = ({
         onDelete={handleDeleteItem}
       />
 
+      <Divider flexItem />
+
       <ItemSelector onEdit={() => onEdit(setIsDropdownOpenItems)} />
 
-      <Divider flexItem />
+      <FinancialInfo invoiceForm={invoiceForm} />
 
       <BusinessesDropdown
         isOpen={isDropdownOpenBusinesses}

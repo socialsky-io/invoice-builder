@@ -1,6 +1,8 @@
 import { DiscountType } from '../enums/discountType';
 import { InvoiceItemTaxType, InvoiceTaxType } from '../enums/taxType';
-import type { Invoice, InvoiceItem, InvoicePayment } from '../types/invoice';
+import type { Invoice, InvoiceFromData, InvoiceItem, InvoicePayment } from '../types/invoice';
+import type { Settings } from '../types/settings';
+import { createCurrencyFormatter, supportsCurrencySubunit } from './formatFunctions';
 
 export const getTotalAmountPaidCents = (invoicePayments: InvoicePayment[]): number => {
   if (!invoicePayments || invoicePayments.length === 0) {
@@ -29,7 +31,13 @@ export const getSubTotalAmountCents = (invoiceItems: InvoiceItem[], includeTax: 
 };
 
 export const getInvoiceItemAmountCents = (invoiceItem: InvoiceItem): number => {
-  return invoiceItem.unitPriceCentsSnapshot * invoiceItem.quantity;
+  return getTotalUnitPrice({ unitPrice: invoiceItem.unitPriceCentsSnapshot, quantity: invoiceItem.quantity });
+};
+
+export const getTotalUnitPrice = (data: { unitPrice: number; quantity: number }): number => {
+  const { unitPrice, quantity } = data;
+
+  return unitPrice * quantity;
 };
 
 export const getDiscountAmountCents = (invoice: Invoice): number => {
@@ -67,34 +75,13 @@ export const getBalanceDueCents = (invoice: Invoice): number => {
 };
 
 export const getInvoiceTaxCents = (invoice: Invoice): number => {
-  if (!invoice.taxType) {
-    return 0;
-  }
   const amountCents = getTotalAmountAfterDiscountCents(invoice);
-
-  if (invoice.taxType === InvoiceTaxType.exclusive) {
-    return (amountCents * invoice.taxRate) / 100;
-  } else if (invoice.taxType === InvoiceTaxType.inclusive) {
-    return (amountCents * invoice.taxRate) / (100 + invoice.taxRate);
-  } else if (invoice.taxType === InvoiceTaxType.deducted) {
-    return -(amountCents * invoice.taxRate) / 100;
-  }
-
-  return 0;
+  return getInvoiceTax({ unitPrice: amountCents, taxType: invoice.taxType, taxRate: invoice.taxRate });
 };
 
 export const getInvoiceItemTaxCents = (invoiceItem: InvoiceItem): number => {
-  if (!invoiceItem.taxType) {
-    return 0;
-  }
   const amountCents = getInvoiceItemAmountCents(invoiceItem);
-
-  if (invoiceItem.taxType === InvoiceItemTaxType.exclusive) {
-    return (amountCents * invoiceItem.taxRate) / 100;
-  } else if (invoiceItem.taxType === InvoiceItemTaxType.inclusive) {
-    return (amountCents * invoiceItem.taxRate) / (100 + invoiceItem.taxRate);
-  }
-  return 0;
+  return getUnitTax({ unitPrice: amountCents, taxType: invoiceItem.taxType, taxRate: invoiceItem.taxRate });
 };
 
 export const getUnitPrice = (data: { supportsSubunit?: boolean; amountCents: number; subunit?: number }): number => {
@@ -104,13 +91,7 @@ export const getUnitPrice = (data: { supportsSubunit?: boolean; amountCents: num
   return unitPrice;
 };
 
-export const getTotalUnitPrice = (data: { unitPrice: number; quantity: number }): number => {
-  const { unitPrice, quantity } = data;
-
-  return unitPrice * quantity;
-};
-
-export const getUnitPriceTax = (data: { unitPrice: number; taxType?: InvoiceItemTaxType; taxRate: number }): number => {
+export const getUnitTax = (data: { unitPrice: number; taxType?: InvoiceItemTaxType; taxRate: number }): number => {
   const { unitPrice, taxType, taxRate } = data;
 
   if (!taxType) {
@@ -123,4 +104,145 @@ export const getUnitPriceTax = (data: { unitPrice: number; taxType?: InvoiceItem
     return (unitPrice * taxRate) / (100 + taxRate);
   }
   return 0;
+};
+
+export const getInvoiceTax = (data: { unitPrice: number; taxType?: InvoiceTaxType; taxRate: number }): number => {
+  const { unitPrice, taxType, taxRate } = data;
+
+  if (!taxType) {
+    return 0;
+  }
+  if (taxType === InvoiceTaxType.exclusive) {
+    return (unitPrice * taxRate) / 100;
+  } else if (taxType === InvoiceTaxType.inclusive) {
+    return (unitPrice * taxRate) / (100 + taxRate);
+  } else if (taxType === InvoiceTaxType.deducted) {
+    return -(unitPrice * taxRate) / 100;
+  }
+
+  return 0;
+};
+
+export const getItemFinancialData = (data: {
+  storeSettings?: Settings;
+  invoiceForm: InvoiceFromData;
+  unitPriceCents: number;
+  quantity: number;
+  taxType?: InvoiceItemTaxType;
+  taxRate: number;
+}) => {
+  const { storeSettings, invoiceForm, unitPriceCents, quantity, taxType, taxRate } = data;
+
+  const supportsSubunit = supportsCurrencySubunit(storeSettings, invoiceForm);
+  const format = createCurrencyFormatter(storeSettings!, invoiceForm);
+
+  const unitPrice = getUnitPrice({
+    supportsSubunit: supportsSubunit,
+    amountCents: unitPriceCents,
+    subunit: invoiceForm.currencySubunitSnapshot
+  });
+  const totalUnitPrice = getTotalUnitPrice({ unitPrice, quantity });
+  const invoiceTaxAmount = getUnitTax({
+    unitPrice: totalUnitPrice,
+    taxType,
+    taxRate
+  });
+
+  return {
+    unitPrice,
+    formattedUnitPrice: format(unitPrice),
+    totalUnitPrice,
+    formattedTotal: format(totalUnitPrice),
+    invoiceTaxAmount,
+    formattedTax: format(invoiceTaxAmount)
+  };
+};
+
+export const getFinancialData = (data: { storeSettings?: Settings; invoiceForm?: InvoiceFromData }) => {
+  const { storeSettings, invoiceForm } = data;
+
+  const supportsSubunit = supportsCurrencySubunit(storeSettings, invoiceForm);
+  const format = createCurrencyFormatter(storeSettings!, invoiceForm!);
+
+  let subTotalAmount = 0;
+  let totalItemTaxAmount = 0;
+  let isInclusive = false;
+
+  invoiceForm?.invoiceItems?.forEach(item => {
+    const { totalUnitPrice, invoiceTaxAmount } = getItemFinancialData({
+      storeSettings,
+      invoiceForm,
+      unitPriceCents: item.unitPriceCentsSnapshot,
+      quantity: item.quantity,
+      taxType: item.taxType,
+      taxRate: item.taxRate
+    });
+
+    subTotalAmount += totalUnitPrice;
+    totalItemTaxAmount += invoiceTaxAmount;
+
+    if (item.taxType === InvoiceItemTaxType.inclusive) {
+      isInclusive = true;
+    }
+  });
+  if (!isInclusive && invoiceForm?.taxType === InvoiceTaxType.inclusive) {
+    isInclusive = true;
+  }
+
+  let discountBaseCents = 0;
+  if (invoiceForm?.discountType === DiscountType.fixed) {
+    discountBaseCents = invoiceForm.discountAmountCents ?? 0;
+  } else if (invoiceForm?.discountType === DiscountType.percentage) {
+    discountBaseCents = (subTotalAmount * (invoiceForm?.discountPercent ?? 0)) / 100;
+  }
+  const discountAmount = getUnitPrice({
+    supportsSubunit,
+    amountCents: discountBaseCents,
+    subunit: invoiceForm?.currencySubunitSnapshot
+  });
+
+  const shippingAmount = getUnitPrice({
+    supportsSubunit,
+    amountCents: invoiceForm?.shippingFeeCents ?? 0,
+    subunit: invoiceForm?.currencySubunitSnapshot
+  });
+
+  const totalAmountAfterDiscount = subTotalAmount - discountAmount;
+
+  const invoiceLevelTax = getInvoiceTax({
+    unitPrice: totalAmountAfterDiscount,
+    taxType: invoiceForm?.taxType,
+    taxRate: invoiceForm?.taxRate ?? 0
+  });
+
+  const taxTotalAmount = totalItemTaxAmount + invoiceLevelTax;
+  let totalAmount = totalAmountAfterDiscount + shippingAmount;
+  if (isInclusive) {
+    totalAmount += taxTotalAmount;
+  }
+
+  const totalAmountPaid = getUnitPrice({
+    supportsSubunit,
+    amountCents: getTotalAmountPaidCents(invoiceForm?.invoicePayments ?? []),
+    subunit: invoiceForm?.currencySubunitSnapshot
+  });
+
+  const balanceDue = totalAmount - totalAmountPaid;
+
+  return {
+    formattedSubTotalAmount: format(subTotalAmount),
+    formattedTotalTaxAmount: format(taxTotalAmount),
+    subTotalAmount,
+    totalTax: taxTotalAmount,
+    discountAmount,
+    discountAmountFormatted: format(discountAmount),
+    shippingAmount,
+    shippingAmountFormatted: format(shippingAmount),
+    totalAmount,
+    totalAmountFormatted: format(totalAmount),
+    totalAmountPaid,
+    totalAmountPaidFormatted: format(totalAmountPaid),
+    balanceDue,
+    balanceDueFormatted: format(balanceDue)
+  };
 };

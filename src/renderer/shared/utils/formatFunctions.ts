@@ -2,6 +2,8 @@ import { format, parseISO } from 'date-fns';
 import { AmountFormat } from '../enums/amountFormat';
 import { CurrencyFormat } from '../enums/currencyFormat';
 import type { DateFormat } from '../enums/dateFormat';
+import type { InvoiceFromData } from '../types/invoice';
+import type { Settings } from '../types/settings';
 
 export const formatDate = (date: string | Date, pattern: DateFormat) => {
   if (!date) return '';
@@ -51,4 +53,28 @@ export const formatAmount = (amount: number, amountFormat: AmountFormat = Amount
   };
 
   return new Intl.NumberFormat(baseLocale, options).format(amount);
+};
+
+export const supportsCurrencySubunit = (storeSettings?: Settings, invoiceForm?: InvoiceFromData) =>
+  Boolean(
+    storeSettings &&
+      invoiceForm?.currencySymbolSnapshot !== undefined &&
+      invoiceForm.currencyCodeSnapshot !== undefined &&
+      invoiceForm.currencySubunitSnapshot !== undefined &&
+      invoiceForm.currencyFormat !== undefined
+  );
+
+export const createCurrencyFormatter = (storeSettings: Settings, invoiceForm: InvoiceFromData) => {
+  const supports = supportsCurrencySubunit(storeSettings, invoiceForm);
+
+  return (amount: number) =>
+    supports
+      ? getFormattedCurrency({
+          amount,
+          amountFormat: storeSettings.amountFormat,
+          format: invoiceForm.currencyFormat as CurrencyFormat,
+          symbol: invoiceForm.currencySymbolSnapshot!,
+          code: invoiceForm.currencyCodeSnapshot!
+        })
+      : formatAmount(amount, storeSettings.amountFormat);
 };

@@ -6,10 +6,8 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Box, IconButton, ListItemButton, ListItemText, Menu, MenuItem, Tooltip, Typography } from '@mui/material';
 import React, { useState, type FC, type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { CurrencyFormat } from '../../../shared/enums/currencyFormat';
 import type { InvoiceFromData, InvoiceItem } from '../../../shared/types/invoice';
-import { formatAmount, getFormattedCurrency } from '../../../shared/utils/formatFunctions';
-import { getTotalUnitPrice, getUnitPrice, getUnitPriceTax } from '../../../shared/utils/invoiceFunctions';
+import { getItemFinancialData } from '../../../shared/utils/invoiceFunctions';
 import { useAppSelector } from '../../../state/configureStore';
 import { selectSettings } from '../../../state/pageSlice';
 
@@ -90,56 +88,16 @@ export const ItemsList: FC<Props> = ({ invoiceForm, setInvoiceForm, onEdit = () 
         strategy={verticalListSortingStrategy}
       >
         {invoiceForm?.invoiceItems?.map((invoiceItem, index) => {
-          const { unitPriceCentsSnapshot = 0, quantity, itemNameSnapshot } = invoiceItem;
-          const supportsSubunit =
-            storeSettings &&
-            invoiceForm.currencySymbolSnapshot !== undefined &&
-            invoiceForm.currencyCodeSnapshot !== undefined &&
-            invoiceForm?.currencySubunitSnapshot !== undefined &&
-            invoiceForm.currencyFormat !== undefined;
+          const { unitPriceCentsSnapshot = 0, quantity, itemNameSnapshot, taxType, taxRate } = invoiceItem;
 
-          const unitPrice = getUnitPrice({
-            supportsSubunit: supportsSubunit,
-            amountCents: unitPriceCentsSnapshot,
-            subunit: invoiceForm.currencySubunitSnapshot
+          const { formattedUnitPrice, formattedTotal, formattedTax } = getItemFinancialData({
+            storeSettings,
+            invoiceForm,
+            unitPriceCents: unitPriceCentsSnapshot,
+            quantity,
+            taxType,
+            taxRate
           });
-
-          const formattedUnitPrice = supportsSubunit
-            ? getFormattedCurrency({
-                amount: unitPrice,
-                amountFormat: storeSettings!.amountFormat,
-                format: invoiceForm.currencyFormat as CurrencyFormat,
-                symbol: invoiceForm.currencySymbolSnapshot!,
-                code: invoiceForm.currencyCodeSnapshot!
-              })
-            : formatAmount(unitPrice, storeSettings!.amountFormat);
-
-          const totalUnitPrice = getTotalUnitPrice({ unitPrice, quantity });
-          const formattedTotal = supportsSubunit
-            ? getFormattedCurrency({
-                amount: totalUnitPrice,
-                amountFormat: storeSettings!.amountFormat,
-                format: invoiceForm.currencyFormat as CurrencyFormat,
-                symbol: invoiceForm.currencySymbolSnapshot!,
-                code: invoiceForm.currencyCodeSnapshot!
-              })
-            : formatAmount(totalUnitPrice, storeSettings!.amountFormat);
-
-          const invoiceTaxAmount = getUnitPriceTax({
-            unitPrice: totalUnitPrice,
-            taxType: invoiceItem.taxType,
-            taxRate: invoiceItem.taxRate
-          });
-          console.log(invoiceTaxAmount, totalUnitPrice);
-          const formattedTax = supportsSubunit
-            ? getFormattedCurrency({
-                amount: invoiceTaxAmount,
-                amountFormat: storeSettings!.amountFormat,
-                format: invoiceForm.currencyFormat as CurrencyFormat,
-                symbol: invoiceForm.currencySymbolSnapshot!,
-                code: invoiceForm.currencyCodeSnapshot!
-              })
-            : formatAmount(invoiceTaxAmount, storeSettings!.amountFormat);
 
           return (
             <SortableItem
