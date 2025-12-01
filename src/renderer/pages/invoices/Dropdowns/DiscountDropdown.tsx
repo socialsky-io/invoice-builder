@@ -32,8 +32,8 @@ export const DiscountDropdown: FC<Props> = ({ isOpen, data, onClose, onOpen, onC
 
   const { form, setForm, update } = useForm<DiscountForm>({
     discountType: data?.discountType,
-    discountAmount: data?.discountAmount,
-    discountRate: data?.discountRate,
+    discountAmount: data?.discountAmount ?? 0,
+    discountRate: data?.discountRate ?? 0,
     discountName: data?.discountName ?? ''
   });
   const [errors, setErrors] = useState({
@@ -51,13 +51,19 @@ export const DiscountDropdown: FC<Props> = ({ isOpen, data, onClose, onOpen, onC
   };
 
   useEffect(() => {
-    setForm({
-      discountType: data?.discountType,
-      discountAmount: data?.discountAmount,
-      discountRate: data?.discountRate,
-      discountName: data?.discountName ?? ''
-    });
-  }, [data, setForm]);
+    if (isOpen) {
+      setForm({
+        discountType: data?.discountType,
+        discountAmount: data?.discountAmount ?? 0,
+        discountRate: data?.discountRate ?? 0,
+        discountName: data?.discountName ?? ''
+      });
+      setErrors({
+        discountAmount: false,
+        discountRate: false
+      });
+    }
+  }, [isOpen, data, setForm]);
 
   useEffect(() => {
     const valid =
@@ -111,11 +117,11 @@ export const DiscountDropdown: FC<Props> = ({ isOpen, data, onClose, onOpen, onC
                 options={discountTypeOptions}
                 getOptionLabel={option => option.label}
                 disableClearable={true}
-                value={discountTypeOptions.find(opt => opt.value === form.discountType)}
+                value={discountTypeOptions.find(opt => opt.value === form.discountType) ?? discountTypeOptions[0]}
                 onChange={(_e, newValue) => {
                   update('discountType', newValue.value);
-                  update('discountAmount', undefined);
-                  update('discountRate', undefined);
+                  update('discountAmount', 0);
+                  update('discountRate', 0);
                   update('discountName', '');
                   setErrors({
                     discountAmount: false,

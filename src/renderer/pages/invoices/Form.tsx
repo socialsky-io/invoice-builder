@@ -23,6 +23,8 @@ import { CurrencySelector } from './Form/CurrencySelector';
 import { FinancialInfo } from './Form/FinancialInfo';
 import { ItemSelector } from './Form/ItemSelector';
 import { ItemsList } from './Form/ItemsList';
+import { NotesSelector } from './Form/NotesSelector';
+import { StatusSelector } from './Form/StatusSelector';
 import { ItemQuantitySetter } from './Modals/ItemQuantitySetter';
 
 interface Props {
@@ -378,6 +380,33 @@ export const Form: FC<Props> = ({
         invoiceForm={invoiceForm}
         onShippingFeesClick={handleOnClickShippingFees}
         onDiscountClick={handleOnClickDiscount}
+      />
+
+      <Divider flexItem />
+
+      <StatusSelector
+        invoiceForm={invoiceForm}
+        onArchivedChanged={value => {
+          setInvoiceForm(prev => ({ ...prev, isArchived: value }));
+        }}
+        onStatusChanged={value => {
+          setInvoiceForm(prev => ({ ...prev, status: value }));
+        }}
+      />
+
+      <Divider flexItem />
+
+      <NotesSelector
+        invoiceForm={invoiceForm}
+        onCustomerNotesChanged={value => {
+          setInvoiceForm(prev => ({ ...prev, customerNotes: value }));
+        }}
+        onThanksNotesChanged={value => {
+          setInvoiceForm(prev => ({ ...prev, thanksNotes: value }));
+        }}
+        onTermsConditionsNotesChanged={value => {
+          setInvoiceForm(prev => ({ ...prev, termsConditionNotes: value }));
+        }}
       />
 
       <BusinessesDropdown

@@ -20,7 +20,7 @@ export const ShippingFeesDropdown: FC<Props> = ({ isOpen, currShippingFee, onClo
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
   const storeSettings = useAppSelector(selectSettings);
 
-  const [shippingFee, setShippingFee] = useState<number | undefined>(currShippingFee);
+  const [shippingFee, setShippingFee] = useState<number | undefined>(currShippingFee ?? 0);
   const [shippingFeeError, setShippingFeeErrors] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
 
@@ -31,8 +31,8 @@ export const ShippingFeesDropdown: FC<Props> = ({ isOpen, currShippingFee, onClo
   }, [shippingFee]);
 
   useEffect(() => {
-    setShippingFee(currShippingFee);
-  }, [currShippingFee]);
+    if (isOpen) setShippingFee(currShippingFee ?? 0);
+  }, [currShippingFee, isOpen]);
 
   return (
     <>

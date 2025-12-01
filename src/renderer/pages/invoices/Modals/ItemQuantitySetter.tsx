@@ -14,7 +14,7 @@ interface Props {
 export const ItemQuantitySetter: FC<Props> = ({ isOpen, currQuantity, onCancel = () => {}, onSave = () => {} }) => {
   const { t } = useTranslation();
   const [isFormValid, setIsFormValid] = useState(true);
-  const [quantity, setQuantity] = useState<number | undefined>(currQuantity);
+  const [quantity, setQuantity] = useState<number | undefined>(currQuantity ?? 0);
   const [quantityError, setQuantityErrors] = useState(false);
 
   useEffect(() => {
@@ -24,7 +24,7 @@ export const ItemQuantitySetter: FC<Props> = ({ isOpen, currQuantity, onCancel =
   }, [quantity]);
 
   useEffect(() => {
-    setQuantity(currQuantity);
+    setQuantity(currQuantity ?? 0);
   }, [currQuantity]);
 
   return (

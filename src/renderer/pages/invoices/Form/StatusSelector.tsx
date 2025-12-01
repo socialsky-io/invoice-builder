@@ -1,0 +1,100 @@
+import { Box, FormControlLabel, Switch, useMediaQuery, useTheme } from '@mui/material';
+import { useMemo, type FC } from 'react';
+import { useTranslation } from 'react-i18next';
+import { InvoiceStatus } from '../../../shared/enums/invoiceStatus';
+import { InvoiceType } from '../../../shared/enums/invoiceType';
+import type { InvoiceFromData } from '../../../shared/types/invoice';
+import { getFinancialData } from '../../../shared/utils/invoiceFunctions';
+import { useAppSelector } from '../../../state/configureStore';
+import { selectSettings } from '../../../state/pageSlice';
+
+interface Props {
+  invoiceForm?: InvoiceFromData;
+  onArchivedChanged: (value: boolean) => void;
+  onStatusChanged: (status: InvoiceStatus) => void;
+}
+export const StatusSelector: FC<Props> = ({ invoiceForm, onArchivedChanged, onStatusChanged }) => {
+  const { t } = useTranslation();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const storeSettings = useAppSelector(selectSettings);
+
+  const { totalAmountPaid, balanceDue } = useMemo(
+    () => getFinancialData({ storeSettings, invoiceForm }),
+    [storeSettings, invoiceForm]
+  );
+
+  const updateStatusOnUncheck = () => {
+    if (invoiceForm?.invoiceType === InvoiceType.quotation) {
+      return InvoiceStatus.open;
+    }
+
+    if (totalAmountPaid <= 0) return InvoiceStatus.unpaid;
+    if (totalAmountPaid > 0 && balanceDue - totalAmountPaid > 0) return InvoiceStatus.partiallyPaid;
+    if (totalAmountPaid > 0 && balanceDue - totalAmountPaid <= 0) return InvoiceStatus.paid;
+
+    return InvoiceStatus.unpaid;
+  };
+
+  return (
+    <>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: isMobile ? 'column' : 'row',
+          width: '100%',
+          justifyContent: 'end',
+          alignItems: 'end',
+          gap: 1
+        }}
+      >
+        <FormControlLabel
+          control={
+            <Switch
+              checked={invoiceForm?.status === InvoiceStatus.closed}
+              onChange={e => {
+                onStatusChanged(e.target.checked ? InvoiceStatus.closed : updateStatusOnUncheck());
+              }}
+            />
+          }
+          label={t('invoices.markAsClosed')}
+        />
+        {invoiceForm?.invoiceType === InvoiceType.invoice && (
+          <FormControlLabel
+            control={
+              <Switch
+                checked={invoiceForm?.status === InvoiceStatus.paid}
+                onChange={e => {
+                  onStatusChanged(e.target.checked ? InvoiceStatus.paid : updateStatusOnUncheck());
+                }}
+              />
+            }
+            label={t('invoices.markAsPaid')}
+          />
+        )}
+      </Box>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: isMobile ? 'column' : 'row',
+          width: '100%',
+          justifyContent: 'end',
+          alignItems: 'end',
+          gap: 1
+        }}
+      >
+        <FormControlLabel
+          control={
+            <Switch
+              checked={invoiceForm?.isArchived ?? false}
+              onChange={e => {
+                onArchivedChanged(e.target.checked);
+              }}
+            />
+          }
+          label={t('common.archived')}
+        />
+      </Box>
+    </>
+  );
+};

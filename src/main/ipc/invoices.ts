@@ -77,6 +77,7 @@ export const initInvoicesHandlers = (db: Database) => {
         FROM invoices i
         INNER JOIN currencies as c on c.id = i.currencyId
         WHERE i.invoiceType = '${type}' AND ${whereClause}
+        ORDER BY i.createdAt DESC
       `;
     const invoices = await getAllRows(db, invoicesSql);
 
