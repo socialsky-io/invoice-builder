@@ -8,7 +8,7 @@ import { InvoiceType } from '../../shared/enums/invoiceType';
 import type { Business } from '../../shared/types/business';
 import type { Client } from '../../shared/types/client';
 import type { Currency } from '../../shared/types/currency';
-import type { Invoice, InvoiceFromData, InvoiceItem } from '../../shared/types/invoice';
+import type { DiscountForm, Invoice, InvoiceFromData, InvoiceItem } from '../../shared/types/invoice';
 import type { Item } from '../../shared/types/item';
 import { fromUint8Array } from '../../shared/utils/dataUrlFunctions';
 import { BusinessesDropdown } from './Dropdowns/BusinessesDropdown';
@@ -44,9 +44,9 @@ export const Form: FC<Props> = ({
   const [isDropdownOpenBusinesses, setIsDropdownOpenBusinesses] = useState<boolean>(false);
   const [isDropdownOpenCurrencies, setIsDropdownOpenCurrencies] = useState<boolean>(false);
   const [isDropdownOpenClients, setIsDropdownOpenClients] = useState<boolean>(false);
-  const [isDropdownInvoiceInfo, setIsDropdownOpenInvoiceInfo] = useState<boolean>(false);
-  const [isDropdownMoreAction, setMoreActionDropdown] = useState<boolean>(false);
-  const [isDropdownItems, setIsDropdownOpenItems] = useState<boolean>(false);
+  const [isDropdownOpenInvoiceInfo, setIsDropdownOpenInvoiceInfo] = useState<boolean>(false);
+  const [isDropdownOpenMoreAction, setMoreActionDropdown] = useState<boolean>(false);
+  const [isDropdownOpenItems, setIsDropdownOpenItems] = useState<boolean>(false);
   const [isModalQuantityOpen, setModalQuantityOpen] = useState<boolean>(false);
 
   const [invoiceForm, setInvoiceForm] = useState<InvoiceFromData | undefined>(undefined);
@@ -117,24 +117,29 @@ export const Form: FC<Props> = ({
         const prevSubunit = invoiceForm.currencySubunitSnapshot;
         const newSubunit = data.subunit;
 
-        const updatedItems = invoiceForm.invoiceItems?.map(it => {
-          const raw = Number(it.unitPriceCentsSnapshot ?? 0);
-
-          let converted = raw;
+        const convert = (raw: number | undefined) => {
+          const value = Number(raw ?? 0);
 
           if (prevSubunit === undefined && newSubunit !== undefined) {
-            converted = raw * newSubunit;
+            return value * newSubunit;
           } else if (prevSubunit !== undefined && newSubunit !== undefined) {
-            converted = raw * (newSubunit / prevSubunit);
+            return value * (newSubunit / prevSubunit);
           } else if (prevSubunit !== undefined && newSubunit === undefined) {
-            converted = raw / prevSubunit;
+            return value / prevSubunit;
           }
 
+          return value;
+        };
+
+        const updatedItems = invoiceForm.invoiceItems?.map(it => {
           return {
             ...it,
-            unitPriceCentsSnapshot: converted
+            unitPriceCentsSnapshot: convert(it.unitPriceCentsSnapshot)
           };
         });
+
+        const updatedShippingFee = convert(invoiceForm?.shippingFeeCents);
+        const updatedDiscountAmount = convert(invoiceForm?.discountAmountCents);
 
         setInvoiceForm({
           ...invoiceForm,
@@ -143,7 +148,9 @@ export const Form: FC<Props> = ({
           currencySymbolSnapshot: data.symbol,
           currencySubunitSnapshot: data.subunit,
           currencyFormat: data.format,
-          invoiceItems: updatedItems ?? invoiceForm.invoiceItems
+          invoiceItems: updatedItems ?? invoiceForm.invoiceItems,
+          shippingFeeCents: updatedShippingFee,
+          discountAmountCents: updatedDiscountAmount
         });
       }
     },
@@ -267,6 +274,39 @@ export const Form: FC<Props> = ({
     [handleOnClose, invoiceForm]
   );
 
+  const handleOnClickShippingFees = useCallback(
+    (data: number) => {
+      if (!invoiceForm) return;
+
+      const fee = invoiceForm.currencySubunitSnapshot ? data * invoiceForm.currencySubunitSnapshot : data;
+
+      setInvoiceForm({
+        ...invoiceForm,
+        shippingFeeCents: fee
+      });
+    },
+    [invoiceForm]
+  );
+
+  const handleOnClickDiscount = useCallback(
+    (data: DiscountForm) => {
+      if (!invoiceForm) return;
+
+      const discountAmount = invoiceForm.currencySubunitSnapshot
+        ? (data.discountAmount ?? 0) * invoiceForm.currencySubunitSnapshot
+        : data.discountAmount;
+
+      setInvoiceForm({
+        ...invoiceForm,
+        discountName: data.discountName,
+        discountType: data.discountType,
+        discountPercent: data.discountRate ?? 0,
+        discountAmountCents: discountAmount ?? 0
+      });
+    },
+    [invoiceForm]
+  );
+
   useEffect(() => {
     if (invoice) {
       setInvoiceForm({
@@ -330,11 +370,15 @@ export const Form: FC<Props> = ({
         onDelete={handleDeleteItem}
       />
 
-      <Divider flexItem />
+      {invoiceForm?.invoiceItems && invoiceForm?.invoiceItems?.length > 0 && <Divider flexItem />}
 
       <ItemSelector onEdit={() => onEdit(setIsDropdownOpenItems)} />
 
-      <FinancialInfo invoiceForm={invoiceForm} />
+      <FinancialInfo
+        invoiceForm={invoiceForm}
+        onShippingFeesClick={handleOnClickShippingFees}
+        onDiscountClick={handleOnClickDiscount}
+      />
 
       <BusinessesDropdown
         isOpen={isDropdownOpenBusinesses}
@@ -355,7 +399,7 @@ export const Form: FC<Props> = ({
         onClick={handleOnClickClients}
       />
       <ItemsDropdown
-        isOpen={isDropdownItems}
+        isOpen={isDropdownOpenItems}
         onClose={() => handleOnClose(setIsDropdownOpenItems)}
         onOpen={() => handleOnOpen(setIsDropdownOpenItems)}
         onClick={handleClickItems}
@@ -369,13 +413,13 @@ export const Form: FC<Props> = ({
           invoicePrefix: invoiceForm?.invoicePrefixSnapshot,
           invoiceSuffix: invoiceForm?.invoiceSuffixSnapshot
         }}
-        isOpen={isDropdownInvoiceInfo}
+        isOpen={isDropdownOpenInvoiceInfo}
         onClose={() => handleOnClose(setIsDropdownOpenInvoiceInfo)}
         onOpen={() => handleOnOpen(setIsDropdownOpenInvoiceInfo)}
         onClick={handleOnClickInvoiceInformation}
       />
       <MoreActionDropdown
-        isOpen={isDropdownMoreAction}
+        isOpen={isDropdownOpenMoreAction}
         onClose={() => handleOnClose(setMoreActionDropdown)}
         onOpen={() => handleOnOpen(setMoreActionDropdown)}
         onDelete={() => {

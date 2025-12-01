@@ -3,6 +3,12 @@ import type { InvoiceStatus } from '../enums/invoiceStatus';
 import type { InvoiceType } from '../enums/invoiceType';
 import type { InvoiceItemTaxType, InvoiceTaxType } from '../enums/taxType';
 
+export interface DiscountForm {
+  discountType?: DiscountType;
+  discountAmount?: number;
+  discountRate?: number;
+  discountName?: string;
+}
 export interface InvoicePayment {
   id: number;
   parentInvoiceId: number;

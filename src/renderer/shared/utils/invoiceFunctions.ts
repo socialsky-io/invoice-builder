@@ -190,16 +190,18 @@ export const getFinancialData = (data: { storeSettings?: Settings; invoiceForm?:
   }
 
   let discountBaseCents = 0;
+  let discountAmount = 0;
   if (invoiceForm?.discountType === DiscountType.fixed) {
     discountBaseCents = invoiceForm.discountAmountCents ?? 0;
+    discountAmount = getUnitPrice({
+      supportsSubunit,
+      amountCents: discountBaseCents,
+      subunit: invoiceForm?.currencySubunitSnapshot
+    });
   } else if (invoiceForm?.discountType === DiscountType.percentage) {
     discountBaseCents = (subTotalAmount * (invoiceForm?.discountPercent ?? 0)) / 100;
+    discountAmount = discountBaseCents;
   }
-  const discountAmount = getUnitPrice({
-    supportsSubunit,
-    amountCents: discountBaseCents,
-    subunit: invoiceForm?.currencySubunitSnapshot
-  });
 
   const shippingAmount = getUnitPrice({
     supportsSubunit,

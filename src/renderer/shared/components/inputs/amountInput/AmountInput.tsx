@@ -13,18 +13,20 @@ interface Props {
   error?: boolean;
   helperText?: ReactNode;
   min?: number;
+  max?: number;
 }
 export const AmountInput: FC<Props> = ({
   value,
   onChange = () => {},
-  amountFormat = AmountFormat.enUS,
+  amountFormat,
   label,
   required,
   error,
   min = 0,
+  max,
   helperText
 }) => {
-  const { hasDecimal, thousand, decimal } = getFormattingMeta(amountFormat);
+  const { hasDecimal, thousand, decimal } = amountFormat ? getFormattingMeta(amountFormat) : {};
 
   return (
     <NumericFormat
@@ -32,6 +34,7 @@ export const AmountInput: FC<Props> = ({
       label={label}
       fullWidth
       min={min}
+      max={max}
       error={error}
       helperText={helperText}
       required={required}
@@ -41,8 +44,20 @@ export const AmountInput: FC<Props> = ({
       decimalScale={hasDecimal ? 2 : 0}
       fixedDecimalScale={hasDecimal}
       allowNegative={false}
+      isAllowed={({ floatValue }) => {
+        if (typeof floatValue !== 'number') return true;
+        if (max !== undefined && floatValue > max) return false;
+        if (min !== undefined && floatValue < min) return false;
+        return true;
+      }}
       onValueChange={values => {
-        const { floatValue } = values;
+        let { floatValue } = values;
+
+        if (typeof floatValue === 'number') {
+          if (max !== undefined && floatValue > max) floatValue = max;
+          if (min !== undefined && floatValue < min) floatValue = min;
+        }
+
         onChange(floatValue);
       }}
     />

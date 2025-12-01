@@ -1,21 +1,36 @@
 import { Box, Typography } from '@mui/material';
-import { useMemo, type FC } from 'react';
+import { useCallback, useMemo, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DiscountType } from '../../../shared/enums/discountType';
+import { InvoiceType } from '../../../shared/enums/invoiceType';
 import { InvoiceItemTaxType, InvoiceTaxType } from '../../../shared/enums/taxType';
-import type { InvoiceFromData } from '../../../shared/types/invoice';
+import type { DiscountForm, InvoiceFromData } from '../../../shared/types/invoice';
 import { getFinancialData } from '../../../shared/utils/invoiceFunctions';
 import { useAppSelector } from '../../../state/configureStore';
 import { selectSettings } from '../../../state/pageSlice';
+import { DiscountDropdown } from '../Dropdowns/DiscountDropdown';
+import { ShippingFeesDropdown } from '../Dropdowns/ShippingFeesDropdown';
 
 interface Props {
   invoiceForm?: InvoiceFromData;
-  // onEdit: () => void;
+  onShippingFeesClick: (shippingFee: number) => void;
+  onDiscountClick: (data: DiscountForm) => void;
 }
 
-export const FinancialInfo: FC<Props> = ({ invoiceForm }) => {
+export const FinancialInfo: FC<Props> = ({ invoiceForm, onShippingFeesClick, onDiscountClick }) => {
   const storeSettings = useAppSelector(selectSettings);
   const { t } = useTranslation();
+
+  const [isDropdownOpenShippingFees, setIsDropdownOpenShippingFees] = useState<boolean>(false);
+  const [isDropdownOpenDiscounts, setIsDropdownOpenDiscounts] = useState<boolean>(false);
+
+  const handleOnOpen = useCallback((setter: React.Dispatch<React.SetStateAction<boolean>>) => {
+    setter(true);
+  }, []);
+
+  const handleOnClose = useCallback((setter: React.Dispatch<React.SetStateAction<boolean>>) => {
+    setter(false);
+  }, []);
 
   const {
     formattedSubTotalAmount,
@@ -24,8 +39,19 @@ export const FinancialInfo: FC<Props> = ({ invoiceForm }) => {
     discountAmountFormatted,
     shippingAmountFormatted,
     totalAmountPaidFormatted,
-    balanceDueFormatted
+    balanceDueFormatted,
+    shippingAmount,
+    discountAmount
   } = useMemo(() => getFinancialData({ storeSettings, invoiceForm }), [storeSettings, invoiceForm]);
+
+  const discountData = useMemo(() => {
+    return {
+      discountType: invoiceForm?.discountType,
+      discountAmount: discountAmount,
+      discountRate: invoiceForm?.discountPercent,
+      discountName: invoiceForm?.discountName
+    };
+  }, [discountAmount, invoiceForm]);
 
   const hasPerItemTaxExclusive = useMemo(
     () => invoiceForm?.invoiceItems?.some(item => item.taxType === InvoiceItemTaxType.exclusive),
@@ -90,7 +116,7 @@ export const FinancialInfo: FC<Props> = ({ invoiceForm }) => {
           {hasPerItemTaxInclusive && t('invoices.taxInclusivePerItem')}
           {!hasPerItemTaxExclusive &&
             !hasPerItemTaxInclusive &&
-            invoiceForm?.taxType === undefined &&
+            !invoiceForm?.taxType &&
             t('invoices.tax', { prct: invoiceForm?.taxRate ?? 0 })}
         </Typography>
         <Typography
@@ -107,20 +133,24 @@ export const FinancialInfo: FC<Props> = ({ invoiceForm }) => {
         >
           {t('invoices.total')}
         </Typography>
-        <Typography
-          component="div"
-          variant="body1"
-          sx={{ fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis' }}
-        >
-          {t('invoices.paid')}
-        </Typography>
-        <Typography
-          component="div"
-          variant="body1"
-          sx={{ fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis' }}
-        >
-          {t('invoices.balanceDue')}
-        </Typography>
+        {invoiceForm?.invoiceType === InvoiceType.invoice && (
+          <Typography
+            component="div"
+            variant="body1"
+            sx={{ fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis' }}
+          >
+            {t('invoices.paid')}
+          </Typography>
+        )}
+        {invoiceForm?.invoiceType === InvoiceType.invoice && (
+          <Typography
+            component="div"
+            variant="body1"
+            sx={{ fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis' }}
+          >
+            {t('invoices.balanceDue')}
+          </Typography>
+        )}
       </Box>
       <Box
         sx={{
@@ -133,53 +163,110 @@ export const FinancialInfo: FC<Props> = ({ invoiceForm }) => {
         <Typography
           component="div"
           variant="body1"
-          sx={{ fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis' }}
+          sx={{ fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis' }}
         >
           {formattedSubTotalAmount}
         </Typography>
         <Typography
           component="div"
           variant="body1"
-          sx={{ fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis' }}
+          sx={{
+            fontWeight: 500,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            textDecoration: 'underline',
+            textUnderlineOffset: '5px',
+            cursor: 'pointer'
+          }}
+          onClick={() => handleOnOpen(setIsDropdownOpenDiscounts)}
         >
           {discountAmountFormatted}
         </Typography>
         <Typography
           component="div"
           variant="body1"
-          sx={{ fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis' }}
+          sx={{
+            fontWeight: 500,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            textDecoration: 'underline',
+            textUnderlineOffset: '5px',
+            cursor: 'pointer'
+          }}
+          onClick={() => {}}
         >
           {formattedTotalTaxAmount}
         </Typography>
         <Typography
           component="div"
           variant="body1"
-          sx={{ fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis' }}
+          sx={{
+            fontWeight: 500,
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            textDecoration: 'underline',
+            textUnderlineOffset: '5px',
+            cursor: 'pointer'
+          }}
+          onClick={() => handleOnOpen(setIsDropdownOpenShippingFees)}
         >
           {shippingAmountFormatted}
         </Typography>
         <Typography
           component="div"
           variant="body1"
-          sx={{ fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis' }}
+          sx={{ fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis' }}
         >
           {totalAmountFormatted}
         </Typography>
-        <Typography
-          component="div"
-          variant="body1"
-          sx={{ fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis' }}
-        >
-          {totalAmountPaidFormatted}
-        </Typography>
-        <Typography
-          component="div"
-          variant="body1"
-          sx={{ fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis' }}
-        >
-          {balanceDueFormatted}
-        </Typography>
+        {invoiceForm?.invoiceType === InvoiceType.invoice && (
+          <Typography
+            component="div"
+            variant="body1"
+            sx={{
+              fontWeight: 500,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              textDecoration: 'underline',
+              textUnderlineOffset: '5px',
+              cursor: 'pointer'
+            }}
+            onClick={() => {}}
+          >
+            {totalAmountPaidFormatted}
+          </Typography>
+        )}
+        {invoiceForm?.invoiceType === InvoiceType.invoice && (
+          <Typography
+            component="div"
+            variant="body1"
+            sx={{ fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis' }}
+          >
+            {balanceDueFormatted}
+          </Typography>
+        )}
       </Box>
+
+      <ShippingFeesDropdown
+        isOpen={isDropdownOpenShippingFees}
+        onClose={() => handleOnClose(setIsDropdownOpenShippingFees)}
+        onOpen={() => handleOnOpen(setIsDropdownOpenShippingFees)}
+        onClick={data => {
+          handleOnClose(setIsDropdownOpenShippingFees);
+          onShippingFeesClick(data);
+        }}
+        currShippingFee={shippingAmount}
+      />
+      <DiscountDropdown
+        isOpen={isDropdownOpenDiscounts}
+        onClose={() => handleOnClose(setIsDropdownOpenDiscounts)}
+        onOpen={() => handleOnOpen(setIsDropdownOpenDiscounts)}
+        onClick={data => {
+          handleOnClose(setIsDropdownOpenDiscounts);
+          onDiscountClick(data);
+        }}
+        data={discountData}
+      />
     </Box>
   );
 };

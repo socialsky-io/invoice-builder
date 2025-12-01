@@ -184,7 +184,7 @@ export const ItemsList: FC<Props> = ({ invoiceForm, setInvoiceForm, onEdit = () 
                     component="div"
                     variant="body2"
                     sx={{
-                      fontWeight: 500,
+                      fontWeight: 600,
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
                       display: 'flex',
