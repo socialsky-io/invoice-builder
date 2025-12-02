@@ -219,7 +219,8 @@ export const getFinancialData = (data: { storeSettings?: Settings; invoiceForm?:
 
   const taxTotalAmount = totalItemTaxAmount + invoiceLevelTax;
   let totalAmount = totalAmountAfterDiscount + shippingAmount;
-  if (isInclusive) {
+
+  if (!isInclusive) {
     totalAmount += taxTotalAmount;
   }
 

@@ -4,25 +4,28 @@ import { useTranslation } from 'react-i18next';
 import { DiscountType } from '../../../shared/enums/discountType';
 import { InvoiceType } from '../../../shared/enums/invoiceType';
 import { InvoiceItemTaxType, InvoiceTaxType } from '../../../shared/enums/taxType';
-import type { DiscountForm, InvoiceFromData } from '../../../shared/types/invoice';
+import type { DiscountForm, InvoiceFromData, TaxForm } from '../../../shared/types/invoice';
 import { getFinancialData } from '../../../shared/utils/invoiceFunctions';
 import { useAppSelector } from '../../../state/configureStore';
 import { selectSettings } from '../../../state/pageSlice';
 import { DiscountDropdown } from '../Dropdowns/DiscountDropdown';
 import { ShippingFeesDropdown } from '../Dropdowns/ShippingFeesDropdown';
+import { TaxDropdown } from '../Dropdowns/TaxDropdown';
 
 interface Props {
   invoiceForm?: InvoiceFromData;
   onShippingFeesClick: (shippingFee: number) => void;
   onDiscountClick: (data: DiscountForm) => void;
+  onTaxesClick: (data: TaxForm) => void;
 }
 
-export const FinancialInfo: FC<Props> = ({ invoiceForm, onShippingFeesClick, onDiscountClick }) => {
+export const FinancialInfo: FC<Props> = ({ invoiceForm, onShippingFeesClick, onDiscountClick, onTaxesClick }) => {
   const storeSettings = useAppSelector(selectSettings);
   const { t } = useTranslation();
 
   const [isDropdownOpenShippingFees, setIsDropdownOpenShippingFees] = useState<boolean>(false);
   const [isDropdownOpenDiscounts, setIsDropdownOpenDiscounts] = useState<boolean>(false);
+  const [isDropdownOpenTaxes, setIsDropdownOpenTaxes] = useState<boolean>(false);
 
   const handleOnOpen = useCallback((setter: React.Dispatch<React.SetStateAction<boolean>>) => {
     setter(true);
@@ -52,6 +55,15 @@ export const FinancialInfo: FC<Props> = ({ invoiceForm, onShippingFeesClick, onD
       discountName: invoiceForm?.discountName
     };
   }, [discountAmount, invoiceForm]);
+
+  const taxesData = useMemo(() => {
+    return {
+      taxType: invoiceForm?.taxType,
+      taxRate: invoiceForm?.taxRate,
+      taxName: invoiceForm?.taxName,
+      invoiceItems: invoiceForm?.invoiceItems ?? []
+    };
+  }, [invoiceForm]);
 
   const hasPerItemTaxExclusive = useMemo(
     () => invoiceForm?.invoiceItems?.some(item => item.taxType === InvoiceItemTaxType.exclusive),
@@ -193,7 +205,7 @@ export const FinancialInfo: FC<Props> = ({ invoiceForm, onShippingFeesClick, onD
             textUnderlineOffset: '5px',
             cursor: 'pointer'
           }}
-          onClick={() => {}}
+          onClick={() => handleOnOpen(setIsDropdownOpenTaxes)}
         >
           {formattedTotalTaxAmount}
         </Typography>
@@ -266,6 +278,16 @@ export const FinancialInfo: FC<Props> = ({ invoiceForm, onShippingFeesClick, onD
           onDiscountClick(data);
         }}
         data={discountData}
+      />
+      <TaxDropdown
+        isOpen={isDropdownOpenTaxes}
+        onClose={() => handleOnClose(setIsDropdownOpenTaxes)}
+        onOpen={() => handleOnOpen(setIsDropdownOpenTaxes)}
+        onClick={data => {
+          handleOnClose(setIsDropdownOpenTaxes);
+          onTaxesClick(data);
+        }}
+        data={taxesData}
       />
     </Box>
   );

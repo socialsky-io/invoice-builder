@@ -3,6 +3,12 @@ import type { InvoiceStatus } from '../enums/invoiceStatus';
 import type { InvoiceType } from '../enums/invoiceType';
 import type { InvoiceItemTaxType, InvoiceTaxType } from '../enums/taxType';
 
+export interface TaxForm {
+  taxType?: InvoiceTaxType;
+  taxRate?: number;
+  taxName?: string;
+  invoiceItems: InvoiceItem[];
+}
 export interface DiscountForm {
   discountType?: DiscountType;
   discountAmount?: number;
@@ -32,7 +38,6 @@ export interface InvoiceItem {
   quantity: number;
   createdAt?: string;
   updatedAt?: string;
-  taxName?: string;
   taxRate: number;
   taxType?: InvoiceItemTaxType;
 }

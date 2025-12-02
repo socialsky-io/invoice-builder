@@ -269,7 +269,6 @@ const init = async () => {
         unitNameSnapshot TEXT,
         categoryNameSnapshot TEXT,
         quantity REAL NOT NULL DEFAULT 0,
-        taxName TEXT,
         taxRate REAL NOT NULL DEFAULT 0,
         taxType TEXT CHECK(taxType IN ('exclusive','inclusive') OR taxType IS NULL),
         createdAt DATETIME NOT NULL DEFAULT (datetime('now')),

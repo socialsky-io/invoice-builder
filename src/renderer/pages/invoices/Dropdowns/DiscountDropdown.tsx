@@ -75,110 +75,108 @@ export const DiscountDropdown: FC<Props> = ({ isOpen, data, onClose, onOpen, onC
   }, [form, errors]);
   return (
     <>
-      {isOpen && (
-        <SwipeableDrawer
-          anchor="bottom"
-          open={isOpen}
-          onClose={() => onClose?.()}
-          onOpen={() => onOpen?.()}
-          slotProps={{
-            paper: {
-              sx: {
-                maxWidth: isDesktop ? '40%' : '100%',
-                height: isDesktop ? '30%' : '50%',
-                mx: 'auto',
-                borderTopLeftRadius: 16,
-                borderTopRightRadius: 16,
-                borderBottomLeftRadius: 0,
-                borderBottomRightRadius: 0,
-                p: 3
-              }
+      <SwipeableDrawer
+        anchor="bottom"
+        open={isOpen}
+        onClose={() => onClose?.()}
+        onOpen={() => onOpen?.()}
+        slotProps={{
+          paper: {
+            sx: {
+              maxWidth: isDesktop ? '40%' : '100%',
+              height: isDesktop ? '30%' : '50%',
+              mx: 'auto',
+              borderTopLeftRadius: 16,
+              borderTopRightRadius: 16,
+              borderBottomLeftRadius: 0,
+              borderBottomRightRadius: 0,
+              p: 3
             }
-          }}
-        >
-          <Box sx={{ mb: 2 }}>
-            <PageHeader
-              title={t('invoices.addDiscount')}
-              showBack={false}
-              showSave={true}
-              showClose={false}
-              formData={form}
-              isFormValid={isFormValid}
-              onClose={onClose}
-              onSave={data => {
-                onClick?.(data as DiscountForm);
+          }
+        }}
+      >
+        <Box sx={{ mb: 2 }}>
+          <PageHeader
+            title={t('invoices.addDiscount')}
+            showBack={false}
+            showSave={true}
+            showClose={false}
+            formData={form}
+            isFormValid={isFormValid}
+            onClose={onClose}
+            onSave={data => {
+              onClick?.(data as DiscountForm);
+            }}
+          />
+        </Box>
+        <Grid container spacing={2}>
+          <Grid size={{ xs: 12, md: 12 }}>
+            <Autocomplete
+              fullWidth
+              options={discountTypeOptions}
+              getOptionLabel={option => option.label}
+              disableClearable={true}
+              value={discountTypeOptions.find(opt => opt.value === form.discountType) ?? discountTypeOptions[0]}
+              onChange={(_e, newValue) => {
+                update('discountType', newValue.value);
+                update('discountAmount', 0);
+                update('discountRate', 0);
+                update('discountName', '');
+                setErrors({
+                  discountAmount: false,
+                  discountRate: false
+                });
               }}
+              renderInput={params => <TextField {...params} label={t('invoices.type')} required />}
+              freeSolo={false}
             />
-          </Box>
-          <Grid container spacing={2}>
+          </Grid>
+          {form.discountType === DiscountType.fixed && (
             <Grid size={{ xs: 12, md: 12 }}>
-              <Autocomplete
-                fullWidth
-                options={discountTypeOptions}
-                getOptionLabel={option => option.label}
-                disableClearable={true}
-                value={discountTypeOptions.find(opt => opt.value === form.discountType) ?? discountTypeOptions[0]}
-                onChange={(_e, newValue) => {
-                  update('discountType', newValue.value);
-                  update('discountAmount', 0);
-                  update('discountRate', 0);
-                  update('discountName', '');
-                  setErrors({
-                    discountAmount: false,
-                    discountRate: false
-                  });
+              <AmountInput
+                required={true}
+                amountFormat={storeSettings?.amountFormat}
+                label={t('invoices.fixed')}
+                value={form.discountAmount}
+                error={errors.discountAmount}
+                helperText={errors.discountAmount ? t('common.fieldRequired') : ''}
+                onChange={e => {
+                  update('discountAmount', e);
+                  validateField('discountAmount', (e ?? '').toString());
                 }}
-                renderInput={params => <TextField {...params} label={t('invoices.discountType')} required />}
-                freeSolo={false}
               />
             </Grid>
-            {form.discountType === DiscountType.fixed && (
-              <Grid size={{ xs: 12, md: 12 }}>
-                <AmountInput
-                  required={true}
-                  amountFormat={storeSettings?.amountFormat}
-                  label={t('invoices.fixed')}
-                  value={form.discountAmount}
-                  error={errors.discountAmount}
-                  helperText={errors.discountAmount ? t('common.fieldRequired') : ''}
-                  onChange={e => {
-                    update('discountAmount', e);
-                    validateField('discountAmount', (e ?? '').toString());
-                  }}
-                />
-              </Grid>
-            )}
-            {form.discountType === DiscountType.percentage && (
-              <Grid size={{ xs: 12, md: 12 }}>
-                <AmountInput
-                  required={true}
-                  max={100}
-                  label={t('invoices.percentage')}
-                  value={form.discountRate}
-                  error={errors.discountRate}
-                  helperText={errors.discountRate ? t('common.fieldRequired') : ''}
-                  onChange={e => {
-                    update('discountRate', e);
-                    validateField('discountRate', (e ?? '').toString());
-                  }}
-                />
-              </Grid>
-            )}
-            {(form.discountType === DiscountType.fixed || form.discountType === DiscountType.percentage) && (
-              <Grid size={{ xs: 12, md: 12 }}>
-                <TextField
-                  label={t('common.name')}
-                  fullWidth
-                  value={form.discountName}
-                  onChange={e => {
-                    update('discountName', e.target.value);
-                  }}
-                />
-              </Grid>
-            )}
-          </Grid>
-        </SwipeableDrawer>
-      )}
+          )}
+          {form.discountType === DiscountType.percentage && (
+            <Grid size={{ xs: 12, md: 12 }}>
+              <AmountInput
+                required={true}
+                max={100}
+                label={t('invoices.percentage')}
+                value={form.discountRate}
+                error={errors.discountRate}
+                helperText={errors.discountRate ? t('common.fieldRequired') : ''}
+                onChange={e => {
+                  update('discountRate', e);
+                  validateField('discountRate', (e ?? '').toString());
+                }}
+              />
+            </Grid>
+          )}
+          {(form.discountType === DiscountType.fixed || form.discountType === DiscountType.percentage) && (
+            <Grid size={{ xs: 12, md: 12 }}>
+              <TextField
+                label={t('common.name')}
+                fullWidth
+                value={form.discountName}
+                onChange={e => {
+                  update('discountName', e.target.value);
+                }}
+              />
+            </Grid>
+          )}
+        </Grid>
+      </SwipeableDrawer>
     </>
   );
 };

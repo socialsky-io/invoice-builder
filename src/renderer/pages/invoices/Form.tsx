@@ -8,7 +8,7 @@ import { InvoiceType } from '../../shared/enums/invoiceType';
 import type { Business } from '../../shared/types/business';
 import type { Client } from '../../shared/types/client';
 import type { Currency } from '../../shared/types/currency';
-import type { DiscountForm, Invoice, InvoiceFromData, InvoiceItem } from '../../shared/types/invoice';
+import type { DiscountForm, Invoice, InvoiceFromData, InvoiceItem, TaxForm } from '../../shared/types/invoice';
 import type { Item } from '../../shared/types/item';
 import { fromUint8Array } from '../../shared/utils/dataUrlFunctions';
 import { BusinessesDropdown } from './Dropdowns/BusinessesDropdown';
@@ -309,6 +309,21 @@ export const Form: FC<Props> = ({
     [invoiceForm]
   );
 
+  const handleOnClickTax = useCallback(
+    (data: TaxForm) => {
+      if (!invoiceForm) return;
+
+      setInvoiceForm({
+        ...invoiceForm,
+        taxName: data.taxName,
+        taxRate: data.taxRate,
+        taxType: data.taxType,
+        invoiceItems: data.invoiceItems
+      });
+    },
+    [invoiceForm]
+  );
+
   useEffect(() => {
     if (invoice) {
       setInvoiceForm({
@@ -380,6 +395,7 @@ export const Form: FC<Props> = ({
         invoiceForm={invoiceForm}
         onShippingFeesClick={handleOnClickShippingFees}
         onDiscountClick={handleOnClickDiscount}
+        onTaxesClick={handleOnClickTax}
       />
 
       <Divider flexItem />

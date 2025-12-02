@@ -82,7 +82,6 @@ export interface InvoiceItem {
   quantity: number;
   createdAt: string;
   updatedAt: string;
-  taxName?: string;
   taxRate: number;
   taxType?: InvoiceItemTaxType;
 }
