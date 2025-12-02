@@ -69,7 +69,7 @@ export const PageHeader: FC<Props> = ({
               autoFocus
               color="inherit"
               onClick={() => {
-                if (formData) onSave(formData);
+                if (formData !== undefined) onSave(formData);
               }}
               disabled={!isFormValid}
             >

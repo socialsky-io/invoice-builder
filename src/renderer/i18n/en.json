@@ -261,6 +261,7 @@
     "taxExclusivePerItem": "Tax (Per Item)",
     "taxInclusive": "{{name}} (inc {{prct}}%)",
     "taxInclusivePerItem": "Tax inc (Per Item)",
+    "taxInclusivePlaceholder": "Tax (inc {{prct}}%)",
     "termsConditions": "Terms & conditions",
     "thankNote": "Thank you note",
     "total": "Total",

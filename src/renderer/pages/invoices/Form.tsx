@@ -391,39 +391,43 @@ export const Form: FC<Props> = ({
 
       <ItemSelector onEdit={() => onEdit(setIsDropdownOpenItems)} />
 
-      <FinancialInfo
-        invoiceForm={invoiceForm}
-        onShippingFeesClick={handleOnClickShippingFees}
-        onDiscountClick={handleOnClickDiscount}
-        onTaxesClick={handleOnClickTax}
-      />
+      {invoiceForm?.invoiceItems && invoiceForm?.invoiceItems?.length > 0 && (
+        <>
+          <FinancialInfo
+            invoiceForm={invoiceForm}
+            onShippingFeesClick={handleOnClickShippingFees}
+            onDiscountClick={handleOnClickDiscount}
+            onTaxesClick={handleOnClickTax}
+          />
 
-      <Divider flexItem />
+          <Divider flexItem />
 
-      <StatusSelector
-        invoiceForm={invoiceForm}
-        onArchivedChanged={value => {
-          setInvoiceForm(prev => ({ ...prev, isArchived: value }));
-        }}
-        onStatusChanged={value => {
-          setInvoiceForm(prev => ({ ...prev, status: value }));
-        }}
-      />
+          <StatusSelector
+            invoiceForm={invoiceForm}
+            onArchivedChanged={value => {
+              setInvoiceForm(prev => ({ ...prev, isArchived: value }));
+            }}
+            onStatusChanged={value => {
+              setInvoiceForm(prev => ({ ...prev, status: value }));
+            }}
+          />
 
-      <Divider flexItem />
+          <Divider flexItem />
 
-      <NotesSelector
-        invoiceForm={invoiceForm}
-        onCustomerNotesChanged={value => {
-          setInvoiceForm(prev => ({ ...prev, customerNotes: value }));
-        }}
-        onThanksNotesChanged={value => {
-          setInvoiceForm(prev => ({ ...prev, thanksNotes: value }));
-        }}
-        onTermsConditionsNotesChanged={value => {
-          setInvoiceForm(prev => ({ ...prev, termsConditionNotes: value }));
-        }}
-      />
+          <NotesSelector
+            invoiceForm={invoiceForm}
+            onCustomerNotesChanged={value => {
+              setInvoiceForm(prev => ({ ...prev, customerNotes: value }));
+            }}
+            onThanksNotesChanged={value => {
+              setInvoiceForm(prev => ({ ...prev, thanksNotes: value }));
+            }}
+            onTermsConditionsNotesChanged={value => {
+              setInvoiceForm(prev => ({ ...prev, termsConditionNotes: value }));
+            }}
+          />
+        </>
+      )}
 
       <BusinessesDropdown
         isOpen={isDropdownOpenBusinesses}

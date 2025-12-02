@@ -121,9 +121,23 @@ export const FinancialInfo: FC<Props> = ({ invoiceForm, onShippingFeesClick, onD
           sx={{ fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis' }}
         >
           {(invoiceForm?.taxType === InvoiceTaxType.deducted || invoiceForm?.taxType === InvoiceTaxType.exclusive) &&
-            t('invoices.taxExclusive', { name: invoiceForm.taxName, prct: invoiceForm.taxRate })}
+            (invoiceForm.taxName
+              ? t('invoices.taxExclusive', {
+                  name: invoiceForm.taxName,
+                  prct: invoiceForm.taxRate
+                })
+              : t('invoices.tax', {
+                  prct: invoiceForm.taxRate
+                }))}
           {invoiceForm?.taxType === InvoiceTaxType.inclusive &&
-            t('invoices.taxInclusive', { name: invoiceForm.taxName, prct: invoiceForm.taxRate })}
+            (invoiceForm.taxName
+              ? t('invoices.taxInclusive', {
+                  name: invoiceForm.taxName,
+                  prct: invoiceForm.taxRate
+                })
+              : t('invoices.taxInclusivePlaceholder', {
+                  prct: invoiceForm.taxRate
+                }))}
           {hasPerItemTaxExclusive && t('invoices.taxExclusivePerItem')}
           {hasPerItemTaxInclusive && t('invoices.taxInclusivePerItem')}
           {!hasPerItemTaxExclusive &&

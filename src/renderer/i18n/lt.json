@@ -261,6 +261,7 @@
     "taxExclusivePerItem": "Mokestis (už prekę)",
     "taxInclusive": "{{name}} (su {{prct}}%)",
     "taxInclusivePerItem": "Mokestis įsk. (už prekę)",
+    "taxInclusivePlaceholder": "Mokestis (įsk. {{prct}}%)",
     "termsConditions": "Sąlygos ir nuostatos",
     "thankNote": "Padėkos pastaba",
     "total": "Iš viso",
