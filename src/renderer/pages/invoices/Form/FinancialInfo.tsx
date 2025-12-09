@@ -4,11 +4,19 @@ import { useTranslation } from 'react-i18next';
 import { DiscountType } from '../../../shared/enums/discountType';
 import { InvoiceType } from '../../../shared/enums/invoiceType';
 import { InvoiceItemTaxType, InvoiceTaxType } from '../../../shared/enums/taxType';
-import type { DiscountForm, InvoiceFromData, TaxForm } from '../../../shared/types/invoice';
-import { getFinancialData } from '../../../shared/utils/invoiceFunctions';
+import type {
+  DiscountForm,
+  InvoiceFromData,
+  InvoicePayment,
+  PaymentForm,
+  TaxForm
+} from '../../../shared/types/invoice';
+import { getFinancialData, getPaidData } from '../../../shared/utils/invoiceFunctions';
 import { useAppSelector } from '../../../state/configureStore';
 import { selectSettings } from '../../../state/pageSlice';
+import { AddPaymentDropdown } from '../Dropdowns/AddPaymentDropdown';
 import { DiscountDropdown } from '../Dropdowns/DiscountDropdown';
+import { PaymentListDropdown } from '../Dropdowns/PaymentListDropdown';
 import { ShippingFeesDropdown } from '../Dropdowns/ShippingFeesDropdown';
 import { TaxDropdown } from '../Dropdowns/TaxDropdown';
 
@@ -17,15 +25,29 @@ interface Props {
   onShippingFeesClick: (shippingFee: number) => void;
   onDiscountClick: (data: DiscountForm) => void;
   onTaxesClick: (data: TaxForm) => void;
+  onAddPaymentClicked: (data: PaymentForm) => void;
+  onRemovePaymentClicked: (data: PaymentForm) => void;
 }
 
-export const FinancialInfo: FC<Props> = ({ invoiceForm, onShippingFeesClick, onDiscountClick, onTaxesClick }) => {
+export const FinancialInfo: FC<Props> = ({
+  invoiceForm,
+  onAddPaymentClicked,
+  onShippingFeesClick,
+  onDiscountClick,
+  onTaxesClick,
+  onRemovePaymentClicked
+}) => {
   const storeSettings = useAppSelector(selectSettings);
   const { t } = useTranslation();
 
   const [isDropdownOpenShippingFees, setIsDropdownOpenShippingFees] = useState<boolean>(false);
   const [isDropdownOpenDiscounts, setIsDropdownOpenDiscounts] = useState<boolean>(false);
   const [isDropdownOpenTaxes, setIsDropdownOpenTaxes] = useState<boolean>(false);
+  const [isDropdownOpenAddPayment, setIsDropdownOpenAddPayment] = useState<boolean>(false);
+  const [isDropdownOpenPaymentList, setIsDropdownOpenPaymentList] = useState<boolean>(false);
+
+  const [selectedPayment, setSelectedPayment] = useState<InvoicePayment | undefined>(undefined);
+  const [isAddProcess, setIsAddProcess] = useState<boolean>(false);
 
   const handleOnOpen = useCallback((setter: React.Dispatch<React.SetStateAction<boolean>>) => {
     setter(true);
@@ -64,6 +86,21 @@ export const FinancialInfo: FC<Props> = ({ invoiceForm, onShippingFeesClick, onD
       invoiceItems: invoiceForm?.invoiceItems ?? []
     };
   }, [invoiceForm]);
+
+  const { amountPaid } = useMemo(
+    () => getPaidData({ storeSettings, invoiceForm, invoicePayment: selectedPayment }),
+    [storeSettings, invoiceForm, selectedPayment]
+  );
+
+  const paymentData = useMemo(() => {
+    return {
+      id: selectedPayment?.id,
+      paymentMethod: selectedPayment?.paymentMethod,
+      paidAmount: amountPaid,
+      paidAt: selectedPayment?.paidAt,
+      notes: selectedPayment?.notes
+    };
+  }, [amountPaid, selectedPayment]);
 
   const hasPerItemTaxExclusive = useMemo(
     () => invoiceForm?.invoiceItems?.some(item => item.taxType === InvoiceItemTaxType.exclusive),
@@ -257,7 +294,13 @@ export const FinancialInfo: FC<Props> = ({ invoiceForm, onShippingFeesClick, onD
               textUnderlineOffset: '5px',
               cursor: 'pointer'
             }}
-            onClick={() => {}}
+            onClick={() => {
+              if (invoiceForm?.invoicePayments && invoiceForm?.invoicePayments?.length <= 0) {
+                handleOnOpen(setIsDropdownOpenAddPayment);
+              } else {
+                handleOnOpen(setIsDropdownOpenPaymentList);
+              }
+            }}
           >
             {totalAmountPaidFormatted}
           </Typography>
@@ -302,6 +345,47 @@ export const FinancialInfo: FC<Props> = ({ invoiceForm, onShippingFeesClick, onD
           onTaxesClick(data);
         }}
         data={taxesData}
+      />
+      <AddPaymentDropdown
+        isOpen={isDropdownOpenAddPayment}
+        onClose={() => {
+          if (selectedPayment) {
+            setSelectedPayment(undefined);
+            handleOnOpen(setIsDropdownOpenPaymentList);
+          }
+          handleOnClose(setIsDropdownOpenAddPayment);
+        }}
+        onOpen={() => handleOnOpen(setIsDropdownOpenAddPayment)}
+        data={paymentData}
+        onClick={data => {
+          if (selectedPayment || isAddProcess) {
+            setSelectedPayment(undefined);
+            setIsAddProcess(false);
+            handleOnOpen(setIsDropdownOpenPaymentList);
+          }
+          handleOnClose(setIsDropdownOpenAddPayment);
+          onAddPaymentClicked(data);
+        }}
+      />
+      <PaymentListDropdown
+        isOpen={isDropdownOpenPaymentList}
+        data={invoiceForm?.invoicePayments ?? []}
+        onClose={() => handleOnClose(setIsDropdownOpenPaymentList)}
+        onOpen={() => handleOnOpen(setIsDropdownOpenPaymentList)}
+        invoiceForm={invoiceForm}
+        onRemove={data => {
+          onRemovePaymentClicked(data);
+        }}
+        onAdd={() => {
+          setIsAddProcess(true);
+          handleOnClose(setIsDropdownOpenPaymentList);
+          handleOnOpen(setIsDropdownOpenAddPayment);
+        }}
+        onClick={data => {
+          handleOnClose(setIsDropdownOpenPaymentList);
+          handleOnOpen(setIsDropdownOpenAddPayment);
+          setSelectedPayment(data);
+        }}
       />
     </Box>
   );

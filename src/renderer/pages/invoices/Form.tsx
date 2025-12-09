@@ -8,7 +8,14 @@ import { InvoiceType } from '../../shared/enums/invoiceType';
 import type { Business } from '../../shared/types/business';
 import type { Client } from '../../shared/types/client';
 import type { Currency } from '../../shared/types/currency';
-import type { DiscountForm, Invoice, InvoiceFromData, InvoiceItem, TaxForm } from '../../shared/types/invoice';
+import type {
+  DiscountForm,
+  Invoice,
+  InvoiceFromData,
+  InvoiceItem,
+  PaymentForm,
+  TaxForm
+} from '../../shared/types/invoice';
 import type { Item } from '../../shared/types/item';
 import { fromUint8Array } from '../../shared/utils/dataUrlFunctions';
 import { BusinessesDropdown } from './Dropdowns/BusinessesDropdown';
@@ -74,7 +81,9 @@ export const Form: FC<Props> = ({
       invoiceForm?.clientId !== undefined &&
       invoiceForm?.currencyId !== undefined &&
       invoiceForm?.issuedAt !== undefined &&
-      invoiceForm?.invoiceNumber !== undefined
+      invoiceForm?.invoiceNumber !== undefined &&
+      invoiceForm?.invoiceItems &&
+      invoiceForm?.invoiceItems.length > 0
     ) {
       setIsFormValid(true);
     } else {
@@ -140,6 +149,13 @@ export const Form: FC<Props> = ({
           };
         });
 
+        const updatedPayments = invoiceForm.invoicePayments?.map(it => {
+          return {
+            ...it,
+            amountCents: convert(it.amountCents)
+          };
+        });
+
         const updatedShippingFee = convert(invoiceForm?.shippingFeeCents);
         const updatedDiscountAmount = convert(invoiceForm?.discountAmountCents);
 
@@ -151,6 +167,7 @@ export const Form: FC<Props> = ({
           currencySubunitSnapshot: data.subunit,
           currencyFormat: data.format,
           invoiceItems: updatedItems ?? invoiceForm.invoiceItems,
+          invoicePayments: updatedPayments ?? invoiceForm.invoicePayments,
           shippingFeeCents: updatedShippingFee,
           discountAmountCents: updatedDiscountAmount
         });
@@ -309,6 +326,71 @@ export const Form: FC<Props> = ({
     [invoiceForm]
   );
 
+  const handleOnClickRemovePayment = useCallback(
+    (data: PaymentForm) => {
+      if (!invoiceForm) return;
+
+      setInvoiceForm({
+        ...invoiceForm,
+        invoicePayments: invoiceForm.invoicePayments?.filter(item => item.id !== data.id)
+      });
+    },
+    [invoiceForm]
+  );
+
+  const handleOnClickAddPayment = useCallback(
+    (data: PaymentForm) => {
+      if (!invoiceForm) return;
+      if (!data.paidAmount || !data.paidAt || !data.paymentMethod) return;
+
+      const paidAmount = invoiceForm.currencySubunitSnapshot
+        ? (data.paidAmount ?? 0) * invoiceForm.currencySubunitSnapshot
+        : data.paidAmount;
+
+      const payment = {
+        id: Date.now(),
+        paidAt: data.paidAt,
+        paymentMethod: data.paymentMethod,
+        notes: data.notes,
+        amountCents: paidAmount
+      };
+
+      const invoicePayments = invoiceForm.invoicePayments ? [...invoiceForm.invoicePayments] : [];
+
+      if (data.id) {
+        const index = invoicePayments.findIndex(item => item.id === data.id);
+        if (index !== -1) {
+          invoicePayments[index] = {
+            ...invoicePayments[index],
+            amountCents: payment.amountCents ?? 0
+          };
+        } else {
+          invoicePayments.push({
+            id: payment.id,
+            paidAt: payment.paidAt,
+            paymentMethod: payment.paymentMethod,
+            notes: payment.notes,
+            amountCents: payment.amountCents
+          });
+        }
+      } else {
+        invoicePayments.push({
+          id: payment.id,
+          paidAt: payment.paidAt,
+          paymentMethod: payment.paymentMethod,
+          notes: payment.notes,
+          amountCents: payment.amountCents
+        });
+      }
+
+      setInvoiceForm({
+        ...invoiceForm,
+        invoicePayments
+      });
+    },
+    [invoiceForm]
+  );
+
   const handleOnClickTax = useCallback(
     (data: TaxForm) => {
       if (!invoiceForm) return;
@@ -398,6 +480,8 @@ export const Form: FC<Props> = ({
             onShippingFeesClick={handleOnClickShippingFees}
             onDiscountClick={handleOnClickDiscount}
             onTaxesClick={handleOnClickTax}
+            onAddPaymentClicked={handleOnClickAddPayment}
+            onRemovePaymentClicked={handleOnClickRemovePayment}
           />
 
           <Divider flexItem />

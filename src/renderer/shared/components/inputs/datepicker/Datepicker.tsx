@@ -2,12 +2,14 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
+import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { DateFormat } from '../../../enums/dateFormat';
 
 dayjs.extend(utc);
+dayjs.extend(timezone);
 
 interface Props {
   label: string;
@@ -41,8 +43,12 @@ export const Datepicker: React.FC<Props> = ({
         value={value ? dayjs.utc(value) : null}
         format={format.toUpperCase()}
         onChange={newValue => {
-          const utcValue = newValue ? newValue.utc() : null;
-          setSelectedValue(utcValue?.toISOString());
+          const now = dayjs();
+          const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+          const combined = dayjs.tz(newValue?.format('YYYY-MM-DD') + ' ' + now.format('HH:mm:ss'), tz);
+
+          const utcValue = combined?.utc().toISOString();
+          setSelectedValue(utcValue);
         }}
         slotProps={{
           textField: {

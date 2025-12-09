@@ -158,6 +158,28 @@ export const getItemFinancialData = (data: {
   };
 };
 
+export const getPaidData = (data: {
+  storeSettings?: Settings;
+  invoiceForm?: InvoiceFromData;
+  invoicePayment?: InvoicePayment;
+}) => {
+  const { storeSettings, invoiceForm, invoicePayment } = data;
+
+  const supportsSubunit = supportsCurrencySubunit(storeSettings, invoiceForm);
+  const format = createCurrencyFormatter(storeSettings!, invoiceForm!);
+
+  const amountPaid = getUnitPrice({
+    supportsSubunit,
+    amountCents: invoicePayment?.amountCents ?? 0,
+    subunit: invoiceForm?.currencySubunitSnapshot
+  });
+
+  return {
+    amountPaid,
+    amountPaidFormatted: format(amountPaid)
+  };
+};
+
 export const getFinancialData = (data: { storeSettings?: Settings; invoiceForm?: InvoiceFromData }) => {
   const { storeSettings, invoiceForm } = data;
 

@@ -117,7 +117,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, item }) => {
       <Grid size={{ xs: 12, md: 6 }}>
         <AmountInput
           required={true}
-          label={t('items.amount')}
+          label={t('common.amount')}
           value={form.amount !== undefined ? Number(form.amount) : undefined}
           amountFormat={settings?.amountFormat}
           error={errors.amount}

@@ -135,8 +135,8 @@ export const initInvoicesHandlers = (db: Database) => {
         INSERT INTO invoice_items (
           parentInvoiceId, itemId, itemNameSnapshot, unitPriceCentsSnapshot,
           itemDescriptionSnapshot, unitNameSnapshot, categoryNameSnapshot,
-          quantity, taxName, taxRate, taxType
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          quantity, taxRate, taxType
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `,
           [
             newId,
@@ -147,10 +147,21 @@ export const initInvoicesHandlers = (db: Database) => {
             item.unitNameSnapshot ?? null,
             item.categoryNameSnapshot ?? null,
             item.quantity,
-            item.taxName ?? null,
             item.taxRate,
             item.taxType ?? null
           ]
+        );
+      }
+
+      for (const payment of data.invoicePayments) {
+        await runDb(
+          db,
+          `
+            INSERT INTO invoice_payments (
+              parentInvoiceId, amountCents, paidAt, paymentMethod, notes
+            ) VALUES (?, ?, ?, ?, ?)
+          `,
+          [newId, payment.amountCents, payment.paidAt, payment.paymentMethod, payment.notes ?? null]
         );
       }
 
@@ -174,8 +185,8 @@ export const initInvoicesHandlers = (db: Database) => {
         INSERT INTO invoice_items (
           parentInvoiceId, itemId, itemNameSnapshot, unitPriceCentsSnapshot,
           itemDescriptionSnapshot, unitNameSnapshot, categoryNameSnapshot,
-          quantity, taxName, taxRate, taxType
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          quantity, taxRate, taxType
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `,
           [
             data.id,
@@ -186,10 +197,42 @@ export const initInvoicesHandlers = (db: Database) => {
             item.unitNameSnapshot ?? null,
             item.categoryNameSnapshot ?? null,
             item.quantity,
-            item.taxName ?? null,
             item.taxRate,
             item.taxType ?? null
           ]
+        );
+      }
+
+      if (data.invoicePayments.length === 0) {
+        await runDb(db, 'DELETE FROM invoice_payments WHERE parentInvoiceId = ?;', [data.id]);
+      }
+
+      for (const payment of data.invoicePayments) {
+        if (payment.id) {
+          const existing = await getFirstRow(db, `SELECT id FROM invoice_payments WHERE id = ?`, [payment.id]);
+
+          if (existing) {
+            await runDb(
+              db,
+              `
+                UPDATE invoice_payments
+                SET amountCents = ?, paidAt = ?, paymentMethod = ?, notes = ?, updatedAt = datetime('now')
+                WHERE id = ?
+              `,
+              [payment.amountCents, payment.paidAt, payment.paymentMethod, payment.notes ?? null, payment.id]
+            );
+            continue;
+          }
+        }
+
+        await runDb(
+          db,
+          `
+            INSERT INTO invoice_payments (
+              parentInvoiceId, amountCents, paidAt, paymentMethod, notes
+            ) VALUES (?, ?, ?, ?, ?)
+          `,
+          [data.id, payment.amountCents, payment.paidAt, payment.paymentMethod, payment.notes ?? null]
         );
       }
 

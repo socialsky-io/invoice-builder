@@ -1,8 +1,16 @@
 import type { DiscountType } from '../enums/discountType';
 import type { InvoiceStatus } from '../enums/invoiceStatus';
 import type { InvoiceType } from '../enums/invoiceType';
+import type { PaymentType } from '../enums/paymentType';
 import type { InvoiceItemTaxType, InvoiceTaxType } from '../enums/taxType';
 
+export interface PaymentForm {
+  id?: number;
+  paymentMethod?: PaymentType;
+  paidAmount?: number;
+  paidAt?: string;
+  notes?: string;
+}
 export interface TaxForm {
   taxType?: InvoiceTaxType;
   taxRate?: number;
@@ -16,14 +24,14 @@ export interface DiscountForm {
   discountName?: string;
 }
 export interface InvoicePayment {
-  id: number;
-  parentInvoiceId: number;
+  id?: number;
+  parentInvoiceId?: number;
   amountCents: number;
   paidAt: string;
-  paymentMethod: string;
+  paymentMethod: PaymentType;
   notes?: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface InvoiceItem {
