@@ -203,8 +203,17 @@ export const initInvoicesHandlers = (db: Database) => {
         );
       }
 
-      if (data.invoicePayments.length === 0) {
-        await runDb(db, 'DELETE FROM invoice_payments WHERE parentInvoiceId = ?;', [data.id]);
+      const ids = data.invoicePayments.map(p => p.id);
+      if (ids.length > 0) {
+        await runDb(
+          db,
+          `DELETE FROM invoice_payments 
+            WHERE parentInvoiceId = ? 
+            AND id NOT IN (${ids.map(() => '?').join(',')})`,
+          [data.id, ...ids]
+        );
+      } else {
+        await runDb(db, `DELETE FROM invoice_payments WHERE parentInvoiceId = ?`, [data.id]);
       }
 
       for (const payment of data.invoicePayments) {

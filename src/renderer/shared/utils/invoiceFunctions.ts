@@ -180,6 +180,24 @@ export const getPaidData = (data: {
   };
 };
 
+export const getTotalPaidData = (data: { storeSettings?: Settings; invoiceForm?: InvoiceFromData }) => {
+  const { storeSettings, invoiceForm } = data;
+
+  const supportsSubunit = supportsCurrencySubunit(storeSettings, invoiceForm);
+  const format = createCurrencyFormatter(storeSettings!, invoiceForm!);
+
+  const totalAmountPaid = getUnitPrice({
+    supportsSubunit,
+    amountCents: getTotalAmountPaidCents(invoiceForm?.invoicePayments ?? []),
+    subunit: invoiceForm?.currencySubunitSnapshot
+  });
+
+  return {
+    totalAmountPaid,
+    totalAmountPaidFormatted: format(totalAmountPaid)
+  };
+};
+
 export const getFinancialData = (data: { storeSettings?: Settings; invoiceForm?: InvoiceFromData }) => {
   const { storeSettings, invoiceForm } = data;
 
@@ -246,11 +264,7 @@ export const getFinancialData = (data: { storeSettings?: Settings; invoiceForm?:
     totalAmount += taxTotalAmount;
   }
 
-  const totalAmountPaid = getUnitPrice({
-    supportsSubunit,
-    amountCents: getTotalAmountPaidCents(invoiceForm?.invoicePayments ?? []),
-    subunit: invoiceForm?.currencySubunitSnapshot
-  });
+  const { totalAmountPaid, totalAmountPaidFormatted } = getTotalPaidData({ storeSettings, invoiceForm });
 
   const balanceDue = totalAmount - totalAmountPaid;
 
@@ -266,7 +280,7 @@ export const getFinancialData = (data: { storeSettings?: Settings; invoiceForm?:
     totalAmount,
     totalAmountFormatted: format(totalAmount),
     totalAmountPaid,
-    totalAmountPaidFormatted: format(totalAmountPaid),
+    totalAmountPaidFormatted,
     balanceDue,
     balanceDueFormatted: format(balanceDue)
   };

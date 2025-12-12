@@ -18,6 +18,9 @@ import type {
 } from '../../shared/types/invoice';
 import type { Item } from '../../shared/types/item';
 import { fromUint8Array } from '../../shared/utils/dataUrlFunctions';
+import { getFinancialData } from '../../shared/utils/invoiceFunctions';
+import { useAppSelector } from '../../state/configureStore';
+import { selectSettings } from '../../state/pageSlice';
 import { BusinessesDropdown } from './Dropdowns/BusinessesDropdown';
 import { ClientsDropdown } from './Dropdowns/ClientsDropdown';
 import { CurrenciesDropdown } from './Dropdowns/CurrenciesDropdown';
@@ -62,6 +65,7 @@ export const Form: FC<Props> = ({
   const [isFormValid, setIsFormValid] = useState(false);
 
   const [selectedInvoiceItem, setSelectedInvoiceItem] = useState<InvoiceItem | undefined>(undefined);
+  const storeSettings = useAppSelector(selectSettings);
 
   const onEdit = (setter: React.Dispatch<React.SetStateAction<boolean>>) => {
     setter(true);
@@ -326,16 +330,34 @@ export const Form: FC<Props> = ({
     [invoiceForm]
   );
 
+  const getStatus = useCallback(
+    (newInvoiceForm: InvoiceFromData) => {
+      const { totalAmount, totalAmountPaid } = getFinancialData({ storeSettings, invoiceForm: newInvoiceForm });
+
+      if (totalAmountPaid < totalAmount) {
+        return InvoiceStatus.partiallyPaid;
+      } else if (totalAmountPaid >= totalAmount) {
+        return InvoiceStatus.paid;
+      }
+
+      return InvoiceStatus.unpaid;
+    },
+    [storeSettings]
+  );
+
   const handleOnClickRemovePayment = useCallback(
     (data: PaymentForm) => {
       if (!invoiceForm) return;
 
-      setInvoiceForm({
+      const newInvoiceForm = {
         ...invoiceForm,
         invoicePayments: invoiceForm.invoicePayments?.filter(item => item.id !== data.id)
-      });
+      };
+      newInvoiceForm.status = getStatus(newInvoiceForm);
+
+      setInvoiceForm(newInvoiceForm);
     },
-    [invoiceForm]
+    [invoiceForm, getStatus]
   );
 
   const handleOnClickAddPayment = useCallback(
@@ -383,12 +405,15 @@ export const Form: FC<Props> = ({
         });
       }
 
-      setInvoiceForm({
+      const newInvoiceForm = {
         ...invoiceForm,
         invoicePayments
-      });
+      };
+      newInvoiceForm.status = getStatus(newInvoiceForm);
+
+      setInvoiceForm(newInvoiceForm);
     },
-    [invoiceForm]
+    [invoiceForm, getStatus]
   );
 
   const handleOnClickTax = useCallback(
