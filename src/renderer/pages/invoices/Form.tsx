@@ -1,4 +1,4 @@
-import { useCallback, useDeferredValue, useEffect, useRef, useState, useTransition, type FC } from 'react';
+import { memo, useCallback, useDeferredValue, useEffect, useRef, useState, useTransition, type FC } from 'react';
 import { InvoiceFormMode } from '../../shared/enums/invoiceFormMode';
 import { InvoiceStatus } from '../../shared/enums/invoiceStatus';
 import { InvoiceType } from '../../shared/enums/invoiceType';
@@ -14,7 +14,7 @@ interface Props {
   handleDelete?: (id: number) => void;
   handleDuplicate?: (id: number, invoiceType: InvoiceType) => void;
 }
-export const Form: FC<Props> = ({
+const InvoiceFormComponent: FC<Props> = ({
   type,
   mode,
   handleChange = () => {},
@@ -108,3 +108,5 @@ export const Form: FC<Props> = ({
 
   return <InvoicesPreview type={type} setInvoiceForm={setInvoiceForm} invoiceForm={deferredInvoiceForm} />;
 };
+
+export const Form = memo(InvoiceFormComponent);

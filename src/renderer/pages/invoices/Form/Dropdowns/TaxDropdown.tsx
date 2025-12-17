@@ -10,7 +10,7 @@ import {
   useMediaQuery,
   useTheme
 } from '@mui/material';
-import { useEffect, useState, type FC } from 'react';
+import { memo, useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { InvoiceTaxOptionType } from '../../../../../main/enums/invoiceTaxOptionType';
 import { AmountInput } from '../../../../shared/components/inputs/amountInput/AmountInput';
@@ -27,7 +27,7 @@ interface Props {
   onClick?: (data: TaxForm) => void;
   data?: TaxForm;
 }
-export const TaxDropdown: FC<Props> = ({ isOpen, data, onClose, onOpen, onClick }) => {
+const TaxDropdownComponent: FC<Props> = ({ isOpen, data, onClose, onOpen, onClick }) => {
   const { t } = useTranslation();
 
   const [selectedOption, setSelectedOption] = useState<InvoiceTaxOptionType | undefined>(undefined);
@@ -282,3 +282,4 @@ export const TaxDropdown: FC<Props> = ({ isOpen, data, onClose, onOpen, onClick 
     </>
   );
 };
+export const TaxDropdown = memo(TaxDropdownComponent);

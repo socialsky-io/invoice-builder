@@ -1,6 +1,6 @@
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Box, Divider, Fab, Tooltip } from '@mui/material';
-import { memo, useCallback, useState, useTransition, type FC } from 'react';
+import { memo, useCallback, useMemo, useState, useTransition, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { InvoiceInfo } from '../../../../main/types/invoice';
 import { InvoiceStatus } from '../../../shared/enums/invoiceStatus';
@@ -20,21 +20,21 @@ import type { Item } from '../../../shared/types/item';
 import { getFinancialData } from '../../../shared/utils/invoiceFunctions';
 import { useAppSelector } from '../../../state/configureStore';
 import { selectSettings } from '../../../state/pageSlice';
-import { CurrencySelector } from './../Form/CurrencySelector';
-import { FinancialInfo } from './../Form/FinancialInfo';
-import { ItemSelector } from './../Form/ItemSelector';
-import { ItemsList } from './../Form/ItemsList';
 import { NotesSelector } from './../Form/NotesSelector';
 import { StatusSelector } from './../Form/StatusSelector';
 import { AttachmentsList } from './AttachmentsList';
 import { BusinessSelector } from './BusinessSelector';
 import { ClientInvoiceRow } from './ClientInvoiceRow';
+import { CurrencySelector } from './CurrencySelector';
 import { BusinessesDropdown } from './Dropdowns/BusinessesDropdown';
 import { ClientsDropdown } from './Dropdowns/ClientsDropdown';
 import { CurrenciesDropdown } from './Dropdowns/CurrenciesDropdown';
 import { InvoiceInformationDropdown } from './Dropdowns/InvoiceInformationDropdown';
 import { ItemsDropdown } from './Dropdowns/ItemsDropdown';
 import { MoreActionDropdown } from './Dropdowns/MoreActionDropdown';
+import { FinancialInfo } from './FinancialInfo';
+import { ItemSelector } from './ItemSelector';
+import { ItemsList } from './ItemsList';
 import { ItemQuantitySetter } from './Modals/ItemQuantitySetter';
 
 interface Props {
@@ -64,6 +64,25 @@ const InvoiceFormComponent: FC<Props> = ({
 
   const [selectedInvoiceItem, setSelectedInvoiceItem] = useState<InvoiceItem | undefined>(undefined);
   const storeSettings = useAppSelector(selectSettings);
+
+  const invoiceInformation = useMemo(
+    () => ({
+      id: invoiceForm?.id,
+      issuedAt: invoiceForm?.issuedAt,
+      invoiceNumber: invoiceForm?.invoiceNumber,
+      dueDate: invoiceForm?.dueDate,
+      invoicePrefix: invoiceForm?.invoicePrefixSnapshot,
+      invoiceSuffix: invoiceForm?.invoiceSuffixSnapshot
+    }),
+    [
+      invoiceForm?.id,
+      invoiceForm?.issuedAt,
+      invoiceForm?.invoiceNumber,
+      invoiceForm?.dueDate,
+      invoiceForm?.invoicePrefixSnapshot,
+      invoiceForm?.invoiceSuffixSnapshot
+    ]
+  );
 
   const onEdit = (setter: React.Dispatch<React.SetStateAction<boolean>>) => {
     setter(true);
@@ -579,20 +598,15 @@ const InvoiceFormComponent: FC<Props> = ({
         onOpen={() => handleOnOpen(setIsDropdownOpenItems)}
         onClick={handleClickItems}
       />
-      <InvoiceInformationDropdown
-        information={{
-          id: invoiceForm?.id,
-          issuedAt: invoiceForm?.issuedAt,
-          invoiceNumber: invoiceForm?.invoiceNumber,
-          dueDate: invoiceForm?.dueDate,
-          invoicePrefix: invoiceForm?.invoicePrefixSnapshot,
-          invoiceSuffix: invoiceForm?.invoiceSuffixSnapshot
-        }}
-        isOpen={isDropdownOpenInvoiceInfo}
-        onClose={() => handleOnClose(setIsDropdownOpenInvoiceInfo)}
-        onOpen={() => handleOnOpen(setIsDropdownOpenInvoiceInfo)}
-        onClick={handleOnClickInvoiceInformation}
-      />
+      {isDropdownOpenInvoiceInfo && (
+        <InvoiceInformationDropdown
+          information={invoiceInformation}
+          isOpen={isDropdownOpenInvoiceInfo}
+          onClose={() => handleOnClose(setIsDropdownOpenInvoiceInfo)}
+          onOpen={() => handleOnOpen(setIsDropdownOpenInvoiceInfo)}
+          onClick={handleOnClickInvoiceInformation}
+        />
+      )}
       <MoreActionDropdown
         isOpen={isDropdownOpenMoreAction}
         onClose={() => handleOnClose(setMoreActionDropdown)}

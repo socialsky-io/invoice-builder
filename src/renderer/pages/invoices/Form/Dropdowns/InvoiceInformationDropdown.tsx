@@ -1,5 +1,5 @@
 import { Box, Grid, SwipeableDrawer, TextField, useMediaQuery, useTheme } from '@mui/material';
-import { useEffect, useState, type FC } from 'react';
+import { memo, useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { InvoiceInfo } from '../../../../../main/types/invoice';
 import { Datepicker } from '../../../../shared/components/inputs/datepicker/Datepicker';
@@ -17,7 +17,7 @@ interface Props {
   onClick?: (data: InvoiceInfo) => void;
 }
 
-export const InvoiceInformationDropdown: FC<Props> = ({ isOpen, onClose, onOpen, onClick, information }) => {
+const InvoiceInformationDropdownComponent: FC<Props> = ({ isOpen, onClose, onOpen, onClick, information }) => {
   const { t } = useTranslation();
   const storeSettings = useAppSelector(selectSettings);
   const theme = useTheme();
@@ -167,3 +167,5 @@ export const InvoiceInformationDropdown: FC<Props> = ({ isOpen, onClose, onOpen,
     </>
   );
 };
+
+export const InvoiceInformationDropdown = memo(InvoiceInformationDropdownComponent);

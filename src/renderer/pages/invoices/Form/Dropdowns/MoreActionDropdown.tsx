@@ -13,7 +13,7 @@ import {
   useMediaQuery,
   useTheme
 } from '@mui/material';
-import { type FC } from 'react';
+import { memo, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PageHeader } from '../../../../shared/components/layout/pageHeader/PageHeader';
 
@@ -29,7 +29,7 @@ interface Props {
   showDuplicate?: boolean;
   showMakeInvoice?: boolean;
 }
-export const MoreActionDropdown: FC<Props> = ({
+const MoreActionDropdownComponent: FC<Props> = ({
   isOpen,
   showDelete = true,
   showDuplicate = true,
@@ -212,3 +212,4 @@ export const MoreActionDropdown: FC<Props> = ({
     </>
   );
 };
+export const MoreActionDropdown = memo(MoreActionDropdownComponent);

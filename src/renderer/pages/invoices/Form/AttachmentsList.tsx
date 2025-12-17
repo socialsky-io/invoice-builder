@@ -1,6 +1,6 @@
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 import { Box, IconButton, ListItemText, Tooltip, Typography } from '@mui/material';
-import { useEffect, useMemo, type FC } from 'react';
+import { memo, useEffect, useMemo, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UploadImage } from '../../../shared/components/inputs/uploadImage/UploadImage';
 import type { AttachmentForm, InvoiceFromData } from '../../../shared/types/invoice';
@@ -11,8 +11,7 @@ interface Props {
   onAttach: (attachment: AttachmentForm) => void;
   onClear: (id: number) => void;
 }
-
-export const AttachmentsList: FC<Props> = ({ invoiceForm, onAttach, onClear }) => {
+const AttachmentsListComponent: FC<Props> = ({ invoiceForm, onAttach, onClear }) => {
   const { t } = useTranslation();
 
   const onUpload = async (file?: Blob, filename?: string, id?: number) => {
@@ -110,3 +109,4 @@ export const AttachmentsList: FC<Props> = ({ invoiceForm, onAttach, onClear }) =
     </Box>
   );
 };
+export const AttachmentsList = memo(AttachmentsListComponent);

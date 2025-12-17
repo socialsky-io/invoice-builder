@@ -1,13 +1,12 @@
 import AddIcon from '@mui/icons-material/Add';
 import { Box, ListItemButton, ListItemText, Typography, useTheme } from '@mui/material';
-import { type FC } from 'react';
+import { memo, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface Props {
   onEdit: () => void;
 }
-
-export const ItemSelector: FC<Props> = ({ onEdit }) => {
+const ItemSelectorComponent: FC<Props> = ({ onEdit }) => {
   const { t } = useTranslation();
   const theme = useTheme();
 
@@ -57,3 +56,4 @@ export const ItemSelector: FC<Props> = ({ onEdit }) => {
     </Box>
   );
 };
+export const ItemSelector = memo(ItemSelectorComponent);

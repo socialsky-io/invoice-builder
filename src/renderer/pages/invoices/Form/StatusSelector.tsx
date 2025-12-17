@@ -1,5 +1,5 @@
 import { Box, FormControlLabel, Switch, useMediaQuery, useTheme } from '@mui/material';
-import { useMemo, type FC } from 'react';
+import { memo, useMemo, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { InvoiceStatus } from '../../../shared/enums/invoiceStatus';
 import { InvoiceType } from '../../../shared/enums/invoiceType';
@@ -13,7 +13,7 @@ interface Props {
   onArchivedChanged: (value: boolean) => void;
   onStatusChanged: (status: InvoiceStatus) => void;
 }
-export const StatusSelector: FC<Props> = ({ invoiceForm, onArchivedChanged, onStatusChanged }) => {
+const StatusSelectorComponent: FC<Props> = ({ invoiceForm, onArchivedChanged, onStatusChanged }) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -98,3 +98,4 @@ export const StatusSelector: FC<Props> = ({ invoiceForm, onArchivedChanged, onSt
     </>
   );
 };
+export const StatusSelector = memo(StatusSelectorComponent);

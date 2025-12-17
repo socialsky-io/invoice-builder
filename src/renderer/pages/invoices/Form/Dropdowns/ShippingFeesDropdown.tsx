@@ -1,5 +1,5 @@
 import { Box, Grid, SwipeableDrawer, useMediaQuery, useTheme } from '@mui/material';
-import { useEffect, useState, type FC } from 'react';
+import { memo, useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AmountInput } from '../../../../shared/components/inputs/amountInput/AmountInput';
 import { PageHeader } from '../../../../shared/components/layout/pageHeader/PageHeader';
@@ -14,7 +14,7 @@ interface Props {
   onClick?: (shippingFee: number) => void;
   currShippingFee?: number;
 }
-export const ShippingFeesDropdown: FC<Props> = ({ isOpen, currShippingFee, onClose, onOpen, onClick }) => {
+const ShippingFeesDropdownComponent: FC<Props> = ({ isOpen, currShippingFee, onClose, onOpen, onClick }) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
@@ -92,3 +92,4 @@ export const ShippingFeesDropdown: FC<Props> = ({ isOpen, currShippingFee, onClo
     </>
   );
 };
+export const ShippingFeesDropdown = memo(ShippingFeesDropdownComponent);

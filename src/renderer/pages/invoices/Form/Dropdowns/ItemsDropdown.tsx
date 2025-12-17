@@ -1,5 +1,5 @@
 import { SwipeableDrawer } from '@mui/material';
-import { useState, type FC } from 'react';
+import { memo, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CRUDPage } from '../../../../shared/components/layout/crudPage/CRUDPage';
 import { FilterType } from '../../../../shared/enums/filterType';
@@ -18,7 +18,7 @@ interface Props {
   onClick?: (data: Item, quantity: number) => void;
 }
 
-export const ItemsDropdown: FC<Props> = ({ isOpen, onClose, onOpen, onClick }) => {
+const ItemsDropdownComponent: FC<Props> = ({ isOpen, onClose, onOpen, onClick }) => {
   const { t } = useTranslation();
   const filters: Filter[] = [
     ...createCommonFilters({ t, namespace: 'items', initial: FilterType.active }),
@@ -90,3 +90,4 @@ export const ItemsDropdown: FC<Props> = ({ isOpen, onClose, onOpen, onClick }) =
     </>
   );
 };
+export const ItemsDropdown = memo(ItemsDropdownComponent);

@@ -1,5 +1,5 @@
 import { Box, ListItemButton, ListItemText, Typography } from '@mui/material';
-import { type FC } from 'react';
+import { memo, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { InvoiceType } from '../../../shared/enums/invoiceType';
 import type { InvoiceFromData } from '../../../shared/types/invoice';
@@ -13,7 +13,7 @@ interface Props {
   onEdit: () => void;
 }
 
-export const InvoiceInformationSelector: FC<Props> = ({ type, invoiceForm, onEdit }) => {
+const InvoiceInformationSelectorComponent: FC<Props> = ({ type, invoiceForm, onEdit }) => {
   const { t } = useTranslation();
   const storeSettings = useAppSelector(selectSettings);
 
@@ -85,3 +85,4 @@ export const InvoiceInformationSelector: FC<Props> = ({ type, invoiceForm, onEdi
     </Box>
   );
 };
+export const InvoiceInformationSelector = memo(InvoiceInformationSelectorComponent);

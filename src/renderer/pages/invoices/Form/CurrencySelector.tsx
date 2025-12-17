@@ -1,5 +1,5 @@
 import { Box, ListItemButton, ListItemText, Typography, useTheme } from '@mui/material';
-import { type FC } from 'react';
+import { memo, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { InvoiceFromData } from '../../../shared/types/invoice';
 
@@ -8,7 +8,7 @@ interface Props {
   onEdit: () => void;
 }
 
-export const CurrencySelector: FC<Props> = ({ invoiceForm, onEdit }) => {
+const CurrencySelectorComponent: FC<Props> = ({ invoiceForm, onEdit }) => {
   const { t } = useTranslation();
   const theme = useTheme();
 
@@ -45,3 +45,4 @@ export const CurrencySelector: FC<Props> = ({ invoiceForm, onEdit }) => {
     </Box>
   );
 };
+export const CurrencySelector = memo(CurrencySelectorComponent);

@@ -1,5 +1,5 @@
 import { Box, Grid, SwipeableDrawer, TextField, useMediaQuery, useTheme } from '@mui/material';
-import { useEffect, useState, type FC } from 'react';
+import { memo, useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PageHeader } from '../../../../shared/components/layout/pageHeader/PageHeader';
 
@@ -11,7 +11,7 @@ interface Props {
   onClick?: (note: string) => void;
   currentNote?: string;
 }
-export const NoteDropdown: FC<Props> = ({ isOpen, title, currentNote, onClose, onOpen, onClick }) => {
+const NoteDropdownComponent: FC<Props> = ({ isOpen, title, currentNote, onClose, onOpen, onClick }) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
@@ -78,3 +78,4 @@ export const NoteDropdown: FC<Props> = ({ isOpen, title, currentNote, onClose, o
     </>
   );
 };
+export const NoteDropdown = memo(NoteDropdownComponent);

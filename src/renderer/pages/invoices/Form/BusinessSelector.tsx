@@ -1,5 +1,5 @@
 import { Box, ListItemButton, ListItemText, Typography } from '@mui/material';
-import { useEffect, useState, type FC } from 'react';
+import { memo, useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { InvoiceFromData } from '../../../shared/types/invoice';
 import { fromUint8Array } from '../../../shared/utils/dataUrlFunctions';
@@ -9,7 +9,7 @@ interface Props {
   onEdit: () => void;
 }
 
-export const BusinessSelector: FC<Props> = ({ invoiceForm, onEdit }) => {
+const BusinessSelectorComponent: FC<Props> = ({ invoiceForm, onEdit }) => {
   const { t } = useTranslation();
 
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
@@ -108,3 +108,4 @@ export const BusinessSelector: FC<Props> = ({ invoiceForm, onEdit }) => {
     </ListItemButton>
   );
 };
+export const BusinessSelector = memo(BusinessSelectorComponent);

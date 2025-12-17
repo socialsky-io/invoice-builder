@@ -14,7 +14,7 @@ import {
   useMediaQuery,
   useTheme
 } from '@mui/material';
-import { useState, type FC } from 'react';
+import { memo, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PageHeader } from '../../../../shared/components/layout/pageHeader/PageHeader';
 import type { InvoiceFromData, InvoicePayment } from '../../../../shared/types/invoice';
@@ -33,7 +33,7 @@ interface Props {
   data?: InvoicePayment[];
   invoiceForm?: InvoiceFromData;
 }
-export const PaymentListDropdown: FC<Props> = ({
+const PaymentListDropdownComponent: FC<Props> = ({
   isOpen,
   invoiceForm,
   data,
@@ -236,3 +236,4 @@ export const PaymentListDropdown: FC<Props> = ({
     </>
   );
 };
+export const PaymentListDropdown = memo(PaymentListDropdownComponent);

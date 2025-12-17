@@ -2,7 +2,7 @@ import ArticleIcon from '@mui/icons-material/Article';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import NoteIcon from '@mui/icons-material/Note';
 import { Box, IconButton, ListItemButton, ListItemText, Tooltip, Typography } from '@mui/material';
-import { useCallback, useState, type FC } from 'react';
+import { memo, useCallback, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { InvoiceFromData } from '../../../shared/types/invoice';
 import { NoteDropdown } from './Dropdowns/NoteDropdown';
@@ -23,7 +23,7 @@ interface Props {
   onThanksNotesChanged: (value?: string) => void;
   onTermsConditionsNotesChanged: (value?: string) => void;
 }
-export const NotesSelector: FC<Props> = ({
+const NotesSelectorComponent: FC<Props> = ({
   invoiceForm,
   onCustomerNotesChanged,
   onThanksNotesChanged,
@@ -173,3 +173,4 @@ export const NotesSelector: FC<Props> = ({
     </>
   );
 };
+export const NotesSelector = memo(NotesSelectorComponent);

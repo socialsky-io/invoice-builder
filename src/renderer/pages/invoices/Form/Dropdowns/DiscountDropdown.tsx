@@ -1,5 +1,5 @@
 import { Autocomplete, Box, Grid, SwipeableDrawer, TextField, useMediaQuery, useTheme } from '@mui/material';
-import { useEffect, useState, type FC } from 'react';
+import { memo, useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AmountInput } from '../../../../shared/components/inputs/amountInput/AmountInput';
 import { PageHeader } from '../../../../shared/components/layout/pageHeader/PageHeader';
@@ -17,7 +17,7 @@ interface Props {
   onClick?: (data: DiscountForm) => void;
   data?: DiscountForm;
 }
-export const DiscountDropdown: FC<Props> = ({ isOpen, data, onClose, onOpen, onClick }) => {
+const DiscountDropdownComponent: FC<Props> = ({ isOpen, data, onClose, onOpen, onClick }) => {
   const { t } = useTranslation();
 
   const discountTypeOptions = [
@@ -180,3 +180,4 @@ export const DiscountDropdown: FC<Props> = ({ isOpen, data, onClose, onOpen, onC
     </>
   );
 };
+export const DiscountDropdown = memo(DiscountDropdownComponent);

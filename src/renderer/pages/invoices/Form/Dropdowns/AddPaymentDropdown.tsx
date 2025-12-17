@@ -1,5 +1,5 @@
 import { Autocomplete, Box, Grid, SwipeableDrawer, TextField, useMediaQuery, useTheme } from '@mui/material';
-import { useEffect, useState, type FC } from 'react';
+import { memo, useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AmountInput } from '../../../../shared/components/inputs/amountInput/AmountInput';
 import { Datepicker } from '../../../../shared/components/inputs/datepicker/Datepicker';
@@ -18,7 +18,7 @@ interface Props {
   onClick?: (data: PaymentForm) => void;
   data?: PaymentForm;
 }
-export const AddPaymentDropdown: FC<Props> = ({ isOpen, data, onClose, onOpen, onClick }) => {
+const AddPaymentDropdownComponent: FC<Props> = ({ isOpen, data, onClose, onOpen, onClick }) => {
   const { t } = useTranslation();
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
@@ -182,3 +182,4 @@ export const AddPaymentDropdown: FC<Props> = ({ isOpen, data, onClose, onOpen, o
     </>
   );
 };
+export const AddPaymentDropdown = memo(AddPaymentDropdownComponent);

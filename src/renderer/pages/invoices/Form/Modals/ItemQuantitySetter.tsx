@@ -1,5 +1,5 @@
 import { Dialog, DialogContent } from '@mui/material';
-import { useEffect, useState, type FC } from 'react';
+import { memo, useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AmountInput } from '../../../../shared/components/inputs/amountInput/AmountInput';
 import { ModalAppBar } from '../../../../shared/components/layout/modalAppBar/ModalAppBar';
@@ -11,7 +11,7 @@ interface Props {
   onCancel?: () => void;
   onSave?: (quantity: number) => void;
 }
-export const ItemQuantitySetter: FC<Props> = ({ isOpen, currQuantity, onCancel = () => {}, onSave = () => {} }) => {
+const ItemQuantitySetterComponent: FC<Props> = ({ isOpen, currQuantity, onCancel = () => {}, onSave = () => {} }) => {
   const { t } = useTranslation();
   const [isFormValid, setIsFormValid] = useState(true);
   const [quantity, setQuantity] = useState<number | undefined>(currQuantity ?? 0);
@@ -57,3 +57,4 @@ export const ItemQuantitySetter: FC<Props> = ({ isOpen, currQuantity, onCancel =
     </Dialog>
   );
 };
+export const ItemQuantitySetter = memo(ItemQuantitySetterComponent);
