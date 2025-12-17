@@ -14,11 +14,11 @@ import type {
 import { getFinancialData, getPaidData } from '../../../shared/utils/invoiceFunctions';
 import { useAppSelector } from '../../../state/configureStore';
 import { selectSettings } from '../../../state/pageSlice';
-import { AddPaymentDropdown } from '../Dropdowns/AddPaymentDropdown';
-import { DiscountDropdown } from '../Dropdowns/DiscountDropdown';
-import { PaymentListDropdown } from '../Dropdowns/PaymentListDropdown';
-import { ShippingFeesDropdown } from '../Dropdowns/ShippingFeesDropdown';
-import { TaxDropdown } from '../Dropdowns/TaxDropdown';
+import { AddPaymentDropdown } from './Dropdowns/AddPaymentDropdown';
+import { DiscountDropdown } from './Dropdowns/DiscountDropdown';
+import { PaymentListDropdown } from './Dropdowns/PaymentListDropdown';
+import { ShippingFeesDropdown } from './Dropdowns/ShippingFeesDropdown';
+import { TaxDropdown } from './Dropdowns/TaxDropdown';
 
 interface Props {
   invoiceForm?: InvoiceFromData;

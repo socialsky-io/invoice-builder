@@ -1,15 +1,15 @@
 import { Autocomplete, Box, Grid, SwipeableDrawer, TextField, useMediaQuery, useTheme } from '@mui/material';
 import { useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AmountInput } from '../../../shared/components/inputs/amountInput/AmountInput';
-import { Datepicker } from '../../../shared/components/inputs/datepicker/Datepicker';
-import { PageHeader } from '../../../shared/components/layout/pageHeader/PageHeader';
-import { PaymentType } from '../../../shared/enums/paymentType';
-import { useForm } from '../../../shared/hooks/useForm';
-import type { PaymentForm } from '../../../shared/types/invoice';
-import { validators } from '../../../shared/utils/validatorFunctions';
-import { useAppSelector } from '../../../state/configureStore';
-import { selectSettings } from '../../../state/pageSlice';
+import { AmountInput } from '../../../../shared/components/inputs/amountInput/AmountInput';
+import { Datepicker } from '../../../../shared/components/inputs/datepicker/Datepicker';
+import { PageHeader } from '../../../../shared/components/layout/pageHeader/PageHeader';
+import { PaymentType } from '../../../../shared/enums/paymentType';
+import { useForm } from '../../../../shared/hooks/useForm';
+import type { PaymentForm } from '../../../../shared/types/invoice';
+import { validators } from '../../../../shared/utils/validatorFunctions';
+import { useAppSelector } from '../../../../state/configureStore';
+import { selectSettings } from '../../../../state/pageSlice';
 
 interface Props {
   isOpen: boolean;

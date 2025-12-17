@@ -164,7 +164,7 @@ export interface InvoiceAdd {
   businessWebsiteSnapshot?: string;
   businessAdditionalSnapshot?: string;
   businessPaymentInformationSnapshot?: string;
-  businessLogoSnapshot?: string | null;
+  businessLogoSnapshot?: Uint8Array;
   businessFileSizeSnapshot?: number;
   businessFileTypeSnapshot?: string;
   businessFileNameSnapshot?: string;
@@ -224,7 +224,7 @@ export interface InvoiceFromData {
   businessWebsiteSnapshot?: string;
   businessAdditionalSnapshot?: string;
   businessPaymentInformationSnapshot?: string;
-  businessLogoSnapshot?: string | null;
+  businessLogoSnapshot?: Uint8Array;
   businessFileSizeSnapshot?: number;
   businessFileTypeSnapshot?: string;
   businessFileNameSnapshot?: string;

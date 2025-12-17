@@ -1,13 +1,13 @@
 import { Box, Grid, SwipeableDrawer, TextField, useMediaQuery, useTheme } from '@mui/material';
 import { useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { InvoiceInfo } from '../../../../main/types/invoice';
-import { Datepicker } from '../../../shared/components/inputs/datepicker/Datepicker';
-import { PageHeader } from '../../../shared/components/layout/pageHeader/PageHeader';
-import { useForm } from '../../../shared/hooks/useForm';
-import { validators } from '../../../shared/utils/validatorFunctions';
-import { useAppSelector } from '../../../state/configureStore';
-import { selectSettings } from '../../../state/pageSlice';
+import type { InvoiceInfo } from '../../../../../main/types/invoice';
+import { Datepicker } from '../../../../shared/components/inputs/datepicker/Datepicker';
+import { PageHeader } from '../../../../shared/components/layout/pageHeader/PageHeader';
+import { useForm } from '../../../../shared/hooks/useForm';
+import { validators } from '../../../../shared/utils/validatorFunctions';
+import { useAppSelector } from '../../../../state/configureStore';
+import { selectSettings } from '../../../../state/pageSlice';
 
 interface Props {
   isOpen: boolean;

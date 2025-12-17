@@ -153,11 +153,17 @@ export const initInvoicesHandlers = (db: Database) => {
 
       const result = await handleInvoice(data);
 
-      if (!result.success) return { success: false };
+      if (!result.success) {
+        await runDb(db, 'ROLLBACK');
+        return { success: false, key: result.key };
+      }
 
       const lastRow = await getFirstRow(db, 'SELECT MAX(id) AS id FROM invoices;');
 
-      if (!lastRow) return { success: false };
+      if (!lastRow) {
+        await runDb(db, 'ROLLBACK');
+        return { success: false };
+      }
 
       const newId = lastRow.id as number;
 
@@ -188,6 +194,7 @@ export const initInvoicesHandlers = (db: Database) => {
       await runDb(db, 'COMMIT');
       return { success: true };
     } catch (error) {
+      console.log('error', error);
       await runDb(db, 'ROLLBACK');
       return { success: false, ...mapSqliteError(error) };
     }
@@ -198,7 +205,10 @@ export const initInvoicesHandlers = (db: Database) => {
 
       const result = await handleInvoice(data, true);
 
-      if (!result.success || !data.id) return { success: false };
+      if (!result.success || !data.id) {
+        await runDb(db, 'ROLLBACK');
+        return { success: false, key: result.key };
+      }
 
       await runDb(db, 'DELETE FROM invoice_items WHERE parentInvoiceId = ?;', [data.id]);
 

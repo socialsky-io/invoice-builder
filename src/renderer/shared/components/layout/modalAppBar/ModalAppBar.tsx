@@ -1,6 +1,6 @@
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { AppBar, Box, Button, IconButton, Toolbar, Tooltip, Typography, useTheme } from '@mui/material';
-import { type FC } from 'react';
+import { type FC, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface Props {
@@ -10,6 +10,7 @@ interface Props {
   isFormValid: boolean;
   onClose?: () => void;
   onSave?: (data: unknown) => void;
+  renderCustomButtons?: () => ReactNode;
 }
 export const ModalAppBar: FC<Props> = ({
   title,
@@ -17,7 +18,8 @@ export const ModalAppBar: FC<Props> = ({
   description,
   isFormValid,
   onClose = () => {},
-  onSave = () => {}
+  onSave = () => {},
+  renderCustomButtons = () => null
 }) => {
   const { t } = useTranslation();
   const theme = useTheme();
@@ -42,25 +44,28 @@ export const ModalAppBar: FC<Props> = ({
             {title}
           </Typography>
         )}
-        <Tooltip
-          title={!isFormValid && description ? description : ''}
-          disableHoverListener={isFormValid}
-          disableFocusListener={isFormValid}
-          disableTouchListener={isFormValid}
-        >
-          <Box>
-            <Button
-              autoFocus
-              color="inherit"
-              onClick={() => {
-                if (formData !== undefined) onSave(formData);
-              }}
-              disabled={!isFormValid}
-            >
-              {t('common.save')}
-            </Button>
-          </Box>
-        </Tooltip>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          {renderCustomButtons()}
+          <Tooltip
+            title={!isFormValid && description ? description : ''}
+            disableHoverListener={isFormValid}
+            disableFocusListener={isFormValid}
+            disableTouchListener={isFormValid}
+          >
+            <Box>
+              <Button
+                autoFocus
+                color="inherit"
+                onClick={() => {
+                  if (formData !== undefined) onSave(formData);
+                }}
+                disabled={!isFormValid}
+              >
+                {t('common.save')}
+              </Button>
+            </Box>
+          </Tooltip>
+        </Box>
       </Toolbar>
     </AppBar>
   );

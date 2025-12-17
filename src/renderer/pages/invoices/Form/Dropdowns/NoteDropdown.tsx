@@ -1,7 +1,7 @@
 import { Box, Grid, SwipeableDrawer, TextField, useMediaQuery, useTheme } from '@mui/material';
 import { useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PageHeader } from '../../../shared/components/layout/pageHeader/PageHeader';
+import { PageHeader } from '../../../../shared/components/layout/pageHeader/PageHeader';
 
 interface Props {
   isOpen: boolean;

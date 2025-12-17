@@ -5,7 +5,7 @@ import { Box, IconButton, ListItemButton, ListItemText, Tooltip, Typography } fr
 import { useCallback, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { InvoiceFromData } from '../../../shared/types/invoice';
-import { NoteDropdown } from '../Dropdowns/NoteDropdown';
+import { NoteDropdown } from './Dropdowns/NoteDropdown';
 
 enum NoteFormType {
   customer,

@@ -191,20 +191,43 @@ export const isInvoiceFromData = (data: unknown): data is InvoiceFromData => {
   const d = data as Record<string, unknown>;
 
   if (typeof d.invoiceType !== 'string') return false;
-  if (typeof d.businessId !== 'number') return false;
-  if (typeof d.clientId !== 'number') return false;
-  if (typeof d.currencyId !== 'number') return false;
-  if (typeof d.issuedAt !== 'string') return false;
-  if (typeof d.invoiceNumber !== 'string') return false;
-  if (typeof d.status !== 'string') return false;
-  if (typeof d.businessNameSnapshot !== 'string') return false;
-  if (typeof d.businessShortName !== 'string') return false;
-  if (typeof d.clientShortName !== 'string') return false;
-  if (typeof d.clientNameSnapshot !== 'string') return false;
-  if (typeof d.currencyCodeSnapshot !== 'string') return false;
-  if (typeof d.currencySymbolSnapshot !== 'string') return false;
-  if (typeof d.currencySubunitSnapshot !== 'number') return false;
-  if (typeof d.taxRate !== 'number') return false;
+  if (d.businessId !== undefined && d.businessId !== null && typeof d.businessId !== 'number') return false;
+  if (d.clientId !== undefined && d.clientId !== null && typeof d.clientId !== 'number') return false;
+  if (d.currencyId !== undefined && d.currencyId !== null && typeof d.currencyId !== 'number') return false;
+  if (d.issuedAt !== undefined && d.issuedAt !== null && typeof d.issuedAt !== 'string') return false;
+  if (d.invoiceNumber !== undefined && d.invoiceNumber !== null && typeof d.invoiceNumber !== 'string') return false;
+  if (d.status !== undefined && d.status !== null && typeof d.status !== 'string') return false;
+  if (
+    d.businessNameSnapshot !== undefined &&
+    d.businessNameSnapshot !== null &&
+    typeof d.businessNameSnapshot !== 'string'
+  )
+    return false;
+  if (d.businessShortName !== undefined && d.businessShortName !== null && typeof d.businessShortName !== 'string')
+    return false;
+  if (d.clientShortName !== undefined && d.clientShortName !== null && typeof d.clientShortName !== 'string')
+    return false;
+  if (d.clientNameSnapshot !== undefined && d.clientNameSnapshot !== null && typeof d.clientNameSnapshot !== 'string')
+    return false;
+  if (
+    d.currencyCodeSnapshot !== undefined &&
+    d.currencyCodeSnapshot !== null &&
+    typeof d.currencyCodeSnapshot !== 'string'
+  )
+    return false;
+  if (
+    d.currencySymbolSnapshot !== undefined &&
+    d.currencySymbolSnapshot !== null &&
+    typeof d.currencySymbolSnapshot !== 'string'
+  )
+    return false;
+  if (
+    d.currencySubunitSnapshot !== undefined &&
+    d.currencySubunitSnapshot !== null &&
+    typeof d.currencySubunitSnapshot !== 'number'
+  )
+    return false;
+  if (d.taxRate !== undefined && d.taxRate !== null && typeof d.taxRate !== 'number') return false;
 
   if (d.id !== undefined && d.id !== null && d.id !== '' && typeof d.id !== 'number') return false;
   if (
@@ -253,33 +276,26 @@ export const isInvoiceFromData = (data: unknown): data is InvoiceFromData => {
 
   for (const key of stringFields) {
     const val = d[key];
-    if (val !== undefined && val !== null && val !== '' && typeof val !== 'string') return false;
+    if (val !== undefined && val !== null && typeof val !== 'string') return false;
   }
 
   const numberFields = ['businessFileSizeSnapshot', 'discountAmountCents', 'discountPercent', 'shippingFeeCents'];
 
   for (const key of numberFields) {
     const val = d[key];
-    if (val !== undefined && val !== null && val !== '' && typeof val !== 'number') return false;
+    if (val !== undefined && val !== null && typeof val !== 'number') return false;
   }
 
   if (
     d.businessLogoSnapshot !== undefined &&
     d.businessLogoSnapshot !== null &&
-    d.businessLogoSnapshot !== '' &&
     !(d.businessLogoSnapshot instanceof Uint8Array)
   )
     return false;
 
-  if (
-    d.discountType !== undefined &&
-    d.discountType !== null &&
-    d.discountType !== '' &&
-    typeof d.discountType !== 'string'
-  )
-    return false;
+  if (d.discountType !== undefined && d.discountType !== null && typeof d.discountType !== 'string') return false;
 
-  if (d.taxType !== undefined && d.taxType !== null && d.taxType !== '' && typeof d.taxType !== 'string') return false;
+  if (d.taxType !== undefined && d.taxType !== null && typeof d.taxType !== 'string') return false;
 
   return true;
 };

@@ -34,6 +34,7 @@ import { Content } from '../content/Content';
 import { PageAppBar } from '../pageAppBar/PageAppBar';
 
 interface Props<T, TAdd, TUpdate> {
+  renderCustomButtons?: () => React.ReactNode;
   title?: string;
   useRetrieve?: (args: { filter?: FilterData[]; onDone?: (data: Response<T[]>) => void }) => {
     items: T[];
@@ -127,7 +128,8 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
     exportExcelHandler,
     inlineOnAdd = false,
     showRightSide = true,
-    showAddButton = true
+    showAddButton = true,
+    renderCustomButtons = () => null
   } = props;
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
@@ -431,6 +433,7 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
       isModal={inlineOnAdd && isDesktop ? false : typeof selectedItem === 'undefined'}
       handleClose={handleCloseModal}
       handleSave={handleSave}
+      renderCustomButtons={renderCustomButtons}
       renderForm={({ onChange }) =>
         form({
           item: selectedItem,

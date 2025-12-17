@@ -11,6 +11,7 @@ interface Props {
   handleClose?: () => void;
   handleSave?: (data: unknown) => void;
   renderForm: (opts: { onChange: (properties: { changedData: unknown; isFormValid: boolean }) => void }) => ReactNode;
+  renderCustomButtons?: () => ReactNode;
 }
 export const PageAppBar: FC<Props> = ({
   title,
@@ -19,7 +20,8 @@ export const PageAppBar: FC<Props> = ({
   showBack = true,
   handleClose = () => {},
   handleSave = () => {},
-  renderForm
+  renderForm,
+  renderCustomButtons = () => null
 }) => {
   const theme = useTheme();
   const [isFormValid, setIsFormValid] = useState(false);
@@ -44,6 +46,7 @@ export const PageAppBar: FC<Props> = ({
       formData={formData}
       onClose={handleClose}
       onSave={data => handleSave(data)}
+      renderCustomButtons={renderCustomButtons}
     />
   ) : (
     <PageHeader
@@ -55,6 +58,7 @@ export const PageAppBar: FC<Props> = ({
       showBack={showBack}
       showSave={true}
       onSave={data => handleSave(data)}
+      renderCustomButtons={renderCustomButtons}
     />
   );
 

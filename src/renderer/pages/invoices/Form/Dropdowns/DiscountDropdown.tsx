@@ -1,14 +1,14 @@
 import { Autocomplete, Box, Grid, SwipeableDrawer, TextField, useMediaQuery, useTheme } from '@mui/material';
 import { useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AmountInput } from '../../../shared/components/inputs/amountInput/AmountInput';
-import { PageHeader } from '../../../shared/components/layout/pageHeader/PageHeader';
-import { DiscountType } from '../../../shared/enums/discountType';
-import { useForm } from '../../../shared/hooks/useForm';
-import type { DiscountForm } from '../../../shared/types/invoice';
-import { validators } from '../../../shared/utils/validatorFunctions';
-import { useAppSelector } from '../../../state/configureStore';
-import { selectSettings } from '../../../state/pageSlice';
+import { AmountInput } from '../../../../shared/components/inputs/amountInput/AmountInput';
+import { PageHeader } from '../../../../shared/components/layout/pageHeader/PageHeader';
+import { DiscountType } from '../../../../shared/enums/discountType';
+import { useForm } from '../../../../shared/hooks/useForm';
+import type { DiscountForm } from '../../../../shared/types/invoice';
+import { validators } from '../../../../shared/utils/validatorFunctions';
+import { useAppSelector } from '../../../../state/configureStore';
+import { selectSettings } from '../../../../state/pageSlice';
 
 interface Props {
   isOpen: boolean;

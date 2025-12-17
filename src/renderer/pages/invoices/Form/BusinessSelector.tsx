@@ -1,7 +1,8 @@
 import { Box, ListItemButton, ListItemText, Typography } from '@mui/material';
-import { type FC } from 'react';
+import { useMemo, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { InvoiceFromData } from '../../../shared/types/invoice';
+import { fromUint8Array } from '../../../shared/utils/dataUrlFunctions';
 
 interface Props {
   invoiceForm?: InvoiceFromData;
@@ -10,6 +11,11 @@ interface Props {
 
 export const BusinessSelector: FC<Props> = ({ invoiceForm, onEdit }) => {
   const { t } = useTranslation();
+
+  const logoUrl = useMemo(
+    () => fromUint8Array(invoiceForm?.businessLogoSnapshot, invoiceForm?.businessFileTypeSnapshot),
+    [invoiceForm]
+  );
 
   return (
     <ListItemButton
@@ -60,9 +66,9 @@ export const BusinessSelector: FC<Props> = ({ invoiceForm, onEdit }) => {
           sx={{ m: 0 }}
           slotProps={{ primary: { sx: { fontWeight: 500, m: 0 } } }}
         />
-        {invoiceForm?.businessLogoSnapshot ? (
+        {logoUrl ? (
           <img
-            src={invoiceForm.businessLogoSnapshot}
+            src={logoUrl}
             alt={t('invoices.businessLogo')}
             style={{ width: '60px', height: '60px', objectFit: 'cover' }}
           />

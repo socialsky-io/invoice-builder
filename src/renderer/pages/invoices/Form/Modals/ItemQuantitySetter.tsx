@@ -1,9 +1,9 @@
 import { Dialog, DialogContent } from '@mui/material';
 import { useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AmountInput } from '../../../shared/components/inputs/amountInput/AmountInput';
-import { ModalAppBar } from '../../../shared/components/layout/modalAppBar/ModalAppBar';
-import { validators } from '../../../shared/utils/validatorFunctions';
+import { AmountInput } from '../../../../shared/components/inputs/amountInput/AmountInput';
+import { ModalAppBar } from '../../../../shared/components/layout/modalAppBar/ModalAppBar';
+import { validators } from '../../../../shared/utils/validatorFunctions';
 
 interface Props {
   isOpen: boolean;

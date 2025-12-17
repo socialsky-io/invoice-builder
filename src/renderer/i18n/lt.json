@@ -15,10 +15,12 @@
     "descending": "Mažėjimo tvarka",
     "dragToSort": "Vilkite elementą, kad pakeistumėte jo poziciją sąraše",
     "edit": "Redaguoti",
+    "editPreview": "Redaguoti arba peržiūrėti",
     "filters": "Filtrai",
     "menu": "Pagrindinis meniu",
     "moreActions": "Veiksmai",
     "noSort": "Nerikiuoti",
+    "preview": "Peržiūra",
     "remove": "Pašalinti",
     "search": "Ieškoti",
     "uploadImage": "Įkelti paveikslėlį"

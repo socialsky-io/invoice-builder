@@ -16,12 +16,12 @@ import {
 } from '@mui/material';
 import { useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PageHeader } from '../../../shared/components/layout/pageHeader/PageHeader';
-import type { InvoiceFromData, InvoicePayment } from '../../../shared/types/invoice';
-import { formatDate } from '../../../shared/utils/formatFunctions';
-import { getPaidData } from '../../../shared/utils/invoiceFunctions';
-import { useAppSelector } from '../../../state/configureStore';
-import { selectSettings } from '../../../state/pageSlice';
+import { PageHeader } from '../../../../shared/components/layout/pageHeader/PageHeader';
+import type { InvoiceFromData, InvoicePayment } from '../../../../shared/types/invoice';
+import { formatDate } from '../../../../shared/utils/formatFunctions';
+import { getPaidData } from '../../../../shared/utils/invoiceFunctions';
+import { useAppSelector } from '../../../../state/configureStore';
+import { selectSettings } from '../../../../state/pageSlice';
 
 interface Props {
   isOpen: boolean;

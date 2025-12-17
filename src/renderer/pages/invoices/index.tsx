@@ -2,6 +2,7 @@ import { useCallback, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CRUDPage } from '../../shared/components/layout/crudPage/CRUDPage';
 import { FilterType } from '../../shared/enums/filterType';
+import { InvoiceFormMode } from '../../shared/enums/invoiceFormMode';
 import { InvoiceStatus } from '../../shared/enums/invoiceStatus';
 import { InvoiceType } from '../../shared/enums/invoiceType';
 import { useInvoiceAdd } from '../../shared/hooks/invoices/useInvoiceAdd';
@@ -19,6 +20,7 @@ import { isInvoiceFromData } from '../../shared/utils/typeGuardFunctions';
 import { useAppSelector } from '../../state/configureStore';
 import { selectBusinessesSnapshotsOptions, selectClientsSnapshotsOptions } from '../../state/pageSlice';
 import { Form } from './Form';
+import { EditPreviewToggle } from './Form/EditPreviewToggle';
 import { List } from './List';
 
 interface Props {
@@ -107,7 +109,6 @@ export const InvoicesPage: FC<Props> = ({ type }) => {
       onDone: args.onDone
     });
   };
-
   const exportInvoices = useCallback(
     async (invoices: Invoice[]) => {
       const mapPayment = (inv: Invoice) => (inv.invoicePayments ?? []).map(p => p);
@@ -141,9 +142,13 @@ export const InvoicesPage: FC<Props> = ({ type }) => {
     },
     [type]
   );
+  const [mode, setMode] = useState<InvoiceFormMode>(InvoiceFormMode.edit);
 
   return (
     <CRUDPage<Invoice, InvoiceAdd, InvoiceUpdate>
+      renderCustomButtons={() => {
+        return <EditPreviewToggle mode={mode} setMode={setMode} />;
+      }}
       title={type === InvoiceType.quotation ? t('common.quote') : t('common.invoice')}
       filters={filters}
       showOnlyExport={true}
@@ -178,6 +183,7 @@ export const InvoicesPage: FC<Props> = ({ type }) => {
         <Form
           invoice={item}
           type={type}
+          mode={mode}
           handleDuplicate={(id, invoiceType) => {
             setCurrType(invoiceType);
             if (onDuplicate) onDuplicate(id);

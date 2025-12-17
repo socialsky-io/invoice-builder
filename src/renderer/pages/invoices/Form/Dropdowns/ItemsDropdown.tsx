@@ -1,14 +1,14 @@
 import { SwipeableDrawer } from '@mui/material';
 import { useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { CRUDPage } from '../../../shared/components/layout/crudPage/CRUDPage';
-import { FilterType } from '../../../shared/enums/filterType';
-import { useItemsRetrieve } from '../../../shared/hooks/items/useItemsRetrieve';
-import type { Filter, FilterData } from '../../../shared/types/filter';
-import type { Item, ItemAdd, ItemUpdate } from '../../../shared/types/item';
-import type { Response } from '../../../shared/types/response';
-import { createCommonFilters, createInvoiceFilters } from '../../../shared/utils/filterSortFunctions';
-import { List as ItemsList } from '../../items/List';
+import { CRUDPage } from '../../../../shared/components/layout/crudPage/CRUDPage';
+import { FilterType } from '../../../../shared/enums/filterType';
+import { useItemsRetrieve } from '../../../../shared/hooks/items/useItemsRetrieve';
+import type { Filter, FilterData } from '../../../../shared/types/filter';
+import type { Item, ItemAdd, ItemUpdate } from '../../../../shared/types/item';
+import type { Response } from '../../../../shared/types/response';
+import { createCommonFilters, createInvoiceFilters } from '../../../../shared/utils/filterSortFunctions';
+import { List as ItemsList } from '../../../items/List';
 import { ItemQuantitySetter } from '../Modals/ItemQuantitySetter';
 
 interface Props {

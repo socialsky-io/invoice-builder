@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import { type FC } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PageHeader } from '../../../shared/components/layout/pageHeader/PageHeader';
+import { PageHeader } from '../../../../shared/components/layout/pageHeader/PageHeader';
 
 interface Props {
   isOpen: boolean;

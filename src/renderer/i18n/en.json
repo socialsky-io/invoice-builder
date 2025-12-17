@@ -15,10 +15,12 @@
     "descending": "Descending",
     "dragToSort": "Drag item to change position in the list",
     "edit": "Edit",
+    "editPreview": "Edit or preview",
     "filters": "Filters",
     "menu": "Main menu",
     "moreActions": "Actions",
     "noSort": "No sort",
+    "preview": "Preview",
     "remove": "Remove",
     "search": "Search",
     "uploadImage": "Upload image"
