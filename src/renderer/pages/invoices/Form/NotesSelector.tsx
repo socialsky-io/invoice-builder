@@ -1,4 +1,7 @@
-import { Box, ListItemButton, ListItemText, Typography } from '@mui/material';
+import ArticleIcon from '@mui/icons-material/Article';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import NoteIcon from '@mui/icons-material/Note';
+import { Box, IconButton, ListItemButton, ListItemText, Tooltip, Typography } from '@mui/material';
 import { useCallback, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { InvoiceFromData } from '../../../shared/types/invoice';
@@ -43,17 +46,20 @@ export const NotesSelector: FC<Props> = ({
     {
       type: NoteFormType.customer,
       label: t('invoices.customerNote'),
-      value: invoiceForm?.customerNotes
+      value: invoiceForm?.customerNotes,
+      icon: <NoteIcon fontSize="small" />
     },
     {
       type: NoteFormType.thankyou,
       label: t('invoices.thankNote'),
-      value: invoiceForm?.thanksNotes
+      value: invoiceForm?.thanksNotes,
+      icon: <FavoriteIcon fontSize="small" />
     },
     {
       type: NoteFormType.termsconditions,
       label: t('invoices.termsConditions'),
-      value: invoiceForm?.termsConditionNotes
+      value: invoiceForm?.termsConditionNotes,
+      icon: <ArticleIcon fontSize="small" />
     }
   ];
 
@@ -97,18 +103,31 @@ export const NotesSelector: FC<Props> = ({
               >
                 <ListItemText
                   primary={
-                    <Typography
-                      component="div"
-                      variant="body1"
+                    <Box
                       sx={{
-                        fontWeight: 600,
-                        color: 'primary.main',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis'
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center'
                       }}
                     >
-                      {note.label.toUpperCase()}
-                    </Typography>
+                      <Tooltip title={note.label}>
+                        <IconButton size="small" data-drag-handle onMouseDown={e => e.stopPropagation()}>
+                          {note.icon}
+                        </IconButton>
+                      </Tooltip>
+                      <Typography
+                        component="div"
+                        variant="body1"
+                        sx={{
+                          fontWeight: 600,
+                          color: 'primary.main',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis'
+                        }}
+                      >
+                        {note.label.toUpperCase()}
+                      </Typography>
+                    </Box>
                   }
                   secondary={
                     <Typography

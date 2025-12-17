@@ -57,6 +57,18 @@ export interface Invoice {
   taxType?: InvoiceTaxType;
   invoicePayments: InvoicePayment[];
   invoiceItems: InvoiceItem[];
+  invoiceAttachments: InvoiceAttachment[];
+}
+
+export interface InvoiceAttachment {
+  id: number;
+  parentInvoiceId: number;
+  fileSize: number;
+  fileType: string;
+  fileName: string;
+  data: Uint8Array;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface InvoicePayment {

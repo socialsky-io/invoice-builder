@@ -9,6 +9,7 @@ import type { Business } from '../../shared/types/business';
 import type { Client } from '../../shared/types/client';
 import type { Currency } from '../../shared/types/currency';
 import type {
+  AttachmentForm,
   DiscountForm,
   Invoice,
   InvoiceFromData,
@@ -27,6 +28,7 @@ import { CurrenciesDropdown } from './Dropdowns/CurrenciesDropdown';
 import { InvoiceInformationDropdown } from './Dropdowns/InvoiceInformationDropdown';
 import { ItemsDropdown } from './Dropdowns/ItemsDropdown';
 import { MoreActionDropdown } from './Dropdowns/MoreActionDropdown';
+import { AttachmentsList } from './Form/AttachmentsList';
 import { BusinessSelector } from './Form/BusinessSelector';
 import { ClientInvoiceRow } from './Form/ClientInvoiceRow';
 import { CurrencySelector } from './Form/CurrencySelector';
@@ -431,6 +433,44 @@ export const Form: FC<Props> = ({
     [invoiceForm]
   );
 
+  const handleAttachments = useCallback(
+    (data: AttachmentForm) => {
+      if (!invoiceForm) return;
+
+      const invoiceAttachments = invoiceForm.invoiceAttachments ? [...invoiceForm.invoiceAttachments] : [];
+
+      invoiceAttachments.push({
+        id: Date.now(),
+        fileName: data.fileName,
+        fileType: data.fileType,
+        fileSize: data.fileSize,
+        data: data.data
+      });
+
+      setInvoiceForm({
+        ...invoiceForm,
+        invoiceAttachments: invoiceAttachments
+      });
+    },
+    [invoiceForm]
+  );
+
+  const handleRemoveAttachment = useCallback(
+    (data: number) => {
+      if (!invoiceForm) return;
+
+      const invoiceAttachments = invoiceForm.invoiceAttachments
+        ? [...invoiceForm.invoiceAttachments.filter(ia => ia.id !== data)]
+        : [];
+
+      setInvoiceForm({
+        ...invoiceForm,
+        invoiceAttachments: invoiceAttachments
+      });
+    },
+    [invoiceForm]
+  );
+
   useEffect(() => {
     if (invoice) {
       setInvoiceForm({
@@ -447,7 +487,8 @@ export const Form: FC<Props> = ({
         discountPercent: 0,
         shippingFeeCents: 0,
         invoiceItems: [],
-        invoicePayments: []
+        invoicePayments: [],
+        invoiceAttachments: []
       });
     }
   }, [invoice, type]);
@@ -508,9 +549,7 @@ export const Form: FC<Props> = ({
             onAddPaymentClicked={handleOnClickAddPayment}
             onRemovePaymentClicked={handleOnClickRemovePayment}
           />
-
           <Divider flexItem />
-
           <StatusSelector
             invoiceForm={invoiceForm}
             onArchivedChanged={value => {
@@ -520,9 +559,7 @@ export const Form: FC<Props> = ({
               setInvoiceForm(prev => ({ ...prev, status: value }));
             }}
           />
-
           <Divider flexItem />
-
           <NotesSelector
             invoiceForm={invoiceForm}
             onCustomerNotesChanged={value => {
@@ -535,6 +572,10 @@ export const Form: FC<Props> = ({
               setInvoiceForm(prev => ({ ...prev, termsConditionNotes: value }));
             }}
           />
+
+          <Divider flexItem />
+
+          <AttachmentsList invoiceForm={invoiceForm} onAttach={handleAttachments} onClear={handleRemoveAttachment} />
         </>
       )}
 

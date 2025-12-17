@@ -108,7 +108,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
   return (
     <Grid container spacing={2}>
       <Grid size={{ xs: 12, md: 12 }} sx={{ display: 'flex', justifyContent: 'center' }}>
-        <UploadImage onUpload={onUpload} logoUrl={logoUrl} />
+        <UploadImage onUpload={onUpload} imgUrl={logoUrl} />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <TextField

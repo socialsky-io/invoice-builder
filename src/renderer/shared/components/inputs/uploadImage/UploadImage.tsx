@@ -12,9 +12,18 @@ interface UploadSquareProps {
   onUpload?: (file?: Blob, filename?: string) => void;
   size?: number;
   maxSizeMB?: number;
-  logoUrl?: string;
+  imgUrl?: string;
+  alwaysShowAddIcon?: boolean;
+  disableEdit?: boolean;
 }
-export const UploadImage: React.FC<UploadSquareProps> = ({ onUpload, size = 120, maxSizeMB = 2, logoUrl }) => {
+export const UploadImage: React.FC<UploadSquareProps> = ({
+  onUpload,
+  size = 120,
+  maxSizeMB = 2,
+  imgUrl,
+  alwaysShowAddIcon,
+  disableEdit
+}) => {
   const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
   const theme = useTheme();
@@ -22,9 +31,11 @@ export const UploadImage: React.FC<UploadSquareProps> = ({ onUpload, size = 120,
   const [originalFileName, setOriginalFileName] = useState<string | undefined>(undefined);
   const [imageSrc, setImageSrc] = useState<string | undefined>(undefined);
   const [cropDialogOpen, setCropDialogOpen] = useState(false);
-  const [croppedImageUrl, setCroppedImageUrl] = useState<string | undefined>(logoUrl);
+  const [croppedImageUrl, setCroppedImageUrl] = useState<string | undefined>(imgUrl);
 
   const handleClick = () => {
+    if (croppedImageUrl && disableEdit) return;
+
     inputRef.current?.click();
   };
 
@@ -46,8 +57,8 @@ export const UploadImage: React.FC<UploadSquareProps> = ({ onUpload, size = 120,
   };
 
   useEffect(() => {
-    setCroppedImageUrl(logoUrl);
-  }, [logoUrl]);
+    setCroppedImageUrl(imgUrl);
+  }, [imgUrl]);
 
   return (
     <Box sx={{ position: 'relative' }}>
@@ -79,7 +90,7 @@ export const UploadImage: React.FC<UploadSquareProps> = ({ onUpload, size = 120,
           style={{ display: 'none' }}
           onChange={handleChange}
         />
-        {croppedImageUrl && !cropDialogOpen ? (
+        {!alwaysShowAddIcon && croppedImageUrl && !cropDialogOpen ? (
           <>
             <img
               src={croppedImageUrl}
@@ -99,9 +110,12 @@ export const UploadImage: React.FC<UploadSquareProps> = ({ onUpload, size = 120,
                 }}
                 sx={{
                   position: 'absolute',
-                  top: -20,
+                  top: 0,
                   zIndex: 9999,
-                  right: -20
+                  right: 0,
+                  height: 24,
+                  width: 24,
+                  minHeight: 'unset'
                 }}
               >
                 <CloseIcon fontSize="small" />

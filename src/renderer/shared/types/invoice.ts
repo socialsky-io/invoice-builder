@@ -17,6 +17,12 @@ export interface TaxForm {
   taxName?: string;
   invoiceItems: InvoiceItem[];
 }
+export interface AttachmentForm {
+  fileSize: number;
+  fileType: string;
+  fileName: string;
+  data: Uint8Array;
+}
 export interface DiscountForm {
   discountType?: DiscountType;
   discountAmount?: number;
@@ -32,6 +38,28 @@ export interface InvoicePayment {
   notes?: string;
   createdAt?: string;
   updatedAt?: string;
+}
+
+export interface InvoiceAttachment {
+  id?: number;
+  parentInvoiceId?: number;
+  fileSize: number;
+  fileType: string;
+  fileName: string;
+  data: Uint8Array;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface InvoiceAttachmentModified {
+  id: number;
+  parentInvoiceId: number;
+  fileSize: number;
+  fileType: string;
+  fileName: string;
+  data: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface InvoiceItem {
@@ -104,6 +132,7 @@ export interface Invoice {
   taxType?: InvoiceTaxType;
   invoicePayments: InvoicePayment[];
   invoiceItems: InvoiceItem[];
+  invoiceAttachments: InvoiceAttachment[];
   currencyFormat: string;
 }
 
@@ -158,6 +187,7 @@ export interface InvoiceAdd {
   taxType?: InvoiceTaxType;
   invoicePayments?: InvoicePayment[];
   invoiceItems?: InvoiceItem[];
+  invoiceAttachments?: InvoiceAttachment[];
   currencyFormat?: string;
 }
 
@@ -217,6 +247,7 @@ export interface InvoiceFromData {
   taxType?: InvoiceTaxType;
   invoicePayments?: InvoicePayment[];
   invoiceItems?: InvoiceItem[];
+  invoiceAttachments?: InvoiceAttachment[];
   currencyFormat?: string;
 }
 
@@ -274,5 +305,6 @@ export interface InvoicesModified {
   taxType?: InvoiceTaxType;
   invoicePayments: InvoicePayment[];
   invoiceItems: InvoiceItem[];
+  invoiceAttachments: InvoiceAttachmentModified[];
   currencyFormat: string;
 }

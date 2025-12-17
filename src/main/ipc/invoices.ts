@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
 import type { Database } from 'sqlite3';
-import type { Invoice } from '../types/invoice';
+import type { Invoice, InvoiceAttachment, InvoiceItem, InvoicePayment } from '../types/invoice';
 import { getAllRows, getFirstRow, runDb } from '../utils/dbFuntions';
 import { handleEntity } from '../utils/entitiesFunctions';
 import { mapSqliteError } from '../utils/errorFunctions';
@@ -57,8 +57,31 @@ export const initInvoicesHandlers = (db: Database) => {
     'taxRate',
     'taxType'
   ];
+  const attachmentFields: (keyof InvoiceAttachment)[] = ['parentInvoiceId', 'fileSize', 'fileType', 'fileName', 'data'];
+  const paymentsFields: (keyof InvoicePayment)[] = [
+    'parentInvoiceId',
+    'amountCents',
+    'paidAt',
+    'paymentMethod',
+    'notes'
+  ];
+  const itemsFields: (keyof InvoiceItem)[] = [
+    'parentInvoiceId',
+    'itemId',
+    'itemNameSnapshot',
+    'unitPriceCentsSnapshot',
+    'itemDescriptionSnapshot',
+    'unitNameSnapshot',
+    'categoryNameSnapshot',
+    'quantity',
+    'taxRate',
+    'taxType'
+  ];
 
   const handleInvoice = handleEntity<Invoice>(db, 'invoices', invoiceFields);
+  const handleInvoicePayments = handleEntity<InvoicePayment>(db, 'invoice_payments', paymentsFields);
+  const handleInvoiceItems = handleEntity<InvoiceItem>(db, 'invoice_items', itemsFields);
+  const handleAttachments = handleEntity<InvoiceAttachment>(db, 'attachments', attachmentFields);
 
   ipcMain.handle('get-all-invoices', async (_event, type, filter) => {
     const whereClause = getWhereClauseFromFilters({
@@ -97,10 +120,18 @@ export const initInvoicesHandlers = (db: Database) => {
       `;
     const invoiceItems = await getAllRows(db, invoiceItemsSql, invoiceIds);
 
+    const invoiceAttachmentsSql = `
+        SELECT ia.*
+        FROM attachments as ia
+        WHERE parentInvoiceId IN (${placeholders})
+      `;
+    const invoiceAttachments = await getAllRows(db, invoiceAttachmentsSql, invoiceIds);
+
     const finalInvoices = invoices.map(invoice => ({
       ...invoice,
       invoicePayments: invoicePayments.filter(p => p.parentInvoiceId === invoice.id),
-      invoiceItems: invoiceItems.filter(p => p.parentInvoiceId === invoice.id)
+      invoiceItems: invoiceItems.filter(p => p.parentInvoiceId === invoice.id),
+      invoiceAttachments: invoiceAttachments.filter(p => p.parentInvoiceId === invoice.id)
     }));
 
     return {
@@ -118,6 +149,8 @@ export const initInvoicesHandlers = (db: Database) => {
   });
   ipcMain.handle('add-invoice', async (_event, data: Invoice) => {
     try {
+      await runDb(db, 'BEGIN TRANSACTION');
+
       const result = await handleInvoice(data);
 
       if (!result.success) return { success: false };
@@ -129,49 +162,40 @@ export const initInvoicesHandlers = (db: Database) => {
       const newId = lastRow.id as number;
 
       for (const item of data.invoiceItems) {
-        await runDb(
-          db,
-          `
-        INSERT INTO invoice_items (
-          parentInvoiceId, itemId, itemNameSnapshot, unitPriceCentsSnapshot,
-          itemDescriptionSnapshot, unitNameSnapshot, categoryNameSnapshot,
-          quantity, taxRate, taxType
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `,
-          [
-            newId,
-            item.itemId,
-            item.itemNameSnapshot,
-            item.unitPriceCentsSnapshot,
-            item.itemDescriptionSnapshot ?? null,
-            item.unitNameSnapshot ?? null,
-            item.categoryNameSnapshot ?? null,
-            item.quantity,
-            item.taxRate,
-            item.taxType ?? null
-          ]
-        );
+        const result = await handleInvoiceItems({ ...item, parentInvoiceId: newId });
+        if (!result.success) {
+          await runDb(db, 'ROLLBACK');
+          return result;
+        }
       }
 
       for (const payment of data.invoicePayments) {
-        await runDb(
-          db,
-          `
-            INSERT INTO invoice_payments (
-              parentInvoiceId, amountCents, paidAt, paymentMethod, notes
-            ) VALUES (?, ?, ?, ?, ?)
-          `,
-          [newId, payment.amountCents, payment.paidAt, payment.paymentMethod, payment.notes ?? null]
-        );
+        const result = await handleInvoicePayments({ ...payment, parentInvoiceId: newId });
+        if (!result.success) {
+          await runDb(db, 'ROLLBACK');
+          return result;
+        }
       }
 
+      for (const attachment of data.invoiceAttachments) {
+        const result = await handleAttachments({ ...attachment, parentInvoiceId: newId });
+        if (!result.success) {
+          await runDb(db, 'ROLLBACK');
+          return result;
+        }
+      }
+
+      await runDb(db, 'COMMIT');
       return { success: true };
     } catch (error) {
+      await runDb(db, 'ROLLBACK');
       return { success: false, ...mapSqliteError(error) };
     }
   });
   ipcMain.handle('update-invoice', async (_event, data: Invoice) => {
     try {
+      await runDb(db, 'BEGIN TRANSACTION');
+
       const result = await handleInvoice(data, true);
 
       if (!result.success || !data.id) return { success: false };
@@ -221,32 +245,36 @@ export const initInvoicesHandlers = (db: Database) => {
           const existing = await getFirstRow(db, `SELECT id FROM invoice_payments WHERE id = ?`, [payment.id]);
 
           if (existing) {
-            await runDb(
-              db,
-              `
-                UPDATE invoice_payments
-                SET amountCents = ?, paidAt = ?, paymentMethod = ?, notes = ?, updatedAt = datetime('now')
-                WHERE id = ?
-              `,
-              [payment.amountCents, payment.paidAt, payment.paymentMethod, payment.notes ?? null, payment.id]
-            );
+            const result = await handleInvoicePayments(payment, true);
+            if (!result.success) {
+              await runDb(db, 'ROLLBACK');
+              return result;
+            }
+
             continue;
           }
         }
 
-        await runDb(
-          db,
-          `
-            INSERT INTO invoice_payments (
-              parentInvoiceId, amountCents, paidAt, paymentMethod, notes
-            ) VALUES (?, ?, ?, ?, ?)
-          `,
-          [data.id, payment.amountCents, payment.paidAt, payment.paymentMethod, payment.notes ?? null]
-        );
+        const result = await handleInvoicePayments({ ...payment, parentInvoiceId: data.id });
+        if (!result.success) {
+          await runDb(db, 'ROLLBACK');
+          return result;
+        }
       }
 
+      await runDb(db, 'DELETE FROM attachments WHERE parentInvoiceId = ?;', [data.id]);
+      for (const attachment of data.invoiceAttachments) {
+        const result = await handleAttachments({ ...attachment, parentInvoiceId: data.id });
+        if (!result.success) {
+          await runDb(db, 'ROLLBACK');
+          return result;
+        }
+      }
+
+      await runDb(db, 'COMMIT');
       return { success: true };
     } catch (error) {
+      await runDb(db, 'ROLLBACK');
       return { success: false, ...mapSqliteError(error) };
     }
   });
