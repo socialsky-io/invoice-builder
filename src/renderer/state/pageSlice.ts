@@ -3,29 +3,19 @@ import { v4 as uuidv4 } from 'uuid';
 import type { AmountFormat } from '../shared/enums/amountFormat';
 import type { DateFormat } from '../shared/enums/dateFormat';
 import type { Language } from '../shared/enums/language';
-import type { BusinessModified } from '../shared/types/business';
-import type { Category } from '../shared/types/category';
-import type { Client } from '../shared/types/client';
-import type { Currency } from '../shared/types/currency';
-import type { InvoicesModified } from '../shared/types/invoice';
-import type { Item } from '../shared/types/item';
 import type { PageState } from '../shared/types/pageState';
 import type { Settings } from '../shared/types/settings';
 import type { ToastProps } from '../shared/types/toastProps';
-import type { Unit } from '../shared/types/unit';
 import type { RootState } from './configureStore';
 
 const initialState: PageState = {
   isLoading: false,
   toasts: [],
   settings: undefined,
-  businesses: [],
-  clients: [],
-  items: [],
-  currencies: [],
-  units: [],
-  categories: [],
-  invoices: []
+  categoryOptions: [],
+  unitOptions: [],
+  clientSnapshotOptions: [],
+  businessSnapshotOptions: []
 };
 
 export const pageSlice = createSlice({
@@ -56,26 +46,17 @@ export const pageSlice = createSlice({
     setSettings: (state, action: PayloadAction<Settings>) => {
       state.settings = action.payload;
     },
-    setBusinesses: (state, action: PayloadAction<BusinessModified[]>) => {
-      state.businesses = action.payload;
+    setUnitOptions: (state, action: PayloadAction<Array<{ label: string; value: number }>>) => {
+      state.unitOptions = action.payload;
     },
-    setClients: (state, action: PayloadAction<Client[]>) => {
-      state.clients = action.payload;
+    setCategoryOptions: (state, action: PayloadAction<Array<{ label: string; value: number }>>) => {
+      state.categoryOptions = action.payload;
     },
-    setItems: (state, action: PayloadAction<Item[]>) => {
-      state.items = action.payload;
+    setClientSnapshotOptions: (state, action: PayloadAction<Array<{ label: string; value: string }>>) => {
+      state.clientSnapshotOptions = action.payload;
     },
-    setCurrencies: (state, action: PayloadAction<Currency[]>) => {
-      state.currencies = action.payload;
-    },
-    setUnits: (state, action: PayloadAction<Unit[]>) => {
-      state.units = action.payload;
-    },
-    setInvoices: (state, action: PayloadAction<InvoicesModified[]>) => {
-      state.invoices = action.payload;
-    },
-    setCategories: (state, action: PayloadAction<Category[]>) => {
-      state.categories = action.payload;
+    setBusinessSnapshotOptions: (state, action: PayloadAction<Array<{ label: string; value: string }>>) => {
+      state.businessSnapshotOptions = action.payload;
     },
     setMode: (state, action: PayloadAction<boolean>) => {
       if (!state.settings) return;
@@ -141,32 +122,10 @@ export const selectState = (state: RootState) => state.pageSlice;
 export const selectIsLoading = createSelector(selectState, state => state.isLoading);
 export const selectToasts = createSelector(selectState, state => state.toasts);
 export const selectSettings = createSelector(selectState, state => state.settings);
-export const selectBusinesses = createSelector(selectState, state => state.businesses);
-export const selectClients = createSelector(selectState, state => state.clients);
-export const selectCategories = createSelector(selectState, state => state.categories);
-export const selectCurrencies = createSelector(selectState, state => state.currencies);
-export const selectUnits = createSelector(selectState, state => state.units);
-export const selectItems = createSelector(selectState, state => state.items);
-export const selectInvoices = createSelector(selectState, state => state.invoices);
-
-export const selectUnitsOptions = createSelector(selectState, state =>
-  state.units.map(u => {
-    return { label: u.name, value: u.id };
-  })
-);
-export const selectCategoriesOptions = createSelector(selectState, state =>
-  state.categories.map(c => {
-    return { label: c.name, value: c.id };
-  })
-);
-export const selectClientsSnapshotsOptions = createSelector(selectState, state => {
-  const uniqueSnapshots = [...new Set(state.invoices.map(c => c.clientNameSnapshot))];
-  return uniqueSnapshots.map(name => ({ label: name, value: name }));
-});
-export const selectBusinessesSnapshotsOptions = createSelector(selectState, state => {
-  const uniqueSnapshots = [...new Set(state.invoices.map(c => c.businessNameSnapshot))];
-  return uniqueSnapshots.map(name => ({ label: name, value: name }));
-});
+export const selectCategoriesOptions = createSelector(selectState, state => state.categoryOptions);
+export const selectUnitsOptions = createSelector(selectState, state => state.unitOptions);
+export const selectClientsSnapshotsOptions = createSelector(selectState, state => state.clientSnapshotOptions);
+export const selectBusinessesSnapshotsOptions = createSelector(selectState, state => state.businessSnapshotOptions);
 
 export const {
   enableLoading,
@@ -179,15 +138,12 @@ export const {
   setMode,
   setQuotes,
   setReports,
-  setClients,
   setCustomInvoiseSettings,
   setLanguageDate,
-  setBusinesses,
-  setItems,
-  setCategories,
-  setCurrencies,
-  setUnits,
-  setInvoices
+  setCategoryOptions,
+  setUnitOptions,
+  setBusinessSnapshotOptions,
+  setClientSnapshotOptions
 } = pageSlice.actions;
 
 export const pageReducer = pageSlice.reducer;

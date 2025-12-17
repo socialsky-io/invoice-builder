@@ -21,29 +21,6 @@ export interface Business {
   isArchived: boolean;
 }
 
-export interface BusinessModified {
-  id: number;
-  name: string;
-  shortName: string;
-  address?: string;
-  role?: string;
-  email?: string;
-  phone?: string;
-  website?: string;
-  additional?: string;
-  paymentInformation?: string;
-  logo?: string | null;
-  invoiceCount: number;
-  quotesCount: number;
-  createdAt: string;
-  updatedAt: string;
-  fileSize?: number;
-  fileType?: string;
-  fileName?: string;
-  description?: string;
-  isArchived: boolean;
-}
-
 export interface BusinessAdd {
   name: string;
   shortName: string;

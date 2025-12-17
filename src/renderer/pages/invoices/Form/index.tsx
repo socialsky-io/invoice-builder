@@ -1,6 +1,6 @@
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Box, Divider, Fab, Tooltip } from '@mui/material';
-import { useCallback, useState, type FC } from 'react';
+import { memo, useCallback, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { InvoiceInfo } from '../../../../main/types/invoice';
 import { InvoiceStatus } from '../../../shared/enums/invoiceStatus';
@@ -44,7 +44,7 @@ interface Props {
   handleDelete?: (id: number) => void;
   handleDuplicate?: (id: number, invoiceType: InvoiceType) => void;
 }
-export const InvoiceForm: FC<Props> = ({
+const InvoiceFormComponent: FC<Props> = ({
   invoiceForm,
   type,
   setInvoiceForm = () => {},
@@ -605,3 +605,5 @@ export const InvoiceForm: FC<Props> = ({
     </Box>
   );
 };
+
+export const InvoiceForm = memo(InvoiceFormComponent);

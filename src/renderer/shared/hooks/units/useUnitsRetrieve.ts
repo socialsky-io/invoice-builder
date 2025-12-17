@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react';
 import { useAppDispatch } from '../../../state/configureStore';
-import { setUnits } from '../../../state/pageSlice';
+import { setUnitOptions } from '../../../state/pageSlice';
 import type { RequestHook } from '../../types/requestHook';
 import type { Response } from '../../types/response';
 import type { Unit } from '../../types/unit';
@@ -13,7 +13,14 @@ export const useUnitsRetrieve = ({ showLoader = true, filter, onDone }: RequestH
 
   useEffect(() => {
     if (!units || !units.data) return;
-    dispatch(setUnits(units.data));
+
+    dispatch(
+      setUnitOptions(
+        units.data.map(c => {
+          return { label: c.name, value: c.id };
+        })
+      )
+    );
   }, [units, dispatch]);
 
   return { units: units?.data ?? [], execute };

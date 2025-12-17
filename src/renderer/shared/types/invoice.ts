@@ -51,17 +51,6 @@ export interface InvoiceAttachment {
   updatedAt?: string;
 }
 
-export interface InvoiceAttachmentModified {
-  id: number;
-  parentInvoiceId: number;
-  fileSize: number;
-  fileType: string;
-  fileName: string;
-  data: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
 export interface InvoiceItem {
   id?: number;
   parentInvoiceId?: number;
@@ -249,62 +238,4 @@ export interface InvoiceFromData {
   invoiceItems?: InvoiceItem[];
   invoiceAttachments?: InvoiceAttachment[];
   currencyFormat?: string;
-}
-
-export interface InvoicesModified {
-  id: number;
-  invoiceType: InvoiceType;
-  convertedFromQuotationId?: number;
-  businessId: number;
-  clientId: number;
-  currencyId: number;
-  createdAt: string;
-  updatedAt: string;
-  issuedAt: string;
-  dueDate?: string;
-  invoiceNumber: string;
-  isArchived: boolean;
-  status: InvoiceStatus;
-  customerNotes?: string;
-  thanksNotes?: string;
-  termsConditionNotes?: string;
-  discountName?: string;
-  businessNameSnapshot: string;
-  invoicePrefixSnapshot?: string;
-  invoiceSuffixSnapshot?: string;
-  businessDescriptionSnapshot?: string;
-  businessAddressSnapshot?: string;
-  businessRoleSnapshot?: string;
-  clientShortName: string;
-  businessShortName: string;
-  businessEmailSnapshot?: string;
-  businessPhoneSnapshot?: string;
-  businessWebsiteSnapshot?: string;
-  businessAdditionalSnapshot?: string;
-  businessPaymentInformationSnapshot?: string;
-  businessLogoSnapshot?: string | null;
-  businessFileSizeSnapshot?: number;
-  businessFileTypeSnapshot?: string;
-  businessFileNameSnapshot?: string;
-  clientNameSnapshot: string;
-  clientAddressSnapshot?: string;
-  clientDescriptionSnapshot?: string;
-  clientEmailSnapshot?: string;
-  clientPhoneSnapshot?: string;
-  clientCodeSnapshot?: string;
-  clientAdditionalSnapshot?: string;
-  currencyCodeSnapshot: string;
-  currencySymbolSnapshot: string;
-  currencySubunitSnapshot: number;
-  discountType?: DiscountType;
-  discountAmountCents: number;
-  discountPercent: number;
-  shippingFeeCents: number;
-  taxName?: string;
-  taxRate: number;
-  taxType?: InvoiceTaxType;
-  invoicePayments: InvoicePayment[];
-  invoiceItems: InvoiceItem[];
-  invoiceAttachments: InvoiceAttachmentModified[];
-  currencyFormat: string;
 }

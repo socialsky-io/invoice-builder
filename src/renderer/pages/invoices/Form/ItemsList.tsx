@@ -4,7 +4,7 @@ import { CSS } from '@dnd-kit/utilities';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Box, IconButton, ListItemButton, ListItemText, Menu, MenuItem, Tooltip, Typography } from '@mui/material';
-import React, { useState, type FC, type ReactElement } from 'react';
+import React, { memo, useState, type FC, type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { InvoiceFromData, InvoiceItem } from '../../../shared/types/invoice';
 import { getItemFinancialData } from '../../../shared/utils/invoiceFunctions';
@@ -51,7 +51,7 @@ const SortableItem: FC<{ id: string; children: React.ReactNode }> = ({ id, child
   );
 };
 
-export const ItemsList: FC<Props> = ({ invoiceForm, setInvoiceForm, onEdit = () => {}, onDelete = () => {} }) => {
+const ItemsListComponent: FC<Props> = ({ invoiceForm, setInvoiceForm, onEdit = () => {}, onDelete = () => {} }) => {
   const storeSettings = useAppSelector(selectSettings);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedItem, setSelectedItem] = useState<InvoiceItem | null>(null);
@@ -228,3 +228,5 @@ export const ItemsList: FC<Props> = ({ invoiceForm, setInvoiceForm, onEdit = () 
     </DndContext>
   );
 };
+
+export const ItemsList = memo(ItemsListComponent);

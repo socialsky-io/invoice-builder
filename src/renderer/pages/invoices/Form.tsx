@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, type FC } from 'react';
+import { useCallback, useEffect, useRef, useState, type FC } from 'react';
 import { InvoiceFormMode } from '../../shared/enums/invoiceFormMode';
 import { InvoiceStatus } from '../../shared/enums/invoiceStatus';
 import { InvoiceType } from '../../shared/enums/invoiceType';
@@ -24,6 +24,7 @@ export const Form: FC<Props> = ({
 }) => {
   const [invoiceForm, setInvoiceForm] = useState<InvoiceFromData | undefined>(undefined);
   const [isFormValid, setIsFormValid] = useState(false);
+  const debounceTimerRef = useRef<number | undefined>(undefined);
 
   const checkFormValid = useCallback(() => {
     if (
@@ -68,11 +69,24 @@ export const Form: FC<Props> = ({
   }, [invoiceForm, checkFormValid]);
 
   useEffect(() => {
-    if (invoiceForm)
+    if (!invoiceForm) return;
+
+    if (debounceTimerRef.current !== undefined) {
+      window.clearTimeout(debounceTimerRef.current);
+    }
+
+    debounceTimerRef.current = window.setTimeout(() => {
       handleChange({
         invoice: invoiceForm,
-        isFormValid: isFormValid
+        isFormValid
       });
+    }, 250);
+
+    return () => {
+      if (debounceTimerRef.current !== undefined) {
+        window.clearTimeout(debounceTimerRef.current);
+      }
+    };
   }, [invoiceForm, isFormValid, handleChange]);
 
   if (mode === InvoiceFormMode.edit) {

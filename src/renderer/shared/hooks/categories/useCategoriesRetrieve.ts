@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react';
 import { useAppDispatch } from '../../../state/configureStore';
-import { setCategories } from '../../../state/pageSlice';
+import { setCategoryOptions } from '../../../state/pageSlice';
 import type { Category } from '../../types/category';
 import type { RequestHook } from '../../types/requestHook';
 import type { Response } from '../../types/response';
@@ -22,7 +22,13 @@ export const useCategoriesRetrieve = ({
 
   useEffect(() => {
     if (!categories || !categories.data) return;
-    dispatch(setCategories(categories.data));
+    dispatch(
+      setCategoryOptions(
+        categories.data.map(c => {
+          return { label: c.name, value: c.id };
+        })
+      )
+    );
   }, [categories, dispatch]);
 
   return { categories: categories?.data ?? [], execute };

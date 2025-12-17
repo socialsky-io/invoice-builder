@@ -1,22 +1,12 @@
-import type { BusinessModified } from './business';
-import type { Category } from './category';
-import type { Client } from './client';
-import type { Currency } from './currency';
-import type { InvoicesModified } from './invoice';
-import type { Item } from './item';
 import type { Settings } from './settings';
 import type { ToastMeta } from './toastMeta';
-import type { Unit } from './unit';
 
 export interface PageState {
   isLoading: boolean;
   toasts: ToastMeta[];
   settings?: Settings;
-  businesses: BusinessModified[];
-  clients: Client[];
-  items: Item[];
-  currencies: Currency[];
-  units: Unit[];
-  categories: Category[];
-  invoices: InvoicesModified[];
+  categoryOptions?: Array<{ label: string; value: number }>;
+  unitOptions?: Array<{ label: string; value: number }>;
+  clientSnapshotOptions?: Array<{ label: string; value: string }>;
+  businessSnapshotOptions?: Array<{ label: string; value: string }>;
 }

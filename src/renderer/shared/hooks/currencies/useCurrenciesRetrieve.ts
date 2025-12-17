@@ -1,6 +1,4 @@
-import { useCallback, useEffect } from 'react';
-import { useAppDispatch } from '../../../state/configureStore';
-import { setCurrencies } from '../../../state/pageSlice';
+import { useCallback } from 'react';
 import type { Currency } from '../../types/currency';
 import type { RequestHook } from '../../types/requestHook';
 import type { Response } from '../../types/response';
@@ -12,18 +10,12 @@ export const useCurrenciesRetrieve = ({
   filter,
   onDone
 }: RequestHook<Response<Currency[]>>) => {
-  const dispatch = useAppDispatch();
   const asyncFn = useCallback(() => window.electronAPI.getAllCurrencies(filter), [filter]);
   const { data: currencies, execute } = useAsyncAction<Response<Currency[]>>(asyncFn, {
     showLoader,
     immediate,
     onDone
   });
-
-  useEffect(() => {
-    if (!currencies || !currencies.data) return;
-    dispatch(setCurrencies(currencies.data));
-  }, [currencies, dispatch]);
 
   return { currencies: currencies?.data ?? [], execute };
 };
