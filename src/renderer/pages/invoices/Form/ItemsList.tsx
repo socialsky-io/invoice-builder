@@ -4,9 +4,10 @@ import { CSS } from '@dnd-kit/utilities';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Box, IconButton, ListItemButton, ListItemText, Menu, MenuItem, Tooltip, Typography } from '@mui/material';
-import React, { memo, useState, type FC, type ReactElement } from 'react';
+import React, { memo, useMemo, useState, type FC, type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { InvoiceFromData, InvoiceItem } from '../../../shared/types/invoice';
+import { createCurrencyFormatter } from '../../../shared/utils/formatFunctions';
 import { getItemFinancialData } from '../../../shared/utils/invoiceFunctions';
 import { useAppSelector } from '../../../state/configureStore';
 import { selectSettings } from '../../../state/pageSlice';
@@ -81,6 +82,11 @@ const ItemsListComponent: FC<Props> = ({ invoiceForm, setInvoiceForm, onEdit = (
     }
   };
 
+  const format = useMemo(
+    () => (invoiceForm ? createCurrencyFormatter(storeSettings!, invoiceForm) : (n: number) => String(n)),
+    [storeSettings, invoiceForm]
+  );
+
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
       <SortableContext
@@ -96,7 +102,8 @@ const ItemsListComponent: FC<Props> = ({ invoiceForm, setInvoiceForm, onEdit = (
             unitPriceCents: unitPriceCentsSnapshot,
             quantity,
             taxType,
-            taxRate
+            taxRate,
+            format
           });
 
           return (
