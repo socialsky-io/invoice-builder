@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type FC } from 'react';
+import { useCallback, useDeferredValue, useEffect, useRef, useState, useTransition, type FC } from 'react';
 import { InvoiceFormMode } from '../../shared/enums/invoiceFormMode';
 import { InvoiceStatus } from '../../shared/enums/invoiceStatus';
 import { InvoiceType } from '../../shared/enums/invoiceType';
@@ -25,6 +25,7 @@ export const Form: FC<Props> = ({
   const [invoiceForm, setInvoiceForm] = useState<InvoiceFromData | undefined>(undefined);
   const [isFormValid, setIsFormValid] = useState(false);
   const debounceTimerRef = useRef<number | undefined>(undefined);
+  const [, startTransition] = useTransition();
 
   const checkFormValid = useCallback(() => {
     if (
@@ -43,26 +44,30 @@ export const Form: FC<Props> = ({
   }, [invoiceForm]);
 
   useEffect(() => {
-    if (invoice) {
-      setInvoiceForm({
-        ...invoice,
-        businessLogoSnapshot: invoice.businessLogoSnapshot
-      });
-    } else {
-      setInvoiceForm({
-        invoiceType: type,
-        status: type === InvoiceType.quotation ? InvoiceStatus.open : InvoiceStatus.unpaid,
-        taxRate: 0,
-        isArchived: false,
-        discountAmountCents: 0,
-        discountPercent: 0,
-        shippingFeeCents: 0,
-        invoiceItems: [],
-        invoicePayments: [],
-        invoiceAttachments: []
-      });
-    }
-  }, [invoice, type]);
+    startTransition(() => {
+      if (invoice) {
+        setInvoiceForm({
+          ...invoice,
+          businessLogoSnapshot: invoice.businessLogoSnapshot
+        });
+      } else {
+        setInvoiceForm({
+          invoiceType: type,
+          status: type === InvoiceType.quotation ? InvoiceStatus.open : InvoiceStatus.unpaid,
+          taxRate: 0,
+          isArchived: false,
+          discountAmountCents: 0,
+          discountPercent: 0,
+          shippingFeeCents: 0,
+          invoiceItems: [],
+          invoicePayments: [],
+          invoiceAttachments: []
+        });
+      }
+    });
+  }, [invoice, type, startTransition]);
+
+  const deferredInvoiceForm = useDeferredValue(invoiceForm);
 
   useEffect(() => {
     checkFormValid();
@@ -94,12 +99,12 @@ export const Form: FC<Props> = ({
       <InvoiceForm
         type={type}
         setInvoiceForm={setInvoiceForm}
-        invoiceForm={invoiceForm}
+        invoiceForm={deferredInvoiceForm}
         handleDelete={handleDelete}
         handleDuplicate={handleDuplicate}
       />
     );
   }
 
-  return <InvoicesPreview type={type} setInvoiceForm={setInvoiceForm} invoiceForm={invoiceForm} />;
+  return <InvoicesPreview type={type} setInvoiceForm={setInvoiceForm} invoiceForm={deferredInvoiceForm} />;
 };

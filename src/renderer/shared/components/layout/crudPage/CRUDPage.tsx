@@ -290,7 +290,12 @@ export const CRUDPage = <T, TAdd, TUpdate>(props: Props<T, TAdd, TUpdate>) => {
   }, []);
 
   const onEdit = useCallback((item: T) => {
-    setSelectedItem(item);
+    setSelectedItem(prev => {
+      if (prev && typeof prev === 'object' && 'id' in prev && item && typeof item === 'object' && 'id' in item) {
+        return prev.id === item.id ? prev : item;
+      }
+      return item;
+    });
   }, []);
 
   const onDelete = useCallback((id: number) => {

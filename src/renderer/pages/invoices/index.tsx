@@ -177,7 +177,12 @@ export const InvoicesPage: FC<Props> = ({ type }) => {
         return data;
       }}
       renderListItem={(item, selectedItem, onEdit) => (
-        <List key={item.id} item={item} selectedItem={selectedItem} onEdit={(editItem: Invoice) => onEdit(editItem)} />
+        <List
+          key={item.id}
+          item={item}
+          isSelected={item.id === selectedItem?.id}
+          onEdit={(editItem: Invoice) => onEdit(editItem)}
+        />
       )}
       form={({ item, onChange, onDelete, onDuplicate }) => (
         <Form

@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material';
-import { useCallback, useMemo, useState, type FC } from 'react';
+import { memo, useCallback, useMemo, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { DiscountType } from '../../../shared/enums/discountType';
 import { InvoiceType } from '../../../shared/enums/invoiceType';
@@ -29,7 +29,7 @@ interface Props {
   onRemovePaymentClicked: (data: PaymentForm) => void;
 }
 
-export const FinancialInfo: FC<Props> = ({
+const FinancialInfoComponent: FC<Props> = ({
   invoiceForm,
   onAddPaymentClicked,
   onShippingFeesClick,
@@ -67,7 +67,7 @@ export const FinancialInfo: FC<Props> = ({
     balanceDueFormatted,
     shippingAmount,
     discountAmount
-  } = useMemo(() => getFinancialData({ storeSettings, invoiceForm }), [storeSettings, invoiceForm]);
+  } = useMemo(() => getFinancialData({ storeSettings, invoiceForm: invoiceForm }), [storeSettings, invoiceForm]);
 
   const discountData = useMemo(() => {
     return {
@@ -88,7 +88,7 @@ export const FinancialInfo: FC<Props> = ({
   }, [invoiceForm]);
 
   const { amountPaid } = useMemo(
-    () => getPaidData({ storeSettings, invoiceForm, invoicePayment: selectedPayment }),
+    () => getPaidData({ storeSettings, invoiceForm: invoiceForm, invoicePayment: selectedPayment }),
     [storeSettings, invoiceForm, selectedPayment]
   );
 
@@ -390,3 +390,5 @@ export const FinancialInfo: FC<Props> = ({
     </Box>
   );
 };
+
+export const FinancialInfo = memo(FinancialInfoComponent);

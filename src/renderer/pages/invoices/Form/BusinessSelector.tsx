@@ -1,5 +1,5 @@
 import { Box, ListItemButton, ListItemText, Typography } from '@mui/material';
-import { useMemo, type FC } from 'react';
+import { useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { InvoiceFromData } from '../../../shared/types/invoice';
 import { fromUint8Array } from '../../../shared/utils/dataUrlFunctions';
@@ -12,10 +12,25 @@ interface Props {
 export const BusinessSelector: FC<Props> = ({ invoiceForm, onEdit }) => {
   const { t } = useTranslation();
 
-  const logoUrl = useMemo(
-    () => fromUint8Array(invoiceForm?.businessLogoSnapshot, invoiceForm?.businessFileTypeSnapshot),
-    [invoiceForm]
-  );
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!invoiceForm?.businessLogoSnapshot) {
+      if (logoUrl) {
+        URL.revokeObjectURL(logoUrl);
+      }
+      setLogoUrl(null);
+      return;
+    }
+
+    const url = fromUint8Array(invoiceForm.businessLogoSnapshot, invoiceForm.businessFileTypeSnapshot) ?? null;
+    setLogoUrl(url);
+
+    return () => {
+      if (url) URL.revokeObjectURL(url);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [invoiceForm?.businessLogoSnapshot, invoiceForm?.businessFileTypeSnapshot]);
 
   return (
     <ListItemButton

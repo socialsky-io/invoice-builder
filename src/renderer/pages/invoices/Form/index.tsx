@@ -1,6 +1,6 @@
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { Box, Divider, Fab, Tooltip } from '@mui/material';
-import { memo, useCallback, useState, type FC } from 'react';
+import { memo, useCallback, useState, useTransition, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { InvoiceInfo } from '../../../../main/types/invoice';
 import { InvoiceStatus } from '../../../shared/enums/invoiceStatus';
@@ -20,15 +20,15 @@ import type { Item } from '../../../shared/types/item';
 import { getFinancialData } from '../../../shared/utils/invoiceFunctions';
 import { useAppSelector } from '../../../state/configureStore';
 import { selectSettings } from '../../../state/pageSlice';
-import { AttachmentsList } from './../Form/AttachmentsList';
-import { BusinessSelector } from './../Form/BusinessSelector';
-import { ClientInvoiceRow } from './../Form/ClientInvoiceRow';
 import { CurrencySelector } from './../Form/CurrencySelector';
 import { FinancialInfo } from './../Form/FinancialInfo';
 import { ItemSelector } from './../Form/ItemSelector';
 import { ItemsList } from './../Form/ItemsList';
 import { NotesSelector } from './../Form/NotesSelector';
 import { StatusSelector } from './../Form/StatusSelector';
+import { AttachmentsList } from './AttachmentsList';
+import { BusinessSelector } from './BusinessSelector';
+import { ClientInvoiceRow } from './ClientInvoiceRow';
 import { BusinessesDropdown } from './Dropdowns/BusinessesDropdown';
 import { ClientsDropdown } from './Dropdowns/ClientsDropdown';
 import { CurrenciesDropdown } from './Dropdowns/CurrenciesDropdown';
@@ -60,6 +60,7 @@ const InvoiceFormComponent: FC<Props> = ({
   const [isDropdownOpenMoreAction, setMoreActionDropdown] = useState<boolean>(false);
   const [isDropdownOpenItems, setIsDropdownOpenItems] = useState<boolean>(false);
   const [isModalQuantityOpen, setModalQuantityOpen] = useState<boolean>(false);
+  const [, startTransition] = useTransition();
 
   const [selectedInvoiceItem, setSelectedInvoiceItem] = useState<InvoiceItem | undefined>(undefined);
   const storeSettings = useAppSelector(selectSettings);
@@ -80,23 +81,25 @@ const InvoiceFormComponent: FC<Props> = ({
     (data: Business) => {
       handleOnClose(setIsDropdownOpenBusinesses);
       if (invoiceForm?.businessId !== data.id) {
-        setInvoiceForm({
-          ...invoiceForm,
-          businessId: data.id,
-          businessNameSnapshot: data.name,
-          businessDescriptionSnapshot: data.description,
-          businessAddressSnapshot: data.address,
-          businessRoleSnapshot: data.role,
-          businessShortName: data.shortName,
-          businessEmailSnapshot: data.email,
-          businessPhoneSnapshot: data.phone,
-          businessWebsiteSnapshot: data.website,
-          businessAdditionalSnapshot: data.additional,
-          businessPaymentInformationSnapshot: data.paymentInformation,
-          businessLogoSnapshot: data.logo ?? undefined,
-          businessFileSizeSnapshot: data.fileSize,
-          businessFileTypeSnapshot: data.fileType,
-          businessFileNameSnapshot: data.fileName
+        startTransition(() => {
+          setInvoiceForm({
+            ...invoiceForm,
+            businessId: data.id,
+            businessNameSnapshot: data.name,
+            businessDescriptionSnapshot: data.description,
+            businessAddressSnapshot: data.address,
+            businessRoleSnapshot: data.role,
+            businessShortName: data.shortName,
+            businessEmailSnapshot: data.email,
+            businessPhoneSnapshot: data.phone,
+            businessWebsiteSnapshot: data.website,
+            businessAdditionalSnapshot: data.additional,
+            businessPaymentInformationSnapshot: data.paymentInformation,
+            businessLogoSnapshot: data.logo ?? undefined,
+            businessFileSizeSnapshot: data.fileSize,
+            businessFileTypeSnapshot: data.fileType,
+            businessFileNameSnapshot: data.fileName
+          });
         });
       }
     },
@@ -144,17 +147,19 @@ const InvoiceFormComponent: FC<Props> = ({
         const updatedShippingFee = convert(invoiceForm?.shippingFeeCents);
         const updatedDiscountAmount = convert(invoiceForm?.discountAmountCents);
 
-        setInvoiceForm({
-          ...invoiceForm,
-          currencyId: data.id,
-          currencyCodeSnapshot: data.code,
-          currencySymbolSnapshot: data.symbol,
-          currencySubunitSnapshot: data.subunit,
-          currencyFormat: data.format,
-          invoiceItems: updatedItems ?? invoiceForm.invoiceItems,
-          invoicePayments: updatedPayments ?? invoiceForm.invoicePayments,
-          shippingFeeCents: updatedShippingFee,
-          discountAmountCents: updatedDiscountAmount
+        startTransition(() => {
+          setInvoiceForm({
+            ...invoiceForm,
+            currencyId: data.id,
+            currencyCodeSnapshot: data.code,
+            currencySymbolSnapshot: data.symbol,
+            currencySubunitSnapshot: data.subunit,
+            currencyFormat: data.format,
+            invoiceItems: updatedItems ?? invoiceForm.invoiceItems,
+            invoicePayments: updatedPayments ?? invoiceForm.invoicePayments,
+            shippingFeeCents: updatedShippingFee,
+            discountAmountCents: updatedDiscountAmount
+          });
         });
       }
     },
@@ -166,17 +171,19 @@ const InvoiceFormComponent: FC<Props> = ({
       handleOnClose(setIsDropdownOpenClients);
 
       if (invoiceForm?.clientId !== data.id) {
-        setInvoiceForm({
-          ...invoiceForm,
-          clientId: data.id,
-          clientShortName: data.shortName,
-          clientNameSnapshot: data.name,
-          clientAddressSnapshot: data.address,
-          clientDescriptionSnapshot: data.description,
-          clientEmailSnapshot: data.email,
-          clientPhoneSnapshot: data.phone,
-          clientCodeSnapshot: data.code,
-          clientAdditionalSnapshot: data.additional
+        startTransition(() => {
+          setInvoiceForm({
+            ...invoiceForm,
+            clientId: data.id,
+            clientShortName: data.shortName,
+            clientNameSnapshot: data.name,
+            clientAddressSnapshot: data.address,
+            clientDescriptionSnapshot: data.description,
+            clientEmailSnapshot: data.email,
+            clientPhoneSnapshot: data.phone,
+            clientCodeSnapshot: data.code,
+            clientAdditionalSnapshot: data.additional
+          });
         });
       }
     },
@@ -206,12 +213,14 @@ const InvoiceFormComponent: FC<Props> = ({
         taxType: undefined
       };
 
-      setInvoiceForm(prev => {
-        if (!prev) return prev;
-        return {
-          ...prev,
-          invoiceItems: [...(prev.invoiceItems ?? []), newItem]
-        };
+      startTransition(() => {
+        setInvoiceForm(prev => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            invoiceItems: [...(prev.invoiceItems ?? []), newItem]
+          };
+        });
       });
     },
     [handleOnClose, setInvoiceForm, invoiceForm]
@@ -221,12 +230,14 @@ const InvoiceFormComponent: FC<Props> = ({
     (itemToRemove: InvoiceItem) => {
       if (!invoiceForm) return;
 
-      setInvoiceForm(prev => {
-        if (!prev) return prev;
-        return {
-          ...prev,
-          invoiceItems: (prev.invoiceItems ?? []).filter(i => i.id !== itemToRemove.id)
-        };
+      startTransition(() => {
+        setInvoiceForm(prev => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            invoiceItems: (prev.invoiceItems ?? []).filter(i => i.id !== itemToRemove.id)
+          };
+        });
       });
     },
     [setInvoiceForm, invoiceForm]
@@ -245,16 +256,17 @@ const InvoiceFormComponent: FC<Props> = ({
   const handleEditQuantity = useCallback(
     (quantity: number) => {
       if (!selectedInvoiceItem || !invoiceForm) return;
+      startTransition(() => {
+        setInvoiceForm(prev => {
+          if (!prev) return prev;
 
-      setInvoiceForm(prev => {
-        if (!prev) return prev;
-
-        return {
-          ...prev,
-          invoiceItems: (prev.invoiceItems ?? []).map(item =>
-            item.id === selectedInvoiceItem.id ? { ...item, quantity: quantity } : item
-          )
-        };
+          return {
+            ...prev,
+            invoiceItems: (prev.invoiceItems ?? []).map(item =>
+              item.id === selectedInvoiceItem.id ? { ...item, quantity: quantity } : item
+            )
+          };
+        });
       });
 
       setSelectedInvoiceItem(undefined);
@@ -266,13 +278,15 @@ const InvoiceFormComponent: FC<Props> = ({
   const handleOnClickInvoiceInformation = useCallback(
     (data: InvoiceInfo) => {
       handleOnClose(setIsDropdownOpenInvoiceInfo);
-      setInvoiceForm({
-        ...invoiceForm,
-        issuedAt: data.issuedAt ?? '',
-        invoiceNumber: data.invoiceNumber ?? '',
-        dueDate: data.dueDate,
-        invoicePrefixSnapshot: data.invoicePrefix,
-        invoiceSuffixSnapshot: data.invoiceSuffix
+      startTransition(() => {
+        setInvoiceForm({
+          ...invoiceForm,
+          issuedAt: data.issuedAt ?? '',
+          invoiceNumber: data.invoiceNumber ?? '',
+          dueDate: data.dueDate,
+          invoicePrefixSnapshot: data.invoicePrefix,
+          invoiceSuffixSnapshot: data.invoiceSuffix
+        });
       });
     },
     [handleOnClose, setInvoiceForm, invoiceForm]
@@ -283,10 +297,11 @@ const InvoiceFormComponent: FC<Props> = ({
       if (!invoiceForm) return;
 
       const fee = invoiceForm.currencySubunitSnapshot ? data * invoiceForm.currencySubunitSnapshot : data;
-
-      setInvoiceForm({
-        ...invoiceForm,
-        shippingFeeCents: fee
+      startTransition(() => {
+        setInvoiceForm({
+          ...invoiceForm,
+          shippingFeeCents: fee
+        });
       });
     },
     [setInvoiceForm, invoiceForm]
@@ -299,13 +314,14 @@ const InvoiceFormComponent: FC<Props> = ({
       const discountAmount = invoiceForm.currencySubunitSnapshot
         ? (data.discountAmount ?? 0) * invoiceForm.currencySubunitSnapshot
         : data.discountAmount;
-
-      setInvoiceForm({
-        ...invoiceForm,
-        discountName: data.discountName,
-        discountType: data.discountType,
-        discountPercent: data.discountRate ?? 0,
-        discountAmountCents: discountAmount ?? 0
+      startTransition(() => {
+        setInvoiceForm({
+          ...invoiceForm,
+          discountName: data.discountName,
+          discountType: data.discountType,
+          discountPercent: data.discountRate ?? 0,
+          discountAmountCents: discountAmount ?? 0
+        });
       });
     },
     [setInvoiceForm, invoiceForm]
@@ -335,8 +351,9 @@ const InvoiceFormComponent: FC<Props> = ({
         invoicePayments: invoiceForm.invoicePayments?.filter(item => item.id !== data.id)
       };
       newInvoiceForm.status = getStatus(newInvoiceForm);
-
-      setInvoiceForm(newInvoiceForm);
+      startTransition(() => {
+        setInvoiceForm(newInvoiceForm);
+      });
     },
     [invoiceForm, setInvoiceForm, getStatus]
   );
@@ -391,8 +408,9 @@ const InvoiceFormComponent: FC<Props> = ({
         invoicePayments
       };
       newInvoiceForm.status = getStatus(newInvoiceForm);
-
-      setInvoiceForm(newInvoiceForm);
+      startTransition(() => {
+        setInvoiceForm(newInvoiceForm);
+      });
     },
     [invoiceForm, setInvoiceForm, getStatus]
   );
@@ -400,13 +418,14 @@ const InvoiceFormComponent: FC<Props> = ({
   const handleOnClickTax = useCallback(
     (data: TaxForm) => {
       if (!invoiceForm) return;
-
-      setInvoiceForm({
-        ...invoiceForm,
-        taxName: data.taxName,
-        taxRate: data.taxRate,
-        taxType: data.taxType,
-        invoiceItems: data.invoiceItems
+      startTransition(() => {
+        setInvoiceForm({
+          ...invoiceForm,
+          taxName: data.taxName,
+          taxRate: data.taxRate,
+          taxType: data.taxType,
+          invoiceItems: data.invoiceItems
+        });
       });
     },
     [setInvoiceForm, invoiceForm]
@@ -425,10 +444,11 @@ const InvoiceFormComponent: FC<Props> = ({
         fileSize: data.fileSize,
         data: data.data
       });
-
-      setInvoiceForm({
-        ...invoiceForm,
-        invoiceAttachments: invoiceAttachments
+      startTransition(() => {
+        setInvoiceForm({
+          ...invoiceForm,
+          invoiceAttachments: invoiceAttachments
+        });
       });
     },
     [setInvoiceForm, invoiceForm]
@@ -441,10 +461,11 @@ const InvoiceFormComponent: FC<Props> = ({
       const invoiceAttachments = invoiceForm.invoiceAttachments
         ? [...invoiceForm.invoiceAttachments.filter(ia => ia.id !== data)]
         : [];
-
-      setInvoiceForm({
-        ...invoiceForm,
-        invoiceAttachments: invoiceAttachments
+      startTransition(() => {
+        setInvoiceForm({
+          ...invoiceForm,
+          invoiceAttachments: invoiceAttachments
+        });
       });
     },
     [setInvoiceForm, invoiceForm]
@@ -498,23 +519,33 @@ const InvoiceFormComponent: FC<Props> = ({
           <StatusSelector
             invoiceForm={invoiceForm}
             onArchivedChanged={value => {
-              setInvoiceForm(prev => ({ ...prev, isArchived: value }));
+              startTransition(() => {
+                setInvoiceForm(prev => ({ ...prev, isArchived: value }));
+              });
             }}
             onStatusChanged={value => {
-              setInvoiceForm(prev => ({ ...prev, status: value }));
+              startTransition(() => {
+                setInvoiceForm(prev => ({ ...prev, status: value }));
+              });
             }}
           />
           <Divider flexItem />
           <NotesSelector
             invoiceForm={invoiceForm}
             onCustomerNotesChanged={value => {
-              setInvoiceForm(prev => ({ ...prev, customerNotes: value }));
+              startTransition(() => {
+                setInvoiceForm(prev => ({ ...prev, customerNotes: value }));
+              });
             }}
             onThanksNotesChanged={value => {
-              setInvoiceForm(prev => ({ ...prev, thanksNotes: value }));
+              startTransition(() => {
+                setInvoiceForm(prev => ({ ...prev, thanksNotes: value }));
+              });
             }}
             onTermsConditionsNotesChanged={value => {
-              setInvoiceForm(prev => ({ ...prev, termsConditionNotes: value }));
+              startTransition(() => {
+                setInvoiceForm(prev => ({ ...prev, termsConditionNotes: value }));
+              });
             }}
           />
 

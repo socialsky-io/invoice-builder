@@ -1,6 +1,6 @@
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 import { Box, IconButton, ListItemText, Tooltip, Typography } from '@mui/material';
-import { type FC } from 'react';
+import { useEffect, useMemo, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UploadImage } from '../../../shared/components/inputs/uploadImage/UploadImage';
 import type { AttachmentForm, InvoiceFromData } from '../../../shared/types/invoice';
@@ -29,6 +29,23 @@ export const AttachmentsList: FC<Props> = ({ invoiceForm, onAttach, onClear }) =
       onClear(id);
     }
   };
+
+  const attachmentUrls = useMemo(() => {
+    return (
+      invoiceForm?.invoiceAttachments?.map(attachment => ({
+        id: attachment.id,
+        url: fromUint8Array(attachment.data, attachment.fileType) ?? undefined
+      })) ?? []
+    );
+  }, [invoiceForm?.invoiceAttachments]);
+
+  useEffect(() => {
+    return () => {
+      attachmentUrls.forEach(a => {
+        if (a.url) URL.revokeObjectURL(a.url);
+      });
+    };
+  }, [attachmentUrls]);
 
   return (
     <Box
@@ -79,19 +96,15 @@ export const AttachmentsList: FC<Props> = ({ invoiceForm, onAttach, onClear }) =
           gap: 1
         }}
       >
-        {invoiceForm?.invoiceAttachments?.map(attachment => {
-          const imgURL = fromUint8Array(attachment.data, attachment.fileType) ?? undefined;
-
-          return (
-            <UploadImage
-              onUpload={(file?: Blob, filename?: string) => onUpload(file, filename, attachment.id)}
-              imgUrl={imgURL}
-              size={100}
-              key={attachment.id}
-              disableEdit={true}
-            />
-          );
-        })}
+        {attachmentUrls.map(attachment => (
+          <UploadImage
+            key={attachment.id}
+            onUpload={(file?: Blob, filename?: string) => onUpload(file, filename, attachment.id)}
+            imgUrl={attachment.url}
+            size={100}
+            disableEdit={true}
+          />
+        ))}
         <UploadImage onUpload={onUpload} size={100} imgUrl={undefined} alwaysShowAddIcon={true} />
       </Box>
     </Box>
