@@ -1,10 +1,10 @@
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 import { Box, IconButton, ListItemText, Tooltip, Typography } from '@mui/material';
-import { memo, useEffect, useMemo, type FC } from 'react';
+import { memo, useEffect, useState, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UploadImage } from '../../../shared/components/inputs/uploadImage/UploadImage';
 import type { AttachmentForm, InvoiceFromData } from '../../../shared/types/invoice';
-import { fromUint8Array, toUint8Array } from '../../../shared/utils/dataUrlFunctions';
+import { toUint8Array, uint8ArrayToDataUrl } from '../../../shared/utils/dataUrlFunctions';
 
 interface Props {
   invoiceForm?: InvoiceFromData;
@@ -29,22 +29,28 @@ const AttachmentsListComponent: FC<Props> = ({ invoiceForm, onAttach, onClear })
     }
   };
 
-  const attachmentUrls = useMemo(() => {
-    return (
-      invoiceForm?.invoiceAttachments?.map(attachment => ({
-        id: attachment.id,
-        url: fromUint8Array(attachment.data, attachment.fileType) ?? undefined
-      })) ?? []
-    );
-  }, [invoiceForm?.invoiceAttachments]);
+  const [attachmentUrls, setAttachmentUrls] = useState<Array<{ id: number; url?: string }>>([]);
 
   useEffect(() => {
-    return () => {
-      attachmentUrls.forEach(a => {
-        if (a.url) URL.revokeObjectURL(a.url);
-      });
-    };
-  }, [attachmentUrls]);
+    const attachments = invoiceForm?.invoiceAttachments ?? [];
+
+    if (attachments.length === 0) {
+      setAttachmentUrls([]);
+      return;
+    }
+
+    (async () => {
+      const list = await Promise.all(
+        attachments.map(async attachment => {
+          const url = attachment.data ? await uint8ArrayToDataUrl(attachment.data, attachment.fileType) : undefined;
+
+          return { id: attachment.id as number, url };
+        })
+      );
+
+      setAttachmentUrls(list);
+    })();
+  }, [invoiceForm?.invoiceAttachments]);
 
   return (
     <Box

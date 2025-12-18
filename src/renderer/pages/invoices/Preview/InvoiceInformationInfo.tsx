@@ -3,23 +3,21 @@ import { memo, type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { InvoiceType } from '../../../shared/enums/invoiceType';
 import type { InvoiceFromData } from '../../../shared/types/invoice';
+import type { Settings } from '../../../shared/types/settings';
 import { formatDate } from '../../../shared/utils/formatFunctions';
-import { useAppSelector } from '../../../state/configureStore';
-import { selectSettings } from '../../../state/pageSlice';
 import { PDF_STYLES } from './constant';
 
 interface Props {
   invoiceForm?: InvoiceFromData;
-  type: InvoiceType;
+  storeSettings?: Settings;
 }
-const InvoiceInformationInfoComponent: FC<Props> = ({ invoiceForm, type }) => {
+const InvoiceInformationInfoComponent: FC<Props> = ({ invoiceForm, storeSettings }) => {
   const { t } = useTranslation();
-  const storeSettings = useAppSelector(selectSettings);
 
   return (
     <View style={[PDF_STYLES.alignEnd, PDF_STYLES.gap4, PDF_STYLES.w50]}>
       <Text style={PDF_STYLES.title}>
-        {type === InvoiceType.invoice ? t('invoices.pdfINVOICE') : t('invoices.pdfQUOTE')}
+        {invoiceForm?.invoiceType === InvoiceType.invoice ? t('invoices.pdfINVOICE') : t('invoices.pdfQUOTE')}
       </Text>
 
       <View style={[PDF_STYLES.gap3, PDF_STYLES.alignEnd]}>

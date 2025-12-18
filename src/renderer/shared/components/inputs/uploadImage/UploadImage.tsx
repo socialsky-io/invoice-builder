@@ -32,6 +32,7 @@ export const UploadImage: React.FC<UploadSquareProps> = ({
   const [imageSrc, setImageSrc] = useState<string | undefined>(undefined);
   const [cropDialogOpen, setCropDialogOpen] = useState(false);
   const [croppedImageUrl, setCroppedImageUrl] = useState<string | undefined>(imgUrl);
+  const objectUrlRef = useRef<string | undefined>(undefined);
 
   const handleClick = () => {
     if (croppedImageUrl && disableEdit) return;
@@ -57,8 +58,41 @@ export const UploadImage: React.FC<UploadSquareProps> = ({
   };
 
   useEffect(() => {
+    if (objectUrlRef.current && objectUrlRef.current !== imgUrl) {
+      try {
+        URL.revokeObjectURL(objectUrlRef.current);
+      } catch {
+        // swallow if invalid
+      }
+      objectUrlRef.current = undefined;
+    }
     setCroppedImageUrl(imgUrl);
   }, [imgUrl]);
+
+  useEffect(() => {
+    return () => {
+      if (imageSrc) {
+        try {
+          URL.revokeObjectURL(imageSrc);
+        } catch {
+          // swallow if invalid
+        }
+      }
+    };
+  }, [imageSrc]);
+
+  useEffect(() => {
+    return () => {
+      if (objectUrlRef.current) {
+        try {
+          URL.revokeObjectURL(objectUrlRef.current);
+        } catch {
+          // swallow if invalid
+        }
+        objectUrlRef.current = undefined;
+      }
+    };
+  }, []);
 
   return (
     <Box sx={{ position: 'relative' }}>
@@ -104,6 +138,14 @@ export const UploadImage: React.FC<UploadSquareProps> = ({
                 aria-label={t('ariaLabel.clear')}
                 onClick={e => {
                   e.stopPropagation();
+                  if (objectUrlRef.current) {
+                    try {
+                      URL.revokeObjectURL(objectUrlRef.current);
+                    } catch {
+                      // swallow if invalid
+                    }
+                    objectUrlRef.current = undefined;
+                  }
                   setCroppedImageUrl(undefined);
                   if (inputRef.current) inputRef.current.value = '';
                   if (onUpload) onUpload(undefined);

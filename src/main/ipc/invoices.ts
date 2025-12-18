@@ -66,9 +66,7 @@ export const initInvoicesHandlers = (db: Database) => {
     'itemId',
     'itemNameSnapshot',
     'unitPriceCentsSnapshot',
-    'itemDescriptionSnapshot',
     'unitNameSnapshot',
-    'categoryNameSnapshot',
     'quantity',
     'taxRate',
     'taxType'
@@ -214,7 +212,7 @@ export const initInvoicesHandlers = (db: Database) => {
           `
         INSERT INTO invoice_items (
           parentInvoiceId, itemId, itemNameSnapshot, unitPriceCentsSnapshot,
-          itemDescriptionSnapshot, unitNameSnapshot, categoryNameSnapshot,
+          unitNameSnapshot,
           quantity, taxRate, taxType
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `,
@@ -223,9 +221,7 @@ export const initInvoicesHandlers = (db: Database) => {
             item.itemId,
             item.itemNameSnapshot,
             item.unitPriceCentsSnapshot,
-            item.itemDescriptionSnapshot ?? null,
             item.unitNameSnapshot ?? null,
-            item.categoryNameSnapshot ?? null,
             item.quantity,
             item.taxRate,
             item.taxType ?? null
@@ -352,11 +348,11 @@ export const initInvoicesHandlers = (db: Database) => {
         `
             INSERT INTO invoice_items (
               parentInvoiceId, itemId, itemNameSnapshot, unitPriceCentsSnapshot,
-              itemDescriptionSnapshot, unitNameSnapshot, categoryNameSnapshot,
+              unitNameSnapshot,
               quantity, taxName, taxRate, taxType
             )
             SELECT ?, itemId, itemNameSnapshot, unitPriceCentsSnapshot,
-              itemDescriptionSnapshot, unitNameSnapshot, categoryNameSnapshot,
+              unitNameSnapshot,
               quantity, taxName, taxRate, taxType
             FROM invoice_items WHERE parentInvoiceId = ?;
           `,

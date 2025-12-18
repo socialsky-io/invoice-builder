@@ -84,9 +84,7 @@ export interface InvoiceItem {
   itemId: number;
   itemNameSnapshot: string;
   unitPriceCentsSnapshot: number;
-  itemDescriptionSnapshot?: string;
   unitNameSnapshot?: string;
-  categoryNameSnapshot?: string;
   quantity: number;
   createdAt: string;
   updatedAt: string;

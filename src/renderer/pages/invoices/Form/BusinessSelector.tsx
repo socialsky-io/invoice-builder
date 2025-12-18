@@ -17,7 +17,11 @@ const BusinessSelectorComponent: FC<Props> = ({ invoiceForm, onEdit }) => {
   useEffect(() => {
     if (!invoiceForm?.businessLogoSnapshot) {
       if (logoUrl) {
-        URL.revokeObjectURL(logoUrl);
+        try {
+          URL.revokeObjectURL(logoUrl);
+        } catch {
+          // swallow if invalid
+        }
       }
       setLogoUrl(null);
       return;
@@ -27,7 +31,12 @@ const BusinessSelectorComponent: FC<Props> = ({ invoiceForm, onEdit }) => {
     setLogoUrl(url);
 
     return () => {
-      if (url) URL.revokeObjectURL(url);
+      if (url)
+        try {
+          URL.revokeObjectURL(url);
+        } catch {
+          // swallow if invalid
+        }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [invoiceForm?.businessLogoSnapshot, invoiceForm?.businessFileTypeSnapshot]);

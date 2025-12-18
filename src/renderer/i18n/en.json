@@ -128,6 +128,7 @@
     "invoiceNumber": "Invoice number",
     "invoices": "Invoices",
     "issuedAt": "Issued at",
+    "item": "Item",
     "lastUpdate": "Last updated",
     "makeInvoice": "Make invoice",
     "name": "Name",
@@ -138,6 +139,7 @@
     "paypal": "PayPal",
     "phone": "Phone",
     "phoneHelper": "Enter phone number in international format",
+    "qty": "Qty",
     "quote": "Quote",
     "quoteNumber": "Quote number",
     "quotes": "Quotes",
@@ -151,7 +153,9 @@
     "status": "Status",
     "text": "Text",
     "to": "To",
-    "unit": "Unit"
+    "total": "Total",
+    "unit": "Unit",
+    "unitCost": "Unit cost"
   },
   "currencies": {
     "add": "Add currency",
