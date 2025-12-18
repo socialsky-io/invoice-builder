@@ -203,9 +203,11 @@ export const isInvoiceFromData = (data: unknown): data is InvoiceFromData => {
     typeof d.businessNameSnapshot !== 'string'
   )
     return false;
-  if (d.businessShortName !== undefined && d.businessShortName !== null && typeof d.businessShortName !== 'string')
-    return false;
-  if (d.clientShortName !== undefined && d.clientShortName !== null && typeof d.clientShortName !== 'string')
+  if (
+    d.businessShortNameSnapshot !== undefined &&
+    d.businessShortNameSnapshot !== null &&
+    typeof d.businessShortNameSnapshot !== 'string'
+  )
     return false;
   if (d.clientNameSnapshot !== undefined && d.clientNameSnapshot !== null && typeof d.clientNameSnapshot !== 'string')
     return false;
@@ -253,18 +255,15 @@ export const isInvoiceFromData = (data: unknown): data is InvoiceFromData => {
     'thanksNotes',
     'termsConditionNotes',
     'discountName',
-    'businessDescriptionSnapshot',
     'businessAddressSnapshot',
     'businessRoleSnapshot',
     'businessEmailSnapshot',
     'businessPhoneSnapshot',
-    'businessWebsiteSnapshot',
     'businessAdditionalSnapshot',
     'businessPaymentInformationSnapshot',
     'businessFileTypeSnapshot',
     'businessFileNameSnapshot',
     'clientAddressSnapshot',
-    'clientDescriptionSnapshot',
     'clientEmailSnapshot',
     'clientPhoneSnapshot',
     'clientCodeSnapshot',

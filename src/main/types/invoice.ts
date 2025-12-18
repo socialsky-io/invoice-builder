@@ -22,14 +22,11 @@ export interface Invoice {
   termsConditionNotes?: string;
   discountName?: string;
   businessNameSnapshot: string;
-  businessDescriptionSnapshot?: string;
   businessAddressSnapshot?: string;
   businessRoleSnapshot?: string;
-  clientShortName: string;
-  businessShortName: string;
+  businessShortNameSnapshot: string;
   businessEmailSnapshot?: string;
   businessPhoneSnapshot?: string;
-  businessWebsiteSnapshot?: string;
   businessAdditionalSnapshot?: string;
   businessPaymentInformationSnapshot?: string;
   businessLogoSnapshot?: Uint8Array;
@@ -38,7 +35,6 @@ export interface Invoice {
   businessFileNameSnapshot?: string;
   clientNameSnapshot: string;
   clientAddressSnapshot?: string;
-  clientDescriptionSnapshot?: string;
   clientEmailSnapshot?: string;
   clientPhoneSnapshot?: string;
   clientCodeSnapshot?: string;

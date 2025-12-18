@@ -101,7 +101,7 @@ const BusinessSelectorComponent: FC<Props> = ({ invoiceForm, onEdit }) => {
               overflow: 'hidden'
             }}
           >
-            {invoiceForm?.businessShortName}
+            {invoiceForm?.businessShortNameSnapshot}
           </Box>
         )}
       </Box>

@@ -15,7 +15,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
   const { t } = useTranslation();
   const { form, setForm, update } = useForm<BusinessFromData>({
     id: business?.id,
-    logo: undefined,
+    logo: business?.logo ?? undefined,
     email: business?.email ?? '',
     phone: business?.phone ?? '',
     name: business?.name ?? '',
@@ -72,7 +72,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
   useEffect(() => {
     setForm({
       id: business?.id,
-      logo: undefined,
+      logo: business?.logo ?? undefined,
       email: business?.email ?? '',
       phone: business?.phone ?? '',
       name: business?.name ?? '',
@@ -222,7 +222,7 @@ export const Form: FC<Props> = ({ handleChange = () => {}, business }) => {
         <TextField
           multiline
           rows={5}
-          label={t('businesses.paymentInfo')}
+          label={t('common.paymentInfo')}
           fullWidth
           value={form.paymentInformation}
           onChange={e => update('paymentInformation', e.target.value)}

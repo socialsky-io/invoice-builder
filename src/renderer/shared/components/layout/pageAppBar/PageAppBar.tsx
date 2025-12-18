@@ -75,7 +75,7 @@ export const PageAppBar: FC<Props> = ({
         </Dialog>
       )}
       {!isModal && (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, height: '100%' }}>
           {appBar}
           {formContent}
         </Box>
