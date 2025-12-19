@@ -10,6 +10,7 @@ export default [
     ignores: [
       'dist/**',
       'dist-electron/**',
+      'release/**',
       'coverage/**',
       'index.html',
       '.eslintrc.js',

@@ -33,3 +33,5 @@ dist-electron
 .env.production
 .env.test
 /coverage
+
+release
