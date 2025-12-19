@@ -18,9 +18,10 @@ export const PDF_STYLES = StyleSheet.create({
   mt5: { marginTop: 5 },
   mb5: { marginBottom: 5 },
   w40: { width: '40%' },
+  textEnd: { textAlign: 'right' },
   w50: { width: '50%' },
-  w10: { width: '5%' },
-  w30: { width: '30%' },
+  w5: { width: '5%' },
+  w35: { width: '35%' },
   w15: { width: '15%' },
   border: { height: 1, backgroundColor: '#e0e0e0' },
   maxw50: { maxWidth: '50%' },
@@ -36,9 +37,6 @@ export const PDF_STYLES = StyleSheet.create({
   table: {
     width: '100%',
     marginTop: 10
-  },
-  tableHeader: {
-    backgroundColor: '#f0f0f0'
   },
   tableCol: {
     padding: 6

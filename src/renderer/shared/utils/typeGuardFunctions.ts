@@ -197,6 +197,44 @@ export const isInvoiceFromData = (data: unknown): data is InvoiceFromData => {
   if (d.issuedAt !== undefined && d.issuedAt !== null && typeof d.issuedAt !== 'string') return false;
   if (d.invoiceNumber !== undefined && d.invoiceNumber !== null && typeof d.invoiceNumber !== 'string') return false;
   if (d.status !== undefined && d.status !== null && typeof d.status !== 'string') return false;
+  if (d.customizationColor !== undefined && d.customizationColor !== null && typeof d.customizationColor !== 'string')
+    return false;
+  if (
+    d.customizationLogoSize !== undefined &&
+    d.customizationLogoSize !== null &&
+    typeof d.customizationLogoSize !== 'string'
+  )
+    return false;
+  if (
+    d.customizationFontSizeSize !== undefined &&
+    d.customizationFontSizeSize !== null &&
+    typeof d.customizationFontSizeSize !== 'string'
+  )
+    return false;
+  if (
+    d.customizationLayout !== undefined &&
+    d.customizationLayout !== null &&
+    typeof d.customizationLayout !== 'string'
+  )
+    return false;
+  if (
+    d.customizationTableHeaderStyle !== undefined &&
+    d.customizationTableHeaderStyle !== null &&
+    typeof d.customizationTableHeaderStyle !== 'string'
+  )
+    return false;
+  if (
+    d.customizationTableRowStyle !== undefined &&
+    d.customizationTableRowStyle !== null &&
+    typeof d.customizationTableRowStyle !== 'string'
+  )
+    return false;
+  if (
+    d.customizationPageFormat !== undefined &&
+    d.customizationPageFormat !== null &&
+    typeof d.customizationPageFormat !== 'string'
+  )
+    return false;
   if (
     d.businessNameSnapshot !== undefined &&
     d.businessNameSnapshot !== null &&
@@ -249,6 +287,13 @@ export const isInvoiceFromData = (data: unknown): data is InvoiceFromData => {
 
   if (d.isArchived !== undefined && d.isArchived !== null && d.isArchived !== '' && typeof d.isArchived !== 'boolean')
     return false;
+  if (
+    d.customizationLabelUpperCase !== undefined &&
+    d.customizationLabelUpperCase !== null &&
+    d.customizationLabelUpperCase !== '' &&
+    typeof d.customizationLabelUpperCase !== 'boolean'
+  )
+    return false;
 
   const stringFields = [
     'customerNotes',
@@ -270,7 +315,11 @@ export const isInvoiceFromData = (data: unknown): data is InvoiceFromData => {
     'clientAdditionalSnapshot',
     'taxName',
     'invoicePrefixSnapshot',
-    'invoiceSuffixSnapshot'
+    'invoiceSuffixSnapshot',
+    'customizationWatermarkFileName',
+    'customizationWatermarkFileType',
+    'customizationPaidWatermarkFileName',
+    'customizationPaidWatermarkFileType'
   ];
 
   for (const key of stringFields) {
@@ -278,7 +327,14 @@ export const isInvoiceFromData = (data: unknown): data is InvoiceFromData => {
     if (val !== undefined && val !== null && typeof val !== 'string') return false;
   }
 
-  const numberFields = ['businessFileSizeSnapshot', 'discountAmountCents', 'discountPercent', 'shippingFeeCents'];
+  const numberFields = [
+    'customizationPaidWatermarkFileSize',
+    'customizationWatermarkFileSize',
+    'businessFileSizeSnapshot',
+    'discountAmountCents',
+    'discountPercent',
+    'shippingFeeCents'
+  ];
 
   for (const key of numberFields) {
     const val = d[key];
@@ -289,6 +345,18 @@ export const isInvoiceFromData = (data: unknown): data is InvoiceFromData => {
     d.businessLogoSnapshot !== undefined &&
     d.businessLogoSnapshot !== null &&
     !(d.businessLogoSnapshot instanceof Uint8Array)
+  )
+    return false;
+  if (
+    d.customizationWatermarkFileData !== undefined &&
+    d.customizationWatermarkFileData !== null &&
+    !(d.customizationWatermarkFileData instanceof Uint8Array)
+  )
+    return false;
+  if (
+    d.customizationPaidWatermarkFileData !== undefined &&
+    d.customizationPaidWatermarkFileData !== null &&
+    !(d.customizationPaidWatermarkFileData instanceof Uint8Array)
   )
     return false;
 

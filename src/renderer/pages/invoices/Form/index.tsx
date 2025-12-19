@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import type { InvoiceInfo } from '../../../../main/types/invoice';
 import { InvoiceStatus } from '../../../shared/enums/invoiceStatus';
 import { InvoiceType } from '../../../shared/enums/invoiceType';
+import { useExportPdf } from '../../../shared/hooks/useExportPdf ';
 import type { Business } from '../../../shared/types/business';
 import type { Client } from '../../../shared/types/client';
 import type { Currency } from '../../../shared/types/currency';
@@ -52,6 +53,9 @@ const InvoiceFormComponent: FC<Props> = ({
   handleDuplicate = () => {}
 }) => {
   const { t } = useTranslation();
+  const storeSettings = useAppSelector(selectSettings);
+
+  const { exportPdf } = useExportPdf({ invoiceForm, storeSettings });
 
   const [isDropdownOpenBusinesses, setIsDropdownOpenBusinesses] = useState<boolean>(false);
   const [isDropdownOpenCurrencies, setIsDropdownOpenCurrencies] = useState<boolean>(false);
@@ -63,7 +67,6 @@ const InvoiceFormComponent: FC<Props> = ({
   const [, startTransition] = useTransition();
 
   const [selectedInvoiceItem, setSelectedInvoiceItem] = useState<InvoiceItem | undefined>(undefined);
-  const storeSettings = useAppSelector(selectSettings);
 
   const invoiceInformation = useMemo(
     () => ({
@@ -617,8 +620,9 @@ const InvoiceFormComponent: FC<Props> = ({
         showDelete={invoiceForm?.id !== undefined}
         showDuplicate={invoiceForm?.id !== undefined}
         showMakeInvoice={invoiceForm?.id !== undefined && invoiceForm.invoiceType === InvoiceType.quotation}
-        onExport={() => {}}
+        onExport={exportPdf}
       />
+
       <ItemQuantitySetter
         isOpen={isModalQuantityOpen}
         onCancel={() => handleOnClose(setModalQuantityOpen)}

@@ -51,3 +51,18 @@ export const CURRENCY_FORMAT_ITEMS = {
 } as const;
 
 export const CURRENCY_FORMAT_ITEMS_ARRAY = Object.values(CURRENCY_FORMAT_ITEMS);
+
+export const MONTH_NAMES = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December'
+];

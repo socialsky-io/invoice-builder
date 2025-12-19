@@ -73,6 +73,7 @@ const DiscountDropdownComponent: FC<Props> = ({ isOpen, data, onClose, onOpen, o
 
     setIsFormValid(valid);
   }, [form, errors]);
+
   return (
     <>
       <SwipeableDrawer

@@ -2,6 +2,11 @@ import { memo, useCallback, useDeferredValue, useEffect, useRef, useState, useTr
 import { InvoiceFormMode } from '../../shared/enums/invoiceFormMode';
 import { InvoiceStatus } from '../../shared/enums/invoiceStatus';
 import { InvoiceType } from '../../shared/enums/invoiceType';
+import { LayoutType } from '../../shared/enums/layoutType';
+import { PageFormat } from '../../shared/enums/pageFormat';
+import { SizeType } from '../../shared/enums/sizeType';
+import { TableHeaderStyle } from '../../shared/enums/tableHeaderStyle';
+import { TableRowStyle } from '../../shared/enums/tableRowStyle';
 import type { Invoice, InvoiceFromData } from '../../shared/types/invoice';
 import { InvoiceForm } from './Form/index';
 import { InvoicesPreview } from './Preview';
@@ -61,7 +66,15 @@ const InvoiceFormComponent: FC<Props> = ({
           shippingFeeCents: 0,
           invoiceItems: [],
           invoicePayments: [],
-          invoiceAttachments: []
+          invoiceAttachments: [],
+          customizationColor: '#f0f0f0',
+          customizationLogoSize: SizeType.medium,
+          customizationFontSizeSize: SizeType.medium,
+          customizationLayout: LayoutType.classic,
+          customizationTableHeaderStyle: TableHeaderStyle.light,
+          customizationTableRowStyle: TableRowStyle.classic,
+          customizationPageFormat: PageFormat.a4,
+          customizationLabelUpperCase: false
         });
       }
     });
@@ -106,7 +119,7 @@ const InvoiceFormComponent: FC<Props> = ({
     );
   }
 
-  return <InvoicesPreview type={type} setInvoiceForm={setInvoiceForm} invoiceForm={deferredInvoiceForm} />;
+  return <InvoicesPreview setInvoiceForm={setInvoiceForm} invoiceForm={deferredInvoiceForm} />;
 };
 
 export const Form = memo(InvoiceFormComponent);

@@ -51,7 +51,23 @@ export const initInvoicesHandlers = (db: Database) => {
     'shippingFeeCents',
     'taxName',
     'taxRate',
-    'taxType'
+    'taxType',
+    'customizationColor',
+    'customizationLogoSize',
+    'customizationFontSizeSize',
+    'customizationLayout',
+    'customizationTableHeaderStyle',
+    'customizationTableRowStyle',
+    'customizationPageFormat',
+    'customizationLabelUpperCase',
+    'customizationWatermarkFileName',
+    'customizationWatermarkFileType',
+    'customizationWatermarkFileSize',
+    'customizationWatermarkFileData',
+    'customizationPaidWatermarkFileName',
+    'customizationPaidWatermarkFileType',
+    'customizationPaidWatermarkFileSize',
+    'customizationPaidWatermarkFileData'
   ];
   const attachmentFields: (keyof InvoiceAttachment)[] = ['parentInvoiceId', 'fileSize', 'fileType', 'fileName', 'data'];
   const paymentsFields: (keyof InvoicePayment)[] = [
@@ -188,7 +204,6 @@ export const initInvoicesHandlers = (db: Database) => {
       await runDb(db, 'COMMIT');
       return { success: true };
     } catch (error) {
-      console.log('error', error);
       await runDb(db, 'ROLLBACK');
       return { success: false, ...mapSqliteError(error) };
     }
@@ -212,9 +227,8 @@ export const initInvoicesHandlers = (db: Database) => {
           `
         INSERT INTO invoice_items (
           parentInvoiceId, itemId, itemNameSnapshot, unitPriceCentsSnapshot,
-          unitNameSnapshot,
-          quantity, taxRate, taxType
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          unitNameSnapshot, quantity, taxRate, taxType
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
       `,
           [
             data.id,
@@ -307,7 +321,12 @@ export const initInvoicesHandlers = (db: Database) => {
           thanksNotes, termsConditionNotes, discountName, businessNameSnapshot,
           businessShortNameSnapshot, businessAddressSnapshot,
           businessRoleSnapshot, businessEmailSnapshot, businessPhoneSnapshot,
-          businessAdditionalSnapshot,
+          businessAdditionalSnapshot, customizationColor, customizationLogoSize,
+          customizationFontSizeSize, customizationLayout,
+          customizationTablerHeaderStyle, customizationPageFormat, customizationLabelUpperCase,
+          customizationWatermarkFileName, customizationWatermarkFileType, customizationWatermarkFileSize,
+          customizationWatermarkFileData, customizationPaidWatermarkFileName,
+          customizationPaidWatermarkFileType, customizationPaidWatermarkFileSize, customizationPaidWatermarkFileData,
           businessPaymentInformationSnapshot, businessLogoSnapshot,
           businessFileSizeSnapshot, businessFileTypeSnapshot,
           businessFileNameSnapshot, clientNameSnapshot, 
@@ -323,7 +342,12 @@ export const initInvoicesHandlers = (db: Database) => {
           thanksNotes, termsConditionNotes, discountName, businessNameSnapshot,
           businessShortNameSnapshot, businessAddressSnapshot,
           businessRoleSnapshot, businessEmailSnapshot, businessPhoneSnapshot,
-          businessAdditionalSnapshot,
+          businessAdditionalSnapshot, customizationColor, customizationLogoSize,
+          customizationFontSizeSize, customizationLayout,
+          customizationTablerHeaderStyle, customizationPageFormat, customizationLabelUpperCase,
+          customizationWatermarkFileName, customizationWatermarkFileType, customizationWatermarkFileSize,
+          customizationWatermarkFileData, customizationPaidWatermarkFileName,
+          customizationPaidWatermarkFileType, customizationPaidWatermarkFileSize, customizationPaidWatermarkFileData,
           businessPaymentInformationSnapshot, businessLogoSnapshot,
           businessFileSizeSnapshot, businessFileTypeSnapshot,
           businessFileNameSnapshot, clientNameSnapshot, 
@@ -352,8 +376,7 @@ export const initInvoicesHandlers = (db: Database) => {
               quantity, taxName, taxRate, taxType
             )
             SELECT ?, itemId, itemNameSnapshot, unitPriceCentsSnapshot,
-              unitNameSnapshot,
-              quantity, taxName, taxRate, taxType
+              unitNameSnapshot, quantity, taxName, taxRate, taxType
             FROM invoice_items WHERE parentInvoiceId = ?;
           `,
         [newInvoiceId, invoiceId]

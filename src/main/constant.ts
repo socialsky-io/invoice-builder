@@ -5,5 +5,6 @@ export const BOOLEAN_FIELDS = [
   'shouldIncludeBusinessName',
   'quotesON',
   'reportsON',
-  'isArchived'
+  'isArchived',
+  'customizationLabelUpperCase'
 ] as const;

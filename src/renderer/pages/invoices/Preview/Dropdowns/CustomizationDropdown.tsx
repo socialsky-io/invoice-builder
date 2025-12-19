@@ -1,0 +1,155 @@
+import {
+  Box,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Grid,
+  Radio,
+  RadioGroup,
+  SwipeableDrawer,
+  Switch,
+  useMediaQuery,
+  useTheme
+} from '@mui/material';
+import { MuiColorInput } from 'mui-color-input';
+import { memo, useEffect, type FC } from 'react';
+import { useTranslation } from 'react-i18next';
+import { PageHeader } from '../../../../shared/components/layout/pageHeader/PageHeader';
+import { PageFormat } from '../../../../shared/enums/pageFormat';
+import { TableHeaderStyle } from '../../../../shared/enums/tableHeaderStyle';
+import { TableRowStyle } from '../../../../shared/enums/tableRowStyle';
+import { useForm } from '../../../../shared/hooks/useForm';
+import type { CustomizationForm } from '../../../../shared/types/invoice';
+
+interface Props {
+  isOpen: boolean;
+  onClose?: () => void;
+  onOpen?: () => void;
+  onClick?: (data: CustomizationForm) => void;
+  data?: CustomizationForm;
+}
+const CustomizationDropdownComponent: FC<Props> = ({ isOpen, data, onClose, onOpen, onClick }) => {
+  const { t } = useTranslation();
+  const theme = useTheme();
+  const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
+
+  const { form, update } = useForm<CustomizationForm>(data ?? {});
+
+  useEffect(() => {
+    if (onClick) {
+      onClick(form);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form]);
+
+  return (
+    <>
+      <SwipeableDrawer
+        anchor="bottom"
+        open={isOpen}
+        ModalProps={{
+          BackdropProps: { invisible: true }
+        }}
+        onClose={() => onClose?.()}
+        onOpen={() => onOpen?.()}
+        slotProps={{
+          paper: {
+            sx: {
+              maxWidth: isDesktop ? '40%' : '100%',
+              height: isDesktop ? '40%' : '60%',
+              mx: 'auto',
+              borderTopLeftRadius: 16,
+              borderTopRightRadius: 16,
+              borderBottomLeftRadius: 0,
+              borderBottomRightRadius: 0,
+              p: 3
+            }
+          }
+        }}
+      >
+        <Box sx={{ mb: 2 }}>
+          <PageHeader
+            title={t('invoices.customization')}
+            showBack={false}
+            showSave={true}
+            showClose={true}
+            onClose={onClose}
+          />
+        </Box>
+        <Grid container spacing={2}>
+          <Grid size={{ xs: 12, md: 12 }}>
+            <MuiColorInput
+              value={form.customizationColor ?? ''}
+              label={t('common.color')}
+              format="hex"
+              onChange={(_e, newValue) => {
+                update('customizationColor', newValue.hex);
+              }}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, md: 12 }}>
+            <FormControl component="fieldset">
+              <FormLabel component="legend">{t('common.pageFormat')}</FormLabel>
+              <RadioGroup
+                row
+                value={form.customizationPageFormat}
+                onChange={(_e, newValue) => {
+                  update('customizationPageFormat', newValue as PageFormat);
+                }}
+              >
+                <FormControlLabel value={PageFormat.a4} control={<Radio />} label="A4" />
+                <FormControlLabel value={PageFormat.letter} control={<Radio />} label={t('common.letter')} />
+              </RadioGroup>
+            </FormControl>
+          </Grid>
+          <Grid size={{ xs: 12, md: 12 }}>
+            <FormControl component="fieldset">
+              <FormLabel component="legend">{t('common.tableHeaderStyle')}</FormLabel>
+              <RadioGroup
+                row
+                value={form.customizationTableHeaderStyle}
+                onChange={(_e, newValue) => {
+                  update('customizationTableHeaderStyle', newValue as TableHeaderStyle);
+                }}
+              >
+                <FormControlLabel value={TableHeaderStyle.dark} control={<Radio />} label={t('common.dark')} />
+                <FormControlLabel value={TableHeaderStyle.light} control={<Radio />} label={t('common.light')} />
+                <FormControlLabel value={TableHeaderStyle.outline} control={<Radio />} label={t('common.outline')} />
+              </RadioGroup>
+            </FormControl>
+          </Grid>
+          <Grid size={{ xs: 12, md: 12 }}>
+            <FormControl component="fieldset">
+              <FormLabel component="legend">{t('common.tableRowStyle')}</FormLabel>
+              <RadioGroup
+                row
+                value={form.customizationTableRowStyle}
+                onChange={(_e, newValue) => {
+                  update('customizationTableRowStyle', newValue as TableRowStyle);
+                }}
+              >
+                <FormControlLabel value={TableRowStyle.bordered} control={<Radio />} label={t('common.bordered')} />
+                <FormControlLabel value={TableRowStyle.classic} control={<Radio />} label={t('common.classic')} />
+                <FormControlLabel value={TableRowStyle.stripped} control={<Radio />} label={t('common.stripped')} />
+              </RadioGroup>
+            </FormControl>
+          </Grid>
+          <Grid size={{ xs: 12, md: 12 }}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={form.customizationLabelUpperCase}
+                  onChange={(_e, newValue) => {
+                    update('customizationLabelUpperCase', newValue);
+                  }}
+                />
+              }
+              label={t('common.labelsUpperCase')}
+            />
+          </Grid>
+        </Grid>
+      </SwipeableDrawer>
+    </>
+  );
+};
+export const CustomizationDropdown = memo(CustomizationDropdownComponent);

@@ -1,10 +1,10 @@
 import { Text, View } from '@react-pdf/renderer';
 import { memo, useMemo, type FC } from 'react';
-import { useTranslation } from 'react-i18next';
 import { DiscountType } from '../../../shared/enums/discountType';
 import { InvoiceStatus } from '../../../shared/enums/invoiceStatus';
 import { InvoiceType } from '../../../shared/enums/invoiceType';
 import { InvoiceItemTaxType, InvoiceTaxType } from '../../../shared/enums/taxType';
+import { useUppercaseTranslation } from '../../../shared/hooks/useUppercaseTranslation';
 import type { InvoiceFromData } from '../../../shared/types/invoice';
 import type { Settings } from '../../../shared/types/settings';
 import { getFinancialData } from '../../../shared/utils/invoiceFunctions';
@@ -15,7 +15,7 @@ interface Props {
   storeSettings?: Settings;
 }
 const FinancialInfoComponent: FC<Props> = ({ invoiceForm, storeSettings }) => {
-  const { t } = useTranslation();
+  const { tt } = useUppercaseTranslation(invoiceForm?.customizationLabelUpperCase);
 
   const {
     formattedSubTotalAmount,
@@ -48,7 +48,7 @@ const FinancialInfoComponent: FC<Props> = ({ invoiceForm, storeSettings }) => {
           <View style={PDF_STYLES.flexGrow} />
           <View style={[PDF_STYLES.row, PDF_STYLES.w40]}>
             <View style={[PDF_STYLES.regularBold, PDF_STYLES.w50]}>
-              <Text>{t('invoices.subTotal')}</Text>
+              <Text>{tt('invoices.subTotal')}</Text>
             </View>
             <View style={[PDF_STYLES.regularBold, PDF_STYLES.w50, PDF_STYLES.alignEnd]}>
               <Text>{formattedSubTotalAmount}</Text>
@@ -64,9 +64,9 @@ const FinancialInfoComponent: FC<Props> = ({ invoiceForm, storeSettings }) => {
             <View style={[PDF_STYLES.regular, PDF_STYLES.w50]}>
               <Text>
                 {invoiceForm?.discountType === DiscountType.percentage &&
-                  t('invoices.discountPrct', { prct: invoiceForm.discountPercent })}
+                  tt('invoices.discountPrct', { prct: invoiceForm.discountPercent })}
 
-                {invoiceForm?.discountType !== DiscountType.percentage && t('invoices.discount')}
+                {invoiceForm?.discountType !== DiscountType.percentage && tt('invoices.discount')}
               </Text>
             </View>
             <View style={[PDF_STYLES.regular, PDF_STYLES.w50, PDF_STYLES.alignEnd]}>
@@ -85,28 +85,28 @@ const FinancialInfoComponent: FC<Props> = ({ invoiceForm, storeSettings }) => {
                 {(invoiceForm?.taxType === InvoiceTaxType.deducted ||
                   invoiceForm?.taxType === InvoiceTaxType.exclusive) &&
                   (invoiceForm.taxName
-                    ? t('invoices.taxExclusive', {
+                    ? tt('invoices.taxExclusive', {
                         name: invoiceForm.taxName,
                         prct: invoiceForm.taxRate
                       })
-                    : t('invoices.tax', {
+                    : tt('invoices.tax', {
                         prct: invoiceForm.taxRate
                       }))}
                 {invoiceForm?.taxType === InvoiceTaxType.inclusive &&
                   (invoiceForm.taxName
-                    ? t('invoices.taxInclusive', {
+                    ? tt('invoices.taxInclusive', {
                         name: invoiceForm.taxName,
                         prct: invoiceForm.taxRate
                       })
-                    : t('invoices.taxInclusivePlaceholder', {
+                    : tt('invoices.taxInclusivePlaceholder', {
                         prct: invoiceForm.taxRate
                       }))}
-                {hasPerItemTaxExclusive && t('invoices.taxExclusivePerItem')}
-                {hasPerItemTaxInclusive && t('invoices.taxInclusivePerItem')}
+                {hasPerItemTaxExclusive && tt('invoices.taxExclusivePerItem')}
+                {hasPerItemTaxInclusive && tt('invoices.taxInclusivePerItem')}
                 {!hasPerItemTaxExclusive &&
                   !hasPerItemTaxInclusive &&
                   !invoiceForm?.taxType &&
-                  t('invoices.tax', { prct: invoiceForm?.taxRate ?? 0 })}
+                  tt('invoices.tax', { prct: invoiceForm?.taxRate ?? 0 })}
               </Text>
             </View>
             <View style={[PDF_STYLES.regular, PDF_STYLES.w50, PDF_STYLES.alignEnd]}>
@@ -121,7 +121,7 @@ const FinancialInfoComponent: FC<Props> = ({ invoiceForm, storeSettings }) => {
           <View style={PDF_STYLES.flexGrow} />
           <View style={[PDF_STYLES.row, PDF_STYLES.w40]}>
             <View style={[PDF_STYLES.regular, PDF_STYLES.w50]}>
-              <Text>{t('invoices.shippingFee')}</Text>
+              <Text>{tt('invoices.shippingFee')}</Text>
             </View>
             <View style={[PDF_STYLES.regular, PDF_STYLES.w50, PDF_STYLES.alignEnd]}>
               <Text>{shippingAmountFormatted}</Text>
@@ -130,10 +130,12 @@ const FinancialInfoComponent: FC<Props> = ({ invoiceForm, storeSettings }) => {
         </View>
       )}
 
-      <View style={[PDF_STYLES.row, PDF_STYLES.mt5, PDF_STYLES.mb5]}>
-        <View style={PDF_STYLES.flexGrow} />
-        <View style={[PDF_STYLES.border, PDF_STYLES.w40]} />
-      </View>
+      {(discountAmount > 0 || totalTax > 0 || shippingAmount > 0) && (
+        <View style={[PDF_STYLES.row, PDF_STYLES.mt5, PDF_STYLES.mb5]}>
+          <View style={PDF_STYLES.flexGrow} />
+          <View style={[PDF_STYLES.border, PDF_STYLES.w40]} />
+        </View>
+      )}
 
       {(totalAmountPaid > 0 ||
         invoiceForm?.status === InvoiceStatus.paid ||
@@ -142,7 +144,7 @@ const FinancialInfoComponent: FC<Props> = ({ invoiceForm, storeSettings }) => {
           <View style={PDF_STYLES.flexGrow} />
           <View style={[PDF_STYLES.row, PDF_STYLES.w40]}>
             <View style={[PDF_STYLES.regularBold, PDF_STYLES.w50]}>
-              <Text>{t('invoices.total')}</Text>
+              <Text>{tt('invoices.total')}</Text>
             </View>
             <View style={[PDF_STYLES.regularBold, PDF_STYLES.w50, PDF_STYLES.alignEnd]}>
               <Text>{totalAmountFormatted}</Text>
@@ -158,7 +160,7 @@ const FinancialInfoComponent: FC<Props> = ({ invoiceForm, storeSettings }) => {
             <View style={PDF_STYLES.flexGrow} />
             <View style={[PDF_STYLES.row, PDF_STYLES.w40]}>
               <View style={[PDF_STYLES.regular, PDF_STYLES.w50]}>
-                <Text>{t('invoices.paid')}</Text>
+                <Text>{tt('invoices.paid')}</Text>
               </View>
               <View style={[PDF_STYLES.regular, PDF_STYLES.w50, PDF_STYLES.alignEnd]}>
                 <Text>{totalAmountPaidFormatted}</Text>
@@ -172,9 +174,16 @@ const FinancialInfoComponent: FC<Props> = ({ invoiceForm, storeSettings }) => {
           <View style={PDF_STYLES.flexGrow} />
           <View style={[PDF_STYLES.row, PDF_STYLES.w40]}>
             <View style={[PDF_STYLES.regularBold, PDF_STYLES.w50]}>
-              <Text>{t('invoices.balanceDue')}</Text>
+              <Text>{tt('invoices.balanceDue')}</Text>
             </View>
-            <View style={[PDF_STYLES.regularBold, PDF_STYLES.w50, PDF_STYLES.alignEnd]}>
+            <View
+              style={[
+                PDF_STYLES.regularBold,
+                PDF_STYLES.w50,
+                PDF_STYLES.alignEnd,
+                { color: invoiceForm?.customizationColor }
+              ]}
+            >
               <Text>{balanceDueFormatted}</Text>
             </View>
           </View>

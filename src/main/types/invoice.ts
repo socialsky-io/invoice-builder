@@ -1,6 +1,11 @@
 import type { DiscountType } from '../enums/discountType';
 import type { InvoiceStatus } from '../enums/invoiceStatus';
 import type { InvoiceType } from '../enums/invoiceType';
+import type { LayoutType } from '../enums/layoutType';
+import type { PageFormat } from '../enums/pageFormat';
+import type { SizeType } from '../enums/sizeType';
+import type { TableHeaderStyle } from '../enums/tableHeaderStyle';
+import type { TableRowStyle } from '../enums/tableRowStyle';
 import type { InvoiceItemTaxType, InvoiceTaxType } from '../enums/taxType';
 
 export interface Invoice {
@@ -54,6 +59,22 @@ export interface Invoice {
   invoicePayments: InvoicePayment[];
   invoiceItems: InvoiceItem[];
   invoiceAttachments: InvoiceAttachment[];
+  customizationColor: string;
+  customizationLogoSize: SizeType;
+  customizationFontSizeSize: SizeType;
+  customizationLayout: LayoutType;
+  customizationTableHeaderStyle: TableHeaderStyle;
+  customizationTableRowStyle: TableRowStyle;
+  customizationPageFormat: PageFormat;
+  customizationLabelUpperCase: boolean;
+  customizationWatermarkFileName?: string;
+  customizationWatermarkFileType?: string;
+  customizationWatermarkFileSize?: number;
+  customizationWatermarkFileData?: Uint8Array;
+  customizationPaidWatermarkFileName?: string;
+  customizationPaidWatermarkFileType?: string;
+  customizationPaidWatermarkFileSize?: number;
+  customizationPaidWatermarkFileData?: Uint8Array;
 }
 
 export interface InvoiceAttachment {
