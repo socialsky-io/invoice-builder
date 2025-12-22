@@ -1,4 +1,4 @@
-import { dialog, ipcMain } from 'electron';
+import { BrowserWindow, dialog, ipcMain } from 'electron';
 import { join } from 'path';
 import { setupDB } from '../database';
 import { DBInitType } from '../enums/dbInitType';
@@ -45,13 +45,14 @@ const resetIPCHandlers = () => {
     'add-invoice',
     'duplicate-invoice',
     'export-all-data',
-    'import-all-data'
+    'import-all-data',
+    'restart-app'
   ];
 
   handlers.forEach(handler => ipcMain.removeHandler(handler));
 };
 
-export const initDBDialogsHandlers = (dbName: string) => {
+export const initDBDialogsHandlers = (dbName: string, mainWindow: BrowserWindow) => {
   ipcMain.handle('show-save-db-dialog', async () => {
     const defaultPath = join(process.env.USERPROFILE || process.cwd(), dbName);
     const result = await dialog.showSaveDialog({
@@ -81,7 +82,7 @@ export const initDBDialogsHandlers = (dbName: string) => {
     try {
       resetIPCHandlers();
       const createIfMissing = opts.mode === DBInitType.create || typeof opts.mode === 'undefined';
-      await setupDB({ fullPath: opts.fullPath, createIfMissing });
+      await setupDB({ fullPath: opts.fullPath, createIfMissing, mainWindow });
       return { success: true };
     } catch (error) {
       return { success: false, ...mapSqliteError(error) };

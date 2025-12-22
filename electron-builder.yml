@@ -4,6 +4,11 @@ productName: Invoice Builder
 directories:
   output: release
 
+publish:
+  provider: github
+  owner: piratuks
+  repo: invoice-builder
+
 files:
   - dist/**
   - dist-electron/**
@@ -13,12 +18,14 @@ files:
 extraMetadata:
   main: dist-electron/main/main.cjs
 
+forceCodeSigning: false
+
 win:
   target:
     - nsis
 
 nsis:
   oneClick: false
-  perMachine: true
-  allowElevation: true
+  perMachine: false
+  allowElevation: false
   allowToChangeInstallationDirectory: true

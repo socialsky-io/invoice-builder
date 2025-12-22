@@ -105,6 +105,7 @@
     "cancel": "Atšaukti",
     "cash": "Grynieji",
     "category": "Kategorija",
+    "checking": "Tikrinama...",
     "cheque": "Čekis",
     "classic": "Klasikinis",
     "client": "Klientas",
@@ -116,6 +117,7 @@
     "date": "Data",
     "description": "Aprašymas",
     "downloadTemplate": "Atsisiųsti šabloną",
+    "downloading": "Atsisiunčiama...",
     "dueDate": "Terminas",
     "duplicate": "Kopijuoti",
     "email": "El. paštas",
@@ -143,6 +145,7 @@
     "name": "Pavadinimas",
     "noData": "Duomenų pagal paieškos kriterijus nėra",
     "noDataYet": "Duomenų dar nėra. Pradėkite juos pridėti...",
+    "noUpdate": "Atnaujinimų nėra",
     "other": "Kita",
     "outline": "Kontūras",
     "pageFormat": "Puslapio formatas",
@@ -150,6 +153,7 @@
     "paypal": "PayPal",
     "phone": "Telefonas",
     "phoneHelper": "Įveskite telefono numerį tarptautiniu formatu",
+    "progress": "Progresas: {{prct}}%",
     "qty": "Kiekis",
     "quote": "Pasiūlymas",
     "quoteNumber": "Pasiūlymo numeris",
@@ -367,6 +371,7 @@
     "importConfirmText": "Ar tikrai norite importuoti šį JSON failą? Šis veiksmas ištrins dabartinę duomenų bazę ir ją pakeis duomenimis iš atsarginės kopijos. Šio veiksmo atšaukti nebus galima.",
     "titles": {
       "about": "Apie",
+      "checkForUpdate": "Tikrinti atnaujinimus",
       "customizeInvoice": "Valdykite sąskaitą",
       "darkMode": "Tamsus režimas",
       "export": "Eksportuoti",
@@ -378,7 +383,8 @@
       "turnQuotes": "Pasiūlymai",
       "turnReports": "Ataskaitos",
       "tutorial": "Pamoka"
-    }
+    },
+    "updateConfirmText": "Ar tikrai norite atnaujinti ({{currentVersion}} ⇒ {{newVersion}})?"
   },
   "units": {
     "add": "Pridėti vienetą",

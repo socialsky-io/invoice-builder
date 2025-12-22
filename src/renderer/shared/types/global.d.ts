@@ -12,11 +12,21 @@ import type { Invoice, InvoiceAdd, InvoiceUpdate } from './invoice';
 import type { Item, ItemAdd, ItemUpdate } from './item';
 import type { Response } from './response';
 import type { Unit, UnitAdd, UnitUpdate } from './unit';
+import type { ProgressInfo } from './updater';
 
 declare global {
   interface Window {
     electronAPI: {
       ping: () => void;
+
+      getAppVersion: () => Promise<string>;
+
+      checkForUpdates: () => Promise<void>;
+      onUpdateProgress: (callback: (data: ProgressInfo) => void) => Promise<void>;
+      onUpdateAvailable: (callback: () => void) => Promise<void>;
+      onUpdateNotAvailable: (callback: () => void) => Promise<void>;
+      onUpdateDownloaded: (callback: (version: string) => void) => Promise<void>;
+      restartApp: () => void;
 
       openUrl: (url: string) => Promise<void>;
       selectDatabase: () => Promise<Response<DBSelector>>;

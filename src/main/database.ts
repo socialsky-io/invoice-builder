@@ -1,3 +1,4 @@
+import type { BrowserWindow } from 'electron';
 import fs from 'fs';
 import path from 'path';
 import sqlite3 from 'sqlite3';
@@ -361,8 +362,8 @@ const initDatabase = async () => {
   });
 };
 
-const setupDB = async (opts: { fullPath: string; createIfMissing?: boolean }) => {
-  const { fullPath, createIfMissing = true } = opts;
+const setupDB = async (opts: { fullPath: string; createIfMissing?: boolean; mainWindow: BrowserWindow }) => {
+  const { fullPath, createIfMissing = true, mainWindow } = opts;
   const folder = path.dirname(fullPath);
   fs.mkdirSync(folder, { recursive: true });
 
@@ -394,7 +395,7 @@ const setupDB = async (opts: { fullPath: string; createIfMissing?: boolean }) =>
     await initInitialData();
   }
 
-  initIpcHandler(db, dbPath);
+  initIpcHandler(db, dbPath, mainWindow);
 };
 
 export { db, setupDB };

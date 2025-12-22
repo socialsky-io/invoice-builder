@@ -12,8 +12,10 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const preloadPath = join(resolve(), 'dist-electron/preload/preload.cjs');
 
+let mainWindow: BrowserWindow;
+
 const createWindow = () => {
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
     show: false,
@@ -40,7 +42,7 @@ const createWindow = () => {
 
 app.whenReady().then(() => {
   createWindow();
-  initDBDialogsHandlers(dbName);
+  initDBDialogsHandlers(dbName, mainWindow);
 });
 
 app.on('window-all-closed', () => {

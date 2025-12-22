@@ -10,9 +10,22 @@ import type { InvoiceAdd, InvoiceUpdate } from '../renderer/shared/types/invoice
 import type { ItemAdd, ItemUpdate } from '../renderer/shared/types/item';
 import type { SettingsUpdate } from '../renderer/shared/types/settings';
 import type { UnitAdd, UnitUpdate } from '../renderer/shared/types/unit';
+import type { ProgressInfo } from '../renderer/shared/types/updater';
 
 contextBridge.exposeInMainWorld('electronAPI', {
   ping: () => console.log('pong'),
+
+  getAppVersion: () => ipcRenderer.invoke('get-app-version'),
+
+  checkForUpdates: () => ipcRenderer.send('check-for-updates'),
+  onUpdateProgress: (callback: (data: ProgressInfo) => void) =>
+    ipcRenderer.on('update-progress', (_, data) => callback(data)),
+  onUpdateAvailable: (callback: () => void) => ipcRenderer.on('update-available', callback),
+  onUpdateDownloaded: (callback: (version: string) => void) =>
+    ipcRenderer.on('update-downloaded', (_, version) => callback(version)),
+  onUpdateNotAvailable: (callback: () => void) => ipcRenderer.on('update-not-available', callback),
+
+  restartApp: () => ipcRenderer.send('restart-app'),
 
   selectDatabase: () => ipcRenderer.invoke('show-save-db-dialog'),
   openDatabase: () => ipcRenderer.invoke('show-open-db-dialog'),

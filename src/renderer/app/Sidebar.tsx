@@ -12,21 +12,24 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { MenuList } from '../shared/components/lists/menuList/MenuList';
 import type { MenuItem } from '../shared/types/menuItem';
-import { useAppSelector } from '../state/configureStore';
-import { selectSettings } from '../state/pageSlice';
+import { useAppDispatch, useAppSelector } from '../state/configureStore';
+import { selectSettings, selectVersion, setVersion } from '../state/pageSlice';
 
 const DRAWER_WIDTH = 240;
 const COLLAPSED_WIDTH = 60;
 
 export const Sidebar: FC = () => {
+  const dispatch = useAppDispatch();
+
   const theme = useTheme();
   const [open, setOpen] = useState(true);
-  const version = import.meta.env.VITE_APP_VERSION;
+
   const isDesktop = useMediaQuery(theme.breakpoints.up('md'));
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const storeSettings = useAppSelector(selectSettings);
+  const version = useAppSelector(selectVersion);
 
   const onClickNavigate = useCallback(
     (item: MenuItem) => {
@@ -152,6 +155,10 @@ export const Sidebar: FC = () => {
       setOpen(false);
     }
   }, [isDesktop]);
+
+  useEffect(() => {
+    window.electronAPI.getAppVersion().then(v => dispatch(setVersion(v)));
+  }, [dispatch]);
 
   return (
     <Drawer

@@ -9,4 +9,5 @@ export interface PageState {
   unitOptions?: Array<{ label: string; value: number }>;
   clientSnapshotOptions?: Array<{ label: string; value: string }>;
   businessSnapshotOptions?: Array<{ label: string; value: string }>;
+  version?: string;
 }
